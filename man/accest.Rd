@@ -204,7 +204,7 @@ plot(acc2)
 aam.1 <- aam.cl(x,y,method="svm",pars=pars)
 aam.2 <- aam.mcl(x,y,method=c("svm","randomForest"),pars=pars)
 
-## If use two classess, AUC will be calculated
+## If use two classes, AUC will be calculated
 idx <- (y == "setosa")
 aam.3 <- aam.cl(x[!idx,],factor(y[!idx]),method="svm",pars=pars)
 aam.4 <- aam.mcl(x[!idx,],factor(y[!idx]),method=c("svm","randomForest"),pars=pars)

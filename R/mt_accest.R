@@ -10,7 +10,7 @@
 ##   03-07-07: For loocv, no AUC are available. (Should check in code)
 ##   14-12-07: method and pred.dunc can be a function or a character string
 ##             naming function.
-##   11-05-12: Re-write ccalculation of err, auc and mar. Keep res.all.
+##   11-05-12: Re-write calculation of err, auc and mar. Keep res.all.
 ##==========================================================================
 accest.default <- function(dat, cl, method,
                            pred.func=predict,pars = valipars(),
@@ -291,7 +291,7 @@ accest.formula <- function (formula, data = NULL, ..., subset,
 ## ========================================================================
 binest <- function(dat, cl, choices = NULL, method, pars=valipars(),...)
 {
-  ## construct the pariwise comparison data set
+  ## construct the pairwise comparison data set
   dat.sub <- .dat.sel(dat,cl,choices = choices)
 
   len <- sapply(dat.sub$cl, length)
@@ -441,7 +441,7 @@ cl.perf <- function(obs, pre, pos=levels(as.factor(obs))[2])
   fpr <- FP/(FP + TN)
   acc <- (TP + TN) / (P + N)
 
-  spec <- 1 - fpr  ## Specifcity
+  spec <- 1 - fpr  ## Specificity
   sens <- tpr      ## Sensitivity or recall
 
   perf <- list(acc=acc, tpr=tpr, fpr=fpr, sens=sens, spec=spec, con.mat=con,
@@ -494,7 +494,7 @@ cl.auc <- function(stat,label,pos=levels(as.factor(label))[2])
 ## lwc-11-03-2007:Area under Receiver Operating Curve (ROC)
 ## Note: 1. Internal function with no documents.
 ##       2. It is old version of cl.auc.
-##       3. It is modified from auROC funtion in package limma.
+##       3. It is modified from auROC function in package limma.
 auc <- function(stat,label)
 {
   if (missing(label) || missing(stat)) stop("arguments miss")
@@ -517,7 +517,7 @@ auc <- function(stat,label)
 ## lwc-15-05-2012: Major changes:
 ##                 1.) The cutoff points are sorted stat
 ##                 2.) The rule is >=, not >.
-## Note: 1. This function is partly taken from ROCfuns.R in packge ROC.
+## Note: 1. This function is partly taken from ROCfuns.R in package ROC.
 ##
 ## Note: sensitivity and specificity are estimated as:
 ##   sensitivity (true positive rate) =
@@ -641,7 +641,7 @@ cl.roc.1 <- function (stat, label, pos=levels(as.factor(label))[2],
 ##  24-03-07: add dat.te and cl.te as NULLs.
 ##  30-06-07: Add the posterior, marg and AUC. I doubt using average of
 ##            margin as an assessment factor like AUC for classification.
-##  02-07-07: Deal with consistant variables which have zero SD. Any
+##  02-07-07: Deal with constant variables which have zero SD. Any
 ##            possible bugs or mistakes in both programming and algorithm?
 ##  04-07-07: check validity of auc and correct the way of meaging factors.
 ##  06-07-07: Fix a bug
@@ -666,7 +666,7 @@ classifier <- function(dat.tr,cl.tr,dat.te=NULL,cl.te=NULL,method,
     else eval(pred.func)
 
   ## -----------------------------------------------------
-  ## 05-10-2007: re-wrate this wrapper to avoid multiple actual arguments in
+  ## 05-10-2007: re-write this wrapper to avoid multiple actual arguments in
   ##             pass k.
   if (method == "knn") {
     method <- c("knn.wrap")
@@ -687,7 +687,7 @@ classifier <- function(dat.tr,cl.tr,dat.te=NULL,cl.te=NULL,method,
   dat.tr <- dat.tr[,idx, drop=F]
   dat.te <- dat.te[,idx, drop=F]
   ## 09-10-08: Potential bug here. If idx is invalid, dat.tr will be NA. See
-  ##           preproc.sd for fixing it. It hapens in the situation where
+  ##           preproc.sd for fixing it. It happens in the situation where
   ##           the data set is a single column matrix and all values are
   ##           same.
   ## -------------------------------------------------------
@@ -732,7 +732,7 @@ classifier <- function(dat.tr,cl.tr,dat.te=NULL,cl.te=NULL,method,
     }
   }
 
-  ## claculate error rate
+  ## calculate error rate
   err <- sum(cl.te != pred.te)/length(cl.te)
   ## err <- cl.rate(cl.te, pred.te)$err.rate
 
