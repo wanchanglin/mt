@@ -1,0 +1,17 @@
+## Folders to be ignored 
+inst/doc
+
+## R History files
+.Rproj.user
+.Rhistory
+.RData
+.httr-oauth
+.*.Rnb.cached
+
+## Others
+.DS_Store
+*.swp
+*.*~
+#*#
+.#*
+
