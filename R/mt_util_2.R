@@ -435,7 +435,7 @@ normality.test <- function(dat, alpha=0){
 ## See Also:
 ##   md.pattern in package mice and prelim.norm in package norm.
 ##
-## NOTE: 1.The motivaton of the function is that Ted HardingI mentioned that
+## NOTE: 1.The motivaton of the function is that Ted Harding mentioned that
 ##       that prelim.norm can only encode NA-patterns in an R integer for up
 ##       to 31 columns. More than that, and it will not work properly or at
 ##       all. (http://article.gmane.org/gmane.comp.lang.r.general/55185).
