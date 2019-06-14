@@ -1,15 +1,15 @@
-## =========================================================================
-## mult-Classifier accuracy estimation with results of accuracy and
-## significant test using ANOVA plus TukeyHSD test.
+#' =========================================================================
+#' mult-Classifier accuracy estimation with results of accuracy and
+#' significant test using ANOVA plus TukeyHSD test.
 ##
-## History:
-## 05-12-06: commence
-## 10-01-07: minor changes.
-## 31-01-07: prepare RD file and put it into package 'mt'
-## 24-03-07: Re-calculate improved bootstrap error.
-## 28-03-07: Add overall confusion matrix
-## 01-07-07: Change largely. Produced directly from accest.
-## =========================================================================
+#' History:
+#' 05-12-06: commence
+#' 10-01-07: minor changes.
+#' 31-01-07: prepare RD file and put it into package 'mt'
+#' 24-03-07: Re-calculate improved bootstrap error.
+#' 28-03-07: Add overall confusion matrix
+#' 01-07-07: Change largely. Produced directly from accest.
+#' =========================================================================
 maccest.default  <- function(dat, cl, method="svm", pars = valipars(),
                              tr.idx = NULL,comp="anova",...)
 {
@@ -18,8 +18,8 @@ maccest.default  <- function(dat, cl, method="svm", pars = valipars(),
   if (missing(method))
     stop("'method' is missing")
 
-  ## if (!is.factor (cl)) stop("cl must be a factor.")
-  cl <- as.factor(cl)   ## some classifier need it as factor, such as SVM.
+  #' if (!is.factor (cl)) stop("cl must be a factor.")
+  cl <- as.factor(cl)   #' some classifier need it as factor, such as SVM.
 
   if (nrow(dat) != length(cl)) stop("mat and cl don't match.")
   if (length(unique(cl)) < 2)
@@ -31,7 +31,7 @@ maccest.default  <- function(dat, cl, method="svm", pars = valipars(),
   rownames(dat) <- NULL
   n   <- nrow(dat)
 
-  ## construct index of train data
+  #' construct index of train data
   if(is.null(tr.idx)){
     if (pars$sampling == "cv" && pars$nreps > n ){
       pars$sampling <- "loocv"
@@ -41,7 +41,7 @@ maccest.default  <- function(dat, cl, method="svm", pars = valipars(),
   pars$niter    <- length(tr.idx)
   pars$nreps    <- length(tr.idx[[1]])
 
-  ## apply single accest for maccest
+  #' apply single accest for maccest
   res <- lapply(method, function(m) {
     cat("\n--Classifier = :",m);  flush.console()
     accest(dat, cl, method=m, pars=pars, tr.idx=tr.idx,...)
@@ -50,7 +50,7 @@ maccest.default  <- function(dat, cl, method="svm", pars = valipars(),
 
   acc      <- sapply(res, function(x) x$acc)
   acc.iter <- sapply(res, function(x) x$acc.iter)
-  ## acc.std  <- sapply(res, function(x) x$acc.std)
+  #' acc.std  <- sapply(res, function(x) x$acc.std)
   acc.std  <- sapply(res, function(x) ifelse(!is.null(x$acc.std), x$acc.std, NA))
   conf     <- lapply(res, function(x) x$conf)
 
@@ -59,7 +59,7 @@ maccest.default  <- function(dat, cl, method="svm", pars = valipars(),
   auc      <- sapply(res, function(x) ifelse(!is.null(x$auc), x$auc, NA))
   auc.iter <- sapply(res, function(x) x$auc.iter)
 
-  ## significant test
+  #' significant test
   if (length(method) < 2 || pars$niter < 2) {
     h.test  <- NULL
     gl.pval <- NULL
@@ -75,7 +75,7 @@ maccest.default  <- function(dat, cl, method="svm", pars = valipars(),
     comp    <- paste(names(h.test)[1],"+",names(h.test)[2],sep=" ")
   }
 
-  ## prepar the returned values
+  #' prepar the returned values
   ret <- list(method   = method,
               acc      = acc,
               acc.std  = acc.std,
@@ -111,7 +111,7 @@ maccest.default  <- function(dat, cl, method="svm", pars = valipars(),
 print.maccest <- function(x, digits=3,...) {
   cat("\nMethod:\t\t\t", x$method)
   cat("\nAccuracy:\t\t",round(x$acc,digits))
-  ## cat("\nSTD of Accuracy:\t",round(x$acc.std,digits))
+  #' cat("\nSTD of Accuracy:\t",round(x$acc.std,digits))
   cat("\nAUC:\t\t\t", round(x$auc,digits))
   cat("\nMargin:\t\t\t", round(x$mar, digits))
 
@@ -142,13 +142,13 @@ print.summary.maccest <- function(x, digits=3,...)
   cat("\n\nAccuracy on each iteration:\n")
   print(round(x$acc.iter,digits))
   cat("\nSummary of accurary on each iteration:\n")
-  ## print(summary(x$acc.iter))
-  print(apply(x$acc.iter,2,summary))   ## nicely formatted summary
+  #' print(summary(x$acc.iter))
+  print(apply(x$acc.iter,2,summary))   #' nicely formatted summary
 
   invisible(x)
 }
 
-## ==================================================================
+#' ==================================================================
 boxplot.maccest <- function(x, ...)
 {
   if (x$niter == 1)
@@ -165,16 +165,16 @@ boxplot.maccest <- function(x, ...)
   boxplot(data.frame(x$acc.iter),main=main,col=col,xlab=xlab, ylab=ylab,ylim=ylim)
 }
 
-## =======================================================================
-## wll-02-12-2006: user defined x-ticks
-## wll-04-12-2006: std bar
-## wll-03-07-2007: Check validility of acc.std
+#' =======================================================================
+#' wll-02-12-2006: user defined x-ticks
+#' wll-04-12-2006: std bar
+#' wll-03-07-2007: Check validility of acc.std
 ##
 plot.maccest <- function(x, main = NULL, xlab = NULL, ylab = NULL, ...)
 {
   dots <- list(...)
-  ## ylim <- if("ylim" %in% names(dots)) dots$ylim else
-  ##        c(min(x$acc - x$acc.std) - 0.1, max(x$acc + x$acc.std) + 0.1)
+  #' ylim <- if("ylim" %in% names(dots)) dots$ylim else
+  #'        c(min(x$acc - x$acc.std) - 0.1, max(x$acc + x$acc.std) + 0.1)
   ylim <- if("ylim" %in% names(dots)) {
             dots$ylim
           } else if (!any(is.na(x$acc.std))) {
@@ -236,21 +236,21 @@ maccest.formula <- function (formula, data = NULL, ..., subset,
   return (ret)
 }
 
-## =====================================================================
-## Estimates the accuracy of pairwise comparison using multi-classifiers.
-## History:
-##   03-12-06: Create
-##   18-12-06: keep all the results
-##   03-07-07: add auc and margin
-## ---------------------------------------------------------------------
-## NOTE: It is difficult to provide user-defined data partioning before
-##       data extracting for pairwise comparison.
-## =====================================================================
+#' =====================================================================
+#' Estimates the accuracy of pairwise comparison using multi-classifiers.
+#' History:
+#'   03-12-06: Create
+#'   18-12-06: keep all the results
+#'   03-07-07: add auc and margin
+#' ---------------------------------------------------------------------
+#' NOTE: It is difficult to provide user-defined data partioning before
+#'       data extracting for pairwise comparison.
+#' =====================================================================
 mbinest <- function(dat, cl, choices = NULL, method, pars=valipars(),...)
 {
   dat.bin <- .dat.sel(dat,cl,choices = choices)
 
-  ## get length of each pairwise comparison
+  #' get length of each pairwise comparison
   len <- sapply(dat.bin$cl, length)
 
   if (pars$sampling == "cv" && pars$nreps > min(len)){
@@ -260,7 +260,7 @@ mbinest <- function(dat, cl, choices = NULL, method, pars=valipars(),...)
 
   res <- lapply(names(dat.bin$cl), function(x) {
     cat("\nRun = :",x,"\n")
-    flush.console()   ## for Windows
+    flush.console()   #' for Windows
     maccest(dat.bin$dat[[x]], dat.bin$cl[[x]], method=method, pars=pars,...)
   })
 
@@ -268,7 +268,7 @@ mbinest <- function(dat, cl, choices = NULL, method, pars=valipars(),...)
   auc  <- t(sapply(res, function(x) x$auc))
   mar  <- t(sapply(res, function(x) x$mar))
 
-  ## get comparison names
+  #' get comparison names
   com     <- apply(dat.bin$com, 1, paste, collapse="-")
   names(res) <- rownames(acc) <- rownames(auc) <- rownames(mar) <- com
 
@@ -278,30 +278,30 @@ mbinest <- function(dat, cl, choices = NULL, method, pars=valipars(),...)
   return(ret)
 }
 
-## ====================================================================
-## Friedman test + Wilcoxon test for Multi-classifier significant test
-## lwc-14-12-2006: commence
-## ====================================================================
+#' ====================================================================
+#' Friedman test + Wilcoxon test for Multi-classifier significant test
+#' lwc-14-12-2006: commence
+#' ====================================================================
 mc.fried <- function(x, p.adjust.method = p.adjust.methods,...)
 {
   p.adjust.method <- match.arg(p.adjust.method)
 
-  ## significat test using Friedman test
+  #' significat test using Friedman test
   f.htest <- friedman.test(x,...)
-  ## global null hypothesis test p value
+  #' global null hypothesis test p value
   gl.pval <- f.htest$p.value
 
-  ## post-hoc test by Wilcoxon test
+  #' post-hoc test by Wilcoxon test
   dname   <- colnames(x)
   n       <- nrow(x)
   acc     <- as.vector(x)
   algo    <- factor(rep(dname,each=n))
 
-  ## t.htest <- pairwise.t.test(acc, algo, p.adj = "bonf",pool.sd = T,...)
+  #' t.htest <- pairwise.t.test(acc, algo, p.adj = "bonf",pool.sd = T,...)
   w.htest <- pairwise.wilcox.test(acc, algo, p.adj = p.adjust.method,...)
   lo      <- lower.tri(w.htest$p.value,T)
   mc.pval <- w.htest$p.value[lo]
-  ## pairwise comparison names
+  #' pairwise comparison names
   dname          <- dimnames(w.htest$p.value)
   tmp            <- outer(dname[[1]], dname[[2]],paste, sep="-")
   names(mc.pval) <- tmp[lower.tri(tmp,T)]
@@ -311,47 +311,47 @@ mc.fried <- function(x, p.adjust.method = p.adjust.methods,...)
 }
 
 
-## ==============================================================
-## ANOVA + TukeyHSD for Multi-classifier significant test.
-## lwc-14-12-2006: commence
-## ==============================================================
+#' ==============================================================
+#' ANOVA + TukeyHSD for Multi-classifier significant test.
+#' lwc-14-12-2006: commence
+#' ==============================================================
 mc.anova <- function(x,...)
 {
-  ## prepare for ANOVA
+  #' prepare for ANOVA
   dname  <- colnames(x)
   n      <- nrow(x)
   acc    <- as.vector(x)
   algo   <- factor(rep(dname,each=n))
 
-  ## ANOVA for the global null hypothesis test
+  #' ANOVA for the global null hypothesis test
   aov.tab <- summary(fm1 <- aov(acc ~ algo,...))
   gl.pval <- aov.tab[[1]][1,5]
 
-  ## post-hoc test using Tukey HSD
-  t.htest <- TukeyHSD(fm1, "algo",...)  ## fm1 must be an output of 'aov'
+  #' post-hoc test using Tukey HSD
+  t.htest <- TukeyHSD(fm1, "algo",...)  #' fm1 must be an output of 'aov'
   mc.pval = t.htest$algo[,4]
-  ## plot(t.htest)
+  #' plot(t.htest)
 
   ret <- list(anova=aov.tab, tukey=t.htest,gl.pval=gl.pval,mc.pval=mc.pval)
   ret
 }
 
-## ========================================================================
-## lwc-19-12-2006: normality test using shpiro.test, and plot boxplot and
-## density
-## lwc-26-02-2010: Modify. Need more modification. e.g., output object of
-## lattice.
-## NOTE: Calling functions of package lattice inside a function must add
-## 'print' as prefix.
-## ========================================================================
+#' ========================================================================
+#' lwc-19-12-2006: normality test using shpiro.test, and plot boxplot and
+#' density
+#' lwc-26-02-2010: Modify. Need more modification. e.g., output object of
+#' lattice.
+#' NOTE: Calling functions of package lattice inside a function must add
+#' 'print' as prefix.
+#' ========================================================================
 mc.norm <- function(x,...)
 {
   x <- data.frame(x)
-  ## normality test
+  #' normality test
   s.htest <- lapply(x, function(x) shapiro.test(x))
 
   rownames(x) <- NULL
-  x <- stack(x)          ## melt(acc)   ## in package reshape
+  x <- stack(x)          #' melt(acc)   #' in package reshape
   X11()
   print(bwplot(~ values|ind, data = x, as.table=T,
          xlab="",pch='|', scales=list(cex =.75,relation="free"),...))
@@ -365,27 +365,27 @@ mc.norm <- function(x,...)
                                  args = list(mean=mean(x),sd=sd(x)))
            },... ))
 
-  ## densityplot(~ values | ind, data=x, as.table=T,
-  ##             scales=list(cex =.75,relation="free"), plot.points = F)
-  ## qqmath(~ values | ind, data=x, as.table=T, ## f.value = ppoints(100),
-  ##        scales=list(cex =.75,relation="free"),
-  ##        xlab = "Standard Normal Quantiles")
+  #' densityplot(~ values | ind, data=x, as.table=T,
+  #'             scales=list(cex =.75,relation="free"), plot.points = F)
+  #' qqmath(~ values | ind, data=x, as.table=T, #' f.value = ppoints(100),
+  #'        scales=list(cex =.75,relation="free"),
+  #'        xlab = "Standard Normal Quantiles")
 
   return(s.htest)
 }
 
 
 ########################################################################
-## ================ list of functions ===========================
-## maccest.default
-## print.maccest
-## summary.maccest
-## print.summary.maccest
-## boxplot.maccest
-## plot.maccest
-## maccest
-## maccest.formula
-## mbinest
-## mc.fried
-## mc.anova
-## mc.norm
+#' ================ list of functions ===========================
+#' maccest.default
+#' print.maccest
+#' summary.maccest
+#' print.summary.maccest
+#' boxplot.maccest
+#' plot.maccest
+#' maccest
+#' maccest.formula
+#' mbinest
+#' mc.fried
+#' mc.anova
+#' mc.norm

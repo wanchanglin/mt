@@ -1,7 +1,7 @@
 
-## =========================================================================
-## wll-02-10-2007: tune the best number of components
-## =========================================================================
+#' =========================================================================
+#' wll-02-10-2007: tune the best number of components
+#' =========================================================================
 tune.plslda <- function(x,y, pls="simpls",ncomp=10, tune.pars,...)
 {
   if (missing(tune.pars)) {
@@ -19,20 +19,20 @@ tune.plslda <- function(x,y, pls="simpls",ncomp=10, tune.pars,...)
   list(ncomp=which.max(res), acc.tune=res)
 }
 
-## =========================================================================
-## PLS+LDA for classification
-## History:
-##   wll-21-05-2007: commence
-##   lwc-21-05-2012: use wrapper function of "mvr".
-##   lwc-21-05-2012: It should not be difficcult to get R2 for "accest" with
-##                   methods of plsc and plslda.
-## =========================================================================
+#' =========================================================================
+#' PLS+LDA for classification
+#' History:
+#'   wll-21-05-2007: commence
+#'   lwc-21-05-2012: use wrapper function of "mvr".
+#'   lwc-21-05-2012: It should not be difficcult to get R2 for "accest" with
+#'                   methods of plsc and plslda.
+#' =========================================================================
 plslda.default <- function(x, y, pls="simpls",ncomp=10,tune=FALSE,...)
 {
-  ## -----------------------------------------------------------------------
-  ## Generates Class Indicator Matrix from a Factor.
-  ## A matrix which is zero except for the column corresponding to the class.
-  ## note:from package NNET
+  #' -----------------------------------------------------------------------
+  #' Generates Class Indicator Matrix from a Factor.
+  #' A matrix which is zero except for the column corresponding to the class.
+  #' note:from package NNET
   class.ind <- function(cl)
   {
     n <- length(cl)
@@ -42,9 +42,9 @@ plslda.default <- function(x, y, pls="simpls",ncomp=10,tune=FALSE,...)
     dimnames(x) <- list(names(cl), levels(cl))
     x
   }
-  ## ----------------------------------------------------------------------
+  #' ----------------------------------------------------------------------
 
-  ## arguments validility checking
+  #' arguments validility checking
   if (missing(x) || missing(y))
     stop("data set or class are missing")
   if (nrow(x) != length(y)) stop("x and y don't match.")
@@ -56,7 +56,7 @@ plslda.default <- function(x, y, pls="simpls",ncomp=10,tune=FALSE,...)
   pls    <- match.arg(pls, c("kernelpls", "simpls", "oscorespls"))
   pls.fit <- paste(pls,".fit", sep="")
 
-  ## initilisation
+  #' initilisation
   x <- as.matrix(x)
   y <- as.factor(y)
   n <- nrow(x)
@@ -64,33 +64,33 @@ plslda.default <- function(x, y, pls="simpls",ncomp=10,tune=FALSE,...)
 
   if (ncomp < 1 || ncomp > min(n - 1, p)){
     ncomp <- min(n - 1, p)
-    ## stop("Invalid number of components, ncomp")
+    #' stop("Invalid number of components, ncomp")
   }
 
-  ## find the best number of components
+  #' find the best number of components
   if(tune) {
     val   <- tune.plslda(x, y, pls="simpls",ncomp,...)
     ncomp <- val$ncomp
   }
 
-  ## Use PLS for dimension reduction
-  ## pls.out <- do.call(pls.fit, c(list(X=x, Y=class.ind(y), ncomp=ncomp), list(...)))
+  #' Use PLS for dimension reduction
+  #' pls.out <- do.call(pls.fit, c(list(X=x, Y=class.ind(y), ncomp=ncomp), list(...)))
 
-  ## lwc-21-05-2012: use wrapper function of "mvr".
+  #' lwc-21-05-2012: use wrapper function of "mvr".
   pls.out <- plsr(class.ind(y) ~ x, method=pls, ncomp = ncomp, ...)
 
-  ## Use latent varables as input data for LDA.
+  #' Use latent varables as input data for LDA.
   x.lv <- unclass(pls.out$scores)
 
-  ## Transform test data using weight matrix (projection)(Xt = X*W)
-  ## Ztest <- scale(Xtest,center=pls.out$Xmeans,scale=FALSE)%*%pls.out$projection
+  #' Transform test data using weight matrix (projection)(Xt = X*W)
+  #' Ztest <- scale(Xtest,center=pls.out$Xmeans,scale=FALSE)%*%pls.out$projection
 
   lda.out <- lda(x.lv,y)
   pred    <- predict(lda.out,x.lv)
   conf    <- table(y,pred$class)
   acc     <- round(sum(diag(conf))*100/n,2)
 
-  lc <- unclass(pls.out$scores)        ## latent components
+  lc <- unclass(pls.out$scores)        #' latent components
   colnames(lc) <- paste("LC", 1:ncol(lc),sep="")
 
   res <- list(x=lc,cl=y,pred=pred,posterior = pred$posterior,conf=conf, acc=acc,
@@ -103,7 +103,7 @@ plslda.default <- function(x, y, pls="simpls",ncomp=10,tune=FALSE,...)
   return(res)
 }
 
-## =========================================================================
+#' =========================================================================
 predict.plslda <- function(object, newdata, ...)
 {
   if(!inherits(object, "plslda")) stop("object not of class \"plslda\"")
@@ -111,12 +111,12 @@ predict.plslda <- function(object, newdata, ...)
     return(list(class=object$pred, posterior=object$posterior, x=unclass(object$pls.out$scores)))
   }
   if(is.null(dim(newdata)))
-    dim(newdata) <- c(1, length(newdata))  ## a row vector
+    dim(newdata) <- c(1, length(newdata))  #' a row vector
 
   newdata <- as.matrix(newdata)
   if(ncol(newdata) != length(object$pls.out$Xmeans)) stop("wrong number of variables")
 
-  ## rotated data (projection)
+  #' rotated data (projection)
   x <- scale(newdata,center=object$pls.out$Xmeans,scale=FALSE) %*% object$pls.out$projection
 
   pred <- predict(object$lda.out,x)
@@ -124,9 +124,9 @@ predict.plslda <- function(object, newdata, ...)
   list(class=pred$class, posterior = pred$posterior, x = x)
 }
 
-## ========================================================================
-## lwc-23-05-2007: print method for plslda
-## ========================================================================
+#' ========================================================================
+#' lwc-23-05-2007: print method for plslda
+#' ========================================================================
 print.plslda <- function(x, ...)
 {
   alg <- switch(x$pls.method,
@@ -136,7 +136,7 @@ print.plslda <- function(x, ...)
            stop("Unknown fit method.")
          )
   cat("Partial least squares classification, fitted with the", alg, "algorithm.")
-  ## cat("\nCall:\n", deparse(x$call), "\n")
+  #' cat("\nCall:\n", deparse(x$call), "\n")
   cat("\nCall:\n"); dput(x$call)
 
   cat("\nConfusion matrix of training data:\n")
@@ -146,15 +146,15 @@ print.plslda <- function(x, ...)
   invisible(x)
 }
 
-## ========================================================================
-## lwc-23-05-2007: summary method for plslda
-## ========================================================================
+#' ========================================================================
+#' lwc-23-05-2007: summary method for plslda
+#' ========================================================================
 summary.plslda <- function(object, ...)
   structure(object, class="summary.plslda")
 
-## ========================================================================
-## lwc-23-05-2007: summary method for plslda
-## ========================================================================
+#' ========================================================================
+#' lwc-23-05-2007: summary method for plslda
+#' ========================================================================
 print.summary.plslda <- function (x, ...) {
   print.plslda(x)
 
@@ -205,12 +205,12 @@ plslda.formula <-
 }
 
 
-## ========================================================================
-## wll-13-12-2007: plot method for plsc using lattice.
-## =========================================================================
+#' ========================================================================
+#' wll-13-12-2007: plot method for plsc using lattice.
+#' =========================================================================
 plot.plslda <- function(x, dimen, ...)
 {
-  ## -------------------------------------------------------------------
+  #' -------------------------------------------------------------------
   lc.names <- function(object, comps) {
     labs <- paste("LC", 1:length(object$Xvar), sep="")
     if (missing(comps))
@@ -224,12 +224,12 @@ plot.plslda <- function(x, dimen, ...)
                   " %)", sep = "")
     return(labs)
   }
-  ## -------------------------------------------------------------------
+  #' -------------------------------------------------------------------
 
   if (missing(dimen)){
     dimen <- seq(along=colnames(x$x))
   } else {
-    ## check validaty
+    #' check validaty
     if (!all(dimen %in% c(1:ncol(x$x))))
       stop("dimen is not valid")
   }
@@ -239,24 +239,24 @@ plot.plslda <- function(x, dimen, ...)
   x <- data.frame(x$x[, dimen, drop=FALSE])
   names(x) <- dfn
 
-  ## call group plot
+  #' call group plot
   p <- grpplot(x,y,plot="pairs",...)
   p
 }
 
 
-## =========================================================================
-## lwc-22-05-2007: plot method for plslda. It plot PLS latent components.
-## =========================================================================
+#' =========================================================================
+#' lwc-22-05-2007: plot method for plslda. It plot PLS latent components.
+#' =========================================================================
 plot.plslda.1 <- function(x, panel = panel.plslda, cex=0.7, dimen,
                           abbrev = FALSE, ...)
 {
-  ## -------------------------------------------------------------------
+  #' -------------------------------------------------------------------
   panel.plslda <- function(x, y, ...) {
     text(x, y, as.character(g.nlda), cex=tcex, col=unclass(g),...)
   }
 
-  ## -------------------------------------------------------------------
+  #' -------------------------------------------------------------------
   lc.names <- function(object, comps) {
     labs <- paste("LC", 1:length(object$Xvar), sep="")
     if (missing(comps))
@@ -270,7 +270,7 @@ plot.plslda.1 <- function(x, panel = panel.plslda, cex=0.7, dimen,
                   " %)", sep = "")
     return(labs)
   }
-  ## -------------------------------------------------------------------
+  #' -------------------------------------------------------------------
 
   xval <- x$x
   g    <- x$cl
@@ -282,7 +282,7 @@ plot.plslda.1 <- function(x, panel = panel.plslda, cex=0.7, dimen,
   if (missing(dimen)){
     dimen <- seq(along=colnames(xval))
   } else {
-    ## check validaty
+    #' check validaty
     if (!all(dimen %in% c(1:ncol(xval))))
       stop("dimen is not valid")
   }
@@ -292,16 +292,16 @@ plot.plslda.1 <- function(x, panel = panel.plslda, cex=0.7, dimen,
   nDimen <- length(dimen)
 
   if (nDimen <= 2) {
-    if (nDimen == 1) {    ## One component
+    if (nDimen == 1) {    #' One component
       MASS:::ldahist(xval[,1], g, ...)
-      ## MASS:::ldahist(xval, g, xlab=varlab,...)
-    } else {              ## Second component versus first
+      #' MASS:::ldahist(xval, g, xlab=varlab,...)
+    } else {              #' Second component versus first
       xlab <- varlab[1]
       ylab <- varlab[2]
       eqscplot(xval, xlab=xlab, ylab=ylab, type="n", ...)
       panel(xval[, 1], xval[, 2], ...)
     }
-  } else {               ## Pairwise scatterplots of several components
+  } else {               #' Pairwise scatterplots of several components
     pairs(xval, labels = varlab, panel=panel, ...)
   }
   invisible(NULL)
@@ -309,17 +309,17 @@ plot.plslda.1 <- function(x, panel = panel.plslda, cex=0.7, dimen,
 
 
 ########################################################################
-## ================ list of functions ===========================
-## tune.plslda
-## plslda.default
-##   class.ind
-## predict.plslda
-## print.plslda
-## summary.plslda
-## print.summary.plslda
-## plslda
-## plot.plslda
-##   lc.names
-## plot.plslda.1
-##   panel.plslda
-##   lc.names
+#' ================ list of functions ===========================
+#' tune.plslda
+#' plslda.default
+#'   class.ind
+#' predict.plslda
+#' print.plslda
+#' summary.plslda
+#' print.summary.plslda
+#' plslda
+#' plot.plslda
+#'   lc.names
+#' plot.plslda.1
+#'   panel.plslda
+#'   lc.names

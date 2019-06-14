@@ -1,13 +1,13 @@
-## =========================================================================
-## Orthogonal signal correction (OSC) for data pre-processing
-## History:
-##   wll-04-06-2007: commence
-##   wll-12-06-2007: minor changes
-## =========================================================================
+#' =========================================================================
+#' Orthogonal signal correction (OSC) for data pre-processing
+#' History:
+#'   wll-04-06-2007: commence
+#'   wll-12-06-2007: minor changes
+#' =========================================================================
 osc.default <- function(x, y, method="wold",center=TRUE,osc.ncomp=4,
                         pls.ncomp=10, tol=1e-3,iter=20,...)
 {
-  ## arguments validility checking
+  #' arguments validility checking
   if (missing(x) || missing(y))
     stop("data set or class are missing")
   if (nrow(x) != length(y)) stop("x and y don't match.")
@@ -18,7 +18,7 @@ osc.default <- function(x, y, method="wold",center=TRUE,osc.ncomp=4,
 
   method <- match.arg(method, c("wold", "sjoblom", "wise"))
 
-  ## initilisation
+  #' initilisation
   x <- as.matrix(x)
   y <- as.factor(y)
   n <- nrow(x)
@@ -26,22 +26,22 @@ osc.default <- function(x, y, method="wold",center=TRUE,osc.ncomp=4,
 
   if (pls.ncomp < 1 || pls.ncomp > min(n - 1, p)){
     pls.ncomp <- min(n - 1, p)
-    ## stop("Invalid number of components, ncomp")
+    #' stop("Invalid number of components, ncomp")
   }
 
-  ## Select OSC algorithm:
+  #' Select OSC algorithm:
   oscFunc <- switch(method,
                     wold    = osc.wold,
                     sjoblom = osc.sjoblom,
                     wise    = osc.wise)
 
-  ## call OSC algorithm
+  #' call OSC algorithm
   res <- oscFunc(x, y, center=center,osc.ncomp=osc.ncomp, pls.ncomp=pls.ncomp,
                  tol=tol, iter=iter,...)
 
 
 
-  ## Build and return the object:
+  #' Build and return the object:
   res$call      <- match.call()
   res$call[[1]] <- as.name("osc")
   res$center    <- center
@@ -53,23 +53,23 @@ osc.default <- function(x, y, method="wold",center=TRUE,osc.ncomp=4,
   return(res)
 }
 
-## =========================================================================
-## wll-04-06-2007: predict method for OSC
-## =========================================================================
+#' =========================================================================
+#' wll-04-06-2007: predict method for OSC
+#' =========================================================================
 predict.osc <- function(object, newdata, ...)
 {
   ##if(!inherits(object, "osc")) stop("object not of class \"osc\"")
   if (missing(newdata)) return(object$x)
   if(is.null(dim(newdata)))
-    dim(newdata) <- c(1, length(newdata))  ## a row vector
+    dim(newdata) <- c(1, length(newdata))  #' a row vector
 
   newdata <- as.matrix(newdata)
   if(ncol(newdata) != ncol(object$x)) stop("wrong number of variables")
 
   if (object$center)
-    newdata <- sweep(newdata,2,colMeans(newdata),"-")  ## column-wise center
+    newdata <- sweep(newdata,2,colMeans(newdata),"-")  #' column-wise center
 
-  if (F) {    ## Tom Fearn, On OSC, Chmom. Intell. Lab. Syst. 50(2000):47-52
+  if (F) {    #' Tom Fearn, On OSC, Chmom. Intell. Lab. Syst. 50(2000):47-52
     t <- newdata %*% object$w
     p <- t(newdata) %*% t %*% ginv(t(t) %*% t)
     x <- newdata - t %*% t(p)
@@ -77,7 +77,7 @@ predict.osc <- function(object, newdata, ...)
     x <- newdata - newdata %*% object$w %*% t(object$p)
   }
 
-  ## claculate the removed variance of X
+  #' claculate the removed variance of X
   Q2 <- sum(x^2)/sum(newdata^2) * 100
 
   return(list(x=x, Q2=Q2))
@@ -85,9 +85,9 @@ predict.osc <- function(object, newdata, ...)
 }
 
 
-## ========================================================================
-## wll-04-06-2007: print method for osc
-## ========================================================================
+#' ========================================================================
+#' wll-04-06-2007: print method for osc
+#' ========================================================================
 print.osc <- function(x, ...)
 {
   alg <- switch(x$method,
@@ -106,15 +106,15 @@ print.osc <- function(x, ...)
   invisible(x)
 }
 
-## ========================================================================
-## wll-04-06-2007:summary method for osc
-## ========================================================================
+#' ========================================================================
+#' wll-04-06-2007:summary method for osc
+#' ========================================================================
 summary.osc <- function(object, ...)
   structure(object, class="summary.osc")
 
-## ========================================================================
-## wll-04-06-2007: summary method for osc
-## ========================================================================
+#' ========================================================================
+#' wll-04-06-2007: summary method for osc
+#' ========================================================================
 print.summary.osc <- function (x, ...) {
   print.osc(x)
 
@@ -162,33 +162,33 @@ osc.formula <-
   return (ret)
 }
 
-## ========================================================================
-## wll-04-06-2007:Wold algorithm for OSC
-## ========================================================================
+#' ========================================================================
+#' wll-04-06-2007:Wold algorithm for OSC
+#' ========================================================================
 osc.wold <- function(x,y,center=TRUE,osc.ncomp=4,pls.ncomp=10,tol=1e-3,
                      iter=20,...)
 {
-  if (center)  x <- sweep(x,2,colMeans(x),"-")  ## column-wise center
+  if (center)  x <- sweep(x,2,colMeans(x),"-")  #' column-wise center
   x.ori <- x
-  y <- class.ind(y)                ## convert class labels to numeric values
+  y <- class.ind(y)                #' convert class labels to numeric values
 
   np <- nw <- nt <- list()
   for(i in 1:osc.ncomp){
     pc  <- prcomp(x,scale=F)
-    t   <- pc$x[,1]                ## PC1 as initial score
+    t   <- pc$x[,1]                #' PC1 as initial score
     dif <- 1
     k   <- 0
     while(dif > tol & k < iter){
       k  <- k+1
-      ## Othogonalize t to y
+      #' Othogonalize t to y
       tnew <- t - (y %*% ginv(t(y) %*% y) %*% t(y) %*% t)
-      ## claculate weight vector using PLS
+      #' claculate weight vector using PLS
       pls <- simpls.fit(x, tnew, ncomp=pls.ncomp,...)
       w   <- pls$coefficients[,,ncomp=pls.ncomp, drop=FALSE]
       w   <- w/sqrt(sum(w^2))
 
       tnew <- x %*% w
-      ## Check for convergence
+      #' Check for convergence
       dif  <- sqrt(sum((tnew-t)^2)/sum(tnew^2))
       t    <- tnew
     }
@@ -203,15 +203,15 @@ osc.wold <- function(x,y,center=TRUE,osc.ncomp=4,pls.ncomp=10,tol=1e-3,
   nw <- do.call(cbind,nw)
   np <- do.call(cbind,np)
   nt <- do.call(cbind,nt)
-  ## OSC-correct the original data set
+  #' OSC-correct the original data set
   x  <- x.ori - x.ori %*% nw %*% t(np)
 
-  ## Calculate the fraction of the variation in X. (also called the removed
-  ## /remained variance of X)
+  #' Calculate the fraction of the variation in X. (also called the removed
+  #' /remained variance of X)
   R2 <- sum(x^2)/sum(x.ori^2) * 100
-  ## R2 <- var(as.vector(x^2))/var(as.vector(x.ori^2))
+  #' R2 <- var(as.vector(x^2))/var(as.vector(x.ori^2))
 
-  ## Calculate angle which assesses that t vector is orthogonal to y.
+  #' Calculate angle which assesses that t vector is orthogonal to y.
   angle <- t(nt) %*% y
   norm  <- ginv(sqrt(apply(nt^2,2,sum)*sum(y^2)))
   angle <- t(angle) %*% t(norm)
@@ -221,48 +221,48 @@ osc.wold <- function(x,y,center=TRUE,osc.ncomp=4,pls.ncomp=10,tol=1e-3,
   return(res)
 }
 
-## ==================================================================
-## wll-03-06-2007: Sjoblom algorithm
-## wll-03-06-2007: Fix a algorithm mis-understanding in updating weights.
-## wll-03-06-2007: Othogonalize t to y in the last step. This improve the
-##                 performance of OSC.
-## ==================================================================
+#' ==================================================================
+#' wll-03-06-2007: Sjoblom algorithm
+#' wll-03-06-2007: Fix a algorithm mis-understanding in updating weights.
+#' wll-03-06-2007: Othogonalize t to y in the last step. This improve the
+#'                 performance of OSC.
+#' ==================================================================
 osc.sjoblom <- function(x,y,center=TRUE,osc.ncomp=4,pls.ncomp=10,tol=1e-3,
                         iter=20,...)
 {
-  if (center)  x <- sweep(x,2,colMeans(x),"-")  ## column-wise center
+  if (center)  x <- sweep(x,2,colMeans(x),"-")  #' column-wise center
   x.ori <- x
-  y <- class.ind(y)          ## convert class labels to numeric values
+  y <- class.ind(y)          #' convert class labels to numeric values
 
   np <- nw <- nt <- list()
   for(i in 1:osc.ncomp){
     pc  <- prcomp(x,scale=F)
-    t   <- pc$x[,1]                ## PC1 as initial score
+    t   <- pc$x[,1]                #' PC1 as initial score
     dif <- 1
     k   <- 0
     while(dif > tol & k < iter){
       k  <- k+1
-      ## Othogonalize t to y (by tnew = t - y*inv(y'*y)*y'*t).
+      #' Othogonalize t to y (by tnew = t - y*inv(y'*y)*y'*t).
       tnew <- t - (y %*% ginv(t(y) %*% y) %*% t(y) %*% t)
-      ## Update weights and scores
+      #' Update weights and scores
       w    <- t(x) %*% tnew %*% ginv(t(tnew) %*% tnew)
 
-      ## w    <- t(x) %*% tnew                  ## NOTE: not this one!
+      #' w    <- t(x) %*% tnew                  #' NOTE: not this one!
 
       w    <- w/sqrt(sum(w^2))
       tnew <- x %*% w
-      ## Check for convergence
+      #' Check for convergence
       dif  <- sqrt(sum((tnew-t)^2)/sum(tnew^2))
       t    <- tnew
     }
-    ## fit PLS model
+    #' fit PLS model
     pls <- simpls.fit(x, tnew, ncomp=pls.ncomp,...)
-    ## extract the coefficients as weights in OSC
+    #' extract the coefficients as weights in OSC
     w   <- pls$coefficients[,,ncomp=pls.ncomp, drop=FALSE]
 
-    ## Update scores, loads and corrected data
+    #' Update scores, loads and corrected data
     t   <- x %*% w
-    ## Othogonalize t to y
+    #' Othogonalize t to y
     t   <- t - y%*%ginv(t(y)%*%y)%*%t(y)%*%t;
 
     p   <- t(x) %*% t %*% ginv(t(t)%*%t)
@@ -275,15 +275,15 @@ osc.sjoblom <- function(x,y,center=TRUE,osc.ncomp=4,pls.ncomp=10,tol=1e-3,
   nw <- do.call(cbind,nw)
   np <- do.call(cbind,np)
   nt <- do.call(cbind,nt)
-  ## OSC-correct the original data set
+  #' OSC-correct the original data set
   x  <- x.ori - x.ori %*% nw %*% t(np)
 
-  ## Calculate the fraction of the variation in X. (also called the removed
-  ## /remained variance of X)
+  #' Calculate the fraction of the variation in X. (also called the removed
+  #' /remained variance of X)
   R2 <- sum(x^2)/sum(x.ori^2) * 100
-  ## R2 <- var(as.vector(x^2))/var(as.vector(x.ori^2))
+  #' R2 <- var(as.vector(x^2))/var(as.vector(x.ori^2))
 
-  ## Calculate angle which assesses that t vector is orthogonal to y.
+  #' Calculate angle which assesses that t vector is orthogonal to y.
   angle <- t(nt) %*% y
   norm  <- ginv(sqrt(apply(nt^2,2,sum)*sum(y^2)))
   angle <- t(angle) %*% t(norm)
@@ -294,9 +294,9 @@ osc.sjoblom <- function(x,y,center=TRUE,osc.ncomp=4,pls.ncomp=10,tol=1e-3,
 }
 
 
-## ==================================================================
-## wll-03-06-2007:Wise algorithm
-## ==================================================================
+#' ==================================================================
+#' wll-03-06-2007:Wise algorithm
+#' ==================================================================
 osc.wise <- function(x,y,center=TRUE,osc.ncomp=4,pls.ncomp=10,tol=1e-3,
                      iter=20,...)
 {
@@ -307,41 +307,41 @@ osc.wise <- function(x,y,center=TRUE,osc.ncomp=4,pls.ncomp=10,tol=1e-3,
   np <- nw <- nt <- list()
   for(i in 1:osc.ncomp){
     pc    <- prcomp(x,scale=F)
-    told  <- pc$x[,1]                  ## initial score
-    p     <- pc$rotation[,1]           ## initial loadings
+    told  <- pc$x[,1]                  #' initial score
+    p     <- pc$rotation[,1]           #' initial loadings
 
     dif  <- 1
     k    <- 0
     while(dif > 1e-5 & k < iter){
       k  <- k+1
-      ## Calculate scores from loads (by t = x*p/(p'*p) ).
+      #' Calculate scores from loads (by t = x*p/(p'*p) ).
       t  <- (x %*% p) %*% solve(t(p) %*% p)
-      ## Othogonalize t to y  (by tnew = t - y*inv(y'*y)*y'*t).
+      #' Othogonalize t to y  (by tnew = t - y*inv(y'*y)*y'*t).
       tnew <- t - (y %*% solve(t(y) %*% y) %*% t(y) %*% t)
-      ## Compute a new loading  (by pnew = x'*tnew/(tnew'*tnew) ).
+      #' Compute a new loading  (by pnew = x'*tnew/(tnew'*tnew) ).
       pnew = (t(x) %*% tnew) %*% solve(t(tnew) %*% tnew)
-      ## Check for convergence
+      #' Check for convergence
       dif  <- sqrt(sum((tnew-told)^2)/sum(tnew^2))
       told <- tnew
       p    <- pnew
     }
 
-    ## fit PLS model
+    #' fit PLS model
     nc  <- min(pls.ncomp,qr(x, tol = 1e-9)$rank)
     pls <- simpls.fit(x, tnew, ncomp=nc,...)
     w   <- pls$coefficients[,,ncomp=nc, drop=FALSE]
     w   <- w/sqrt(sum(w^2))
-    ## pls <- plsr(tnew~x,ncomp=ncomp,method="simpls")
-    ## w   <- coef.mvr(pls,ncomp=nc)
+    #' pls <- plsr(tnew~x,ncomp=ncomp,method="simpls")
+    #' w   <- coef.mvr(pls,ncomp=nc)
 
 
-    ## Calculate new scores vector
+    #' Calculate new scores vector
     t   <- x%*%w
-    ## Othogonalize t to y
+    #' Othogonalize t to y
     t   <- t - y%*%ginv(t(y)%*%y)%*%t(y)%*%t;
-    ## Compute new p
+    #' Compute new p
     p   <- t(x) %*% t %*% ginv(t(t) %*% t)
-    ## Remove orthogonal signal from x
+    #' Remove orthogonal signal from x
     x   <- x - t %*% t(p)
 
     nw[[i]]  <- w
@@ -351,15 +351,15 @@ osc.wise <- function(x,y,center=TRUE,osc.ncomp=4,pls.ncomp=10,tol=1e-3,
   nw <- do.call(cbind,nw)
   np <- do.call(cbind,np)
   nt <- do.call(cbind,nt)
-  ## OSC-correct the original data set
+  #' OSC-correct the original data set
   x  <- x.ori - x.ori %*% nw %*% t(np)
 
-  ## Calculate the fraction of the variation in X. (also called the removed
-  ## /remained variance of X)
+  #' Calculate the fraction of the variation in X. (also called the removed
+  #' /remained variance of X)
   R2 <- sum(x^2)/sum(x.ori^2) * 100
-  ## R2 <- var(as.vector(x^2))/var(as.vector(x.ori^2))
+  #' R2 <- var(as.vector(x^2))/var(as.vector(x.ori^2))
 
-  ## Calculate angle which assesses that t vector is orthogonal to y.
+  #' Calculate angle which assesses that t vector is orthogonal to y.
   angle <- t(nt) %*% y
   norm  <- ginv(sqrt(apply(nt^2,2,sum)*sum(y^2)))
   angle <- t(angle) %*% t(norm)
@@ -371,13 +371,13 @@ osc.wise <- function(x,y,center=TRUE,osc.ncomp=4,pls.ncomp=10,tol=1e-3,
 
 
 ########################################################################
-## ================ list of functions ===========================
-## osc.default
-## predict.osc
-## print.osc
-## summary.osc
-## print.summary.osc
-## osc
-## osc.wold
-## osc.sjoblom
-## osc.wise
+#' ================ list of functions ===========================
+#' osc.default
+#' predict.osc
+#' print.osc
+#' summary.osc
+#' print.summary.osc
+#' osc
+#' osc.wold
+#' osc.sjoblom
+#' osc.wise

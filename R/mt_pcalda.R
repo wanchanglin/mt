@@ -1,6 +1,6 @@
-## =========================================================================
-## wll-02-10-2007: tune the best number of components
-## =========================================================================
+#' =========================================================================
+#' wll-02-10-2007: tune the best number of components
+#' =========================================================================
 tune.pcalda <- function(x,y, ncomp=NULL, tune.pars,...)
 {
   n <- nrow(x)
@@ -30,11 +30,11 @@ tune.pcalda <- function(x,y, ncomp=NULL, tune.pars,...)
 }
 
 
-## =========================================================================
-## wll-02-10-2007: Tune the best number of components
-## NOTE: This is a debug version of tune.pcalda, which can take user defined
-##       range of ncomp.
-## =========================================================================
+#' =========================================================================
+#' wll-02-10-2007: Tune the best number of components
+#' NOTE: This is a debug version of tune.pcalda, which can take user defined
+#'       range of ncomp.
+#' =========================================================================
 tune.pcalda.1 <- function(x,y, ncomp=NULL, tune.pars,...)
 {
   n <- nrow(x)
@@ -52,9 +52,9 @@ tune.pcalda.1 <- function(x,y, ncomp=NULL, tune.pars,...)
     tune.pars <- valipars(sampling="rand", niter = 1, nreps=4)
   }
 
-  ##  res <- sapply(1:ncomp, function(i) {
-  ##    accest(x, y, pars = tune.pars, method = "pcalda", ncomp=i, tune=F,...)$acc
-  ##  })
+  #'  res <- sapply(1:ncomp, function(i) {
+  #'    accest(x, y, pars = tune.pars, method = "pcalda", ncomp=i, tune=F,...)$acc
+  #'  })
   cat("ncomp tune (",max(ncomp),"):",sep="")
   func <- function(i){
     cat(" ", i, sep = "")
@@ -69,11 +69,11 @@ tune.pcalda.1 <- function(x,y, ncomp=NULL, tune.pars,...)
 }
 
 
-## =========================================================================
-## wll-02-10-2007: tune the best number of components
-##  NOTE: This is a test version of tune ncomp, which uses LDA directly and
-##        runs fast than tune.pcalda.
-## =========================================================================
+#' =========================================================================
+#' wll-02-10-2007: tune the best number of components
+#'  NOTE: This is a test version of tune ncomp, which uses LDA directly and
+#'        runs fast than tune.pcalda.
+#' =========================================================================
 tune.pcalda.2 <- function(x,y, ncomp=NULL, center=TRUE, scale.=FALSE,
                           tune.pars,...)
 {
@@ -106,25 +106,25 @@ tune.pcalda.2 <- function(x,y, ncomp=NULL, center=TRUE, scale.=FALSE,
   list(ncomp=which.max(res), acc.tune=res)
 }
 
-## =========================================================================
-## PCA+LDA for classification
-## History:
-##   wll-22-06-2007: commence
-##   wll-01-07-2007: try number of PCs as n - g. Overfitting.
-##   wll-24-01-2008: stip off constant PCs within group
-## =========================================================================
+#' =========================================================================
+#' PCA+LDA for classification
+#' History:
+#'   wll-22-06-2007: commence
+#'   wll-01-07-2007: try number of PCs as n - g. Overfitting.
+#'   wll-24-01-2008: stip off constant PCs within group
+#' =========================================================================
 pcalda.default <- function(x, y, center = TRUE, scale. = FALSE,ncomp=NULL,
                            tune=FALSE,...)
 {
 
-  ## arguments validility checking
+  #' arguments validility checking
   if (missing(x) || missing(y))
     stop("data set or class are missing")
   x <- as.matrix(x)
   if (nrow(x) != length(y)) stop("x and y don't match.")
   y <- as.factor(y)
   if (any(table(y) == 0)) stop("Can't have empty classes in y.")
-  ## lwc-NOTE: Or simple apply: y <- factor(y), which will drop factor levels
+  #' lwc-NOTE: Or simple apply: y <- factor(y), which will drop factor levels
 
   if (length(unique(y)) < 2)
     stop("Classification needs at least two classes.")
@@ -133,18 +133,18 @@ pcalda.default <- function(x, y, center = TRUE, scale. = FALSE,ncomp=NULL,
 
   n <- nrow(x)
   g <- length(levels(y))
-  ## -----------------------------------------------------------------------
-  ## The singularity problem of the within-class scatter matrix is overcome
-  ## if number of retained PCs varies at least g to at most n-g. Here g and
-  ## n is the number of classes and training data, respectively.
-  ## -----------------------------------------------------------------------
-  ## if(is.null(ncomp)) ncomp <- max(g,n - g)
-  ## -----------------------------------------------------------------------
-  ## NOTE-wll: Too good for training, which means overfits the training data.
+  #' -----------------------------------------------------------------------
+  #' The singularity problem of the within-class scatter matrix is overcome
+  #' if number of retained PCs varies at least g to at most n-g. Here g and
+  #' n is the number of classes and training data, respectively.
+  #' -----------------------------------------------------------------------
+  #' if(is.null(ncomp)) ncomp <- max(g,n - g)
+  #' -----------------------------------------------------------------------
+  #' NOTE-wll: Too good for training, which means overfits the training data.
 
-  ## if(is.null(ncomp)) ncomp <- max(g,round(n/2))
+  #' if(is.null(ncomp)) ncomp <- max(g,round(n/2))
 
-  ## Check the number of components
+  #' Check the number of components
   if(is.null(ncomp)) {
     ncomp <- if (tune) max(g,n - g) else max(g,round(n/2))
   } else {
@@ -153,24 +153,24 @@ pcalda.default <- function(x, y, center = TRUE, scale. = FALSE,ncomp=NULL,
     }
   }
 
-  ## find the best number of components
+  #' find the best number of components
   if(tune) {
     val   <- tune.pcalda(x, y, ncomp,...)
     ncomp <- val$ncomp
   }
 
-  ## dimension reduction by PCA
+  #' dimension reduction by PCA
   pca.out <- prcomp(x,center = center, scale. = scale.,...)
   ncomp   <- min(ncomp, length(pca.out$center))
   x.tmp   <- pca.out$x[,1:ncomp,drop=F]
 
-  ## stip off PCs constant within groups
+  #' stip off PCs constant within groups
   x.tmp <- mt:::preproc.const(x.tmp,y)
   ncomp <- ncol(x.tmp)
-  ## NOTE-28-01-2008: If the variables being strippt off is not in the end
-  ##   of columns, they positions should be sotred somewhere. But this
-  ##   situation is rare in PCs. Refer to predict.pcalda where the ncomp is
-  ##   used.
+  #' NOTE-28-01-2008: If the variables being strippt off is not in the end
+  #'   of columns, they positions should be sotred somewhere. But this
+  #'   situation is rare in PCs. Refer to predict.pcalda where the ncomp is
+  #'   used.
 
   lda.out <- lda(x.tmp,y)
   pred    <- predict(lda.out,x.tmp)
@@ -189,7 +189,7 @@ pcalda.default <- function(x, y, center = TRUE, scale. = FALSE,ncomp=NULL,
   return(res)
 }
 
-## =========================================================================
+#' =========================================================================
 predict.pcalda <- function(object, newdata, ...)
 {
   if(!inherits(object, "pcalda")) stop("object not of class \"pcalda\"")
@@ -199,27 +199,27 @@ predict.pcalda <- function(object, newdata, ...)
   }
 
   if(is.null(dim(newdata)))
-    dim(newdata) <- c(1, length(newdata))  ## a row vector
+    dim(newdata) <- c(1, length(newdata))  #' a row vector
 
   newdata <- as.matrix(newdata)
   if(ncol(newdata) != length(object$pca.out$center))
     stop("wrong number of variables")
 
-  ## rotated data (projection) by PCA
+  #' rotated data (projection) by PCA
   x <- predict(object$pca.out, newdata)
   x <- x[, 1:object$ncomp,drop=F]
 
-  ## predict using LDA
+  #' predict using LDA
   pred <- predict(object$lda.out,x)
-  ## list(class=pred$class, posterior = pred$posterior, x = pred$x)
+  #' list(class=pred$class, posterior = pred$posterior, x = pred$x)
 
   return(pred)
 }
 
-## ========================================================================
-## wll-22-06-2007: print method for pcalda
-## wll-15-01-2008: add ratio(svd values)
-## ========================================================================
+#' ========================================================================
+#' wll-22-06-2007: print method for pcalda
+#' wll-15-01-2008: add ratio(svd values)
+#' ========================================================================
 print.pcalda <- function(x, ...)
 {
   cat("\nCall:\n", deparse(x$call), "\n")
@@ -237,15 +237,15 @@ print.pcalda <- function(x, ...)
   invisible(x)
 }
 
-## ========================================================================
-## lwc-22-06-2007: summary method for pcalda
-## ========================================================================
+#' ========================================================================
+#' lwc-22-06-2007: summary method for pcalda
+#' ========================================================================
 summary.pcalda <- function(object, ...)
   structure(object, class="summary.pcalda")
 
-## ========================================================================
-## lwc-22-06-2007: summary method for pcalda
-## ========================================================================
+#' ========================================================================
+#' lwc-22-06-2007: summary method for pcalda
+#' ========================================================================
 print.summary.pcalda <- function (x, ...) {
   print.pcalda(x)
 
@@ -256,17 +256,17 @@ print.summary.pcalda <- function (x, ...) {
 }
 
 
-## ========================================================================
-## wll-13-12-2007: plot method for pcalda using lattice.
-## wll-11-10-2008: Definition of svd in lda documents:
-##   svd is the singular values, which give the ratio of the between- and
-##   within-group standard deviations on the linear discriminant variables.
-##   Their squares are the canonical F-statistics.
-## wll-15-01-2008: add svd listed in the plot.
-## =======================================================================
+#' ========================================================================
+#' wll-13-12-2007: plot method for pcalda using lattice.
+#' wll-11-10-2008: Definition of svd in lda documents:
+#'   svd is the singular values, which give the ratio of the between- and
+#'   within-group standard deviations on the linear discriminant variables.
+#'   Their squares are the canonical F-statistics.
+#' wll-15-01-2008: add svd listed in the plot.
+#' =======================================================================
 plot.pcalda <- function(x, dimen, ...)
 {
-  ## -------------------------------------------------------------------
+  #' -------------------------------------------------------------------
   ld.names <- function(object, comps) {
     labs <- paste("LD", 1:length(object$means), sep="")
     if (missing(comps))
@@ -275,23 +275,23 @@ plot.pcalda <- function(x, dimen, ...)
       labs <- labs[comps]
     svd <- object$svd
     svd.p <- 100 * svd/sum(svd)
-    ## svd.p <- 100 * svd^2/sum(svd^2)
-    ## wll-11-01-2008: check lda's print method: Proportion of trace
+    #' svd.p <- 100 * svd^2/sum(svd^2)
+    #' wll-11-01-2008: check lda's print method: Proportion of trace
     svd   <- svd[comps]
     svd.p <- svd.p[comps]
 
-    ## labs <- paste(labs, " (", format(svd.p, digits = 2, trim = TRUE),
-    ##               " %)", sep = "")
+    #' labs <- paste(labs, " (", format(svd.p, digits = 2, trim = TRUE),
+    #'               " %)", sep = "")
     labs <- paste(labs, " (", format(svd, digits = 2, trim = TRUE), ", ",
                  format(svd.p, digits = 2, trim = TRUE),"%)", sep = "")
     return(labs)
   }
-  ## -------------------------------------------------------------------
+  #' -------------------------------------------------------------------
 
   if (missing(dimen)){
     dimen <- seq(along=colnames(x$x))
   } else {
-    ## check validaty
+    #' check validaty
     if (!all(dimen %in% c(1:ncol(x$x))))
       stop("dimen is not valid")
   }
@@ -301,24 +301,24 @@ plot.pcalda <- function(x, dimen, ...)
   x <- data.frame(x$x[, dimen, drop=FALSE])
   names(x) <- dfn
 
-  ## call group plot
+  #' call group plot
   p <- grpplot(x,y,plot="pairs",...)
   p
 }
 
 
-## =========================================================================
-## lwc-22-06-2007: plot method for pcalda. It plot LDA scores.
-## =========================================================================
+#' =========================================================================
+#' lwc-22-06-2007: plot method for pcalda. It plot LDA scores.
+#' =========================================================================
 plot.pcalda.1 <-
   function(x, panel = panel.pcalda, cex=0.7, dimen, abbrev = FALSE, ...)
 {
-  ## -------------------------------------------------------------------
+  #' -------------------------------------------------------------------
   panel.pcalda <- function(x, y, ...) {
     text(x, y, as.character(g.nlda), cex=tcex, col=unclass(g),...)
   }
 
-  ## -------------------------------------------------------------------
+  #' -------------------------------------------------------------------
   ld.names <- function(object, comps) {
     labs <- paste("LD", 1:length(object$means), sep="")
     if (missing(comps))
@@ -333,7 +333,7 @@ plot.pcalda.1 <-
                   " %)", sep = "")
     return(labs)
   }
-  ## -------------------------------------------------------------------
+  #' -------------------------------------------------------------------
 
   xval <- x$x
   g    <- x$cl
@@ -345,7 +345,7 @@ plot.pcalda.1 <-
   if (missing(dimen)){
     dimen <- seq(along=colnames(xval))
   } else {
-    ## check validaty
+    #' check validaty
     if (!all(dimen %in% c(1:ncol(xval))))
       stop("dimen is not valid")
   }
@@ -355,16 +355,16 @@ plot.pcalda.1 <-
   nDimen <- length(dimen)
 
   if (nDimen <= 2) {
-    if (nDimen == 1) {    ## One component
+    if (nDimen == 1) {    #' One component
       MASS:::ldahist(xval[,1], g, ...)
-      ## MASS:::ldahist(xval, g, xlab=varlab,...)
-    } else {              ## Second component versus first
+      #' MASS:::ldahist(xval, g, xlab=varlab,...)
+    } else {              #' Second component versus first
       xlab <- varlab[1]
       ylab <- varlab[2]
       eqscplot(xval, xlab=xlab, ylab=ylab, type="n", ...)
       panel(xval[, 1], xval[, 2], ...)
     }
-  } else {               ## Pairwise scatterplots of several components
+  } else {               #' Pairwise scatterplots of several components
     pairs(xval, labels = varlab, panel=panel, ...)
   }
   invisible(NULL)
@@ -406,19 +406,19 @@ pcalda.formula <-
 
 
 ########################################################################
-## ================ list of functions ===========================
-## tune.pcalda
-## tune.pcalda.1
-##   func
-## tune.pcalda.2
-## pcalda.default
-## predict.pcalda
-## print.pcalda
-## summary.pcalda
-## print.summary.pcalda
-## plot.pcalda
-##   ld.names
-## plot.pcalda.1
-##   panel.pcalda
-##   ld.names
-## pcalda
+#' ================ list of functions ===========================
+#' tune.pcalda
+#' tune.pcalda.1
+#'   func
+#' tune.pcalda.2
+#' pcalda.default
+#' predict.pcalda
+#' print.pcalda
+#' summary.pcalda
+#' print.summary.pcalda
+#' plot.pcalda
+#'   ld.names
+#' plot.pcalda.1
+#'   panel.pcalda
+#'   ld.names
+#' pcalda

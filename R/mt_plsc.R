@@ -1,6 +1,6 @@
-## =========================================================================
-## wll-02-10-2007: tune the best number of components
-## =========================================================================
+#' =========================================================================
+#' wll-02-10-2007: tune the best number of components
+#' =========================================================================
 tune.plsc <- function(x,y, pls="simpls",ncomp=10, tune.pars,...)
 {
   if (missing(tune.pars)) {
@@ -19,17 +19,17 @@ tune.plsc <- function(x,y, pls="simpls",ncomp=10, tune.pars,...)
 }
 
 
-## =========================================================================
-## PLS for classification
-## History:
-##   wll-01-10-2007: commence
-##   lwc-21-05-2012: use wrapper function of "mvr".
-##   lwc-21-05-2012: It should not be difficcult to get R2 for "accest" with
-##                   methods of plsc and plslda.
-## =========================================================================
+#' =========================================================================
+#' PLS for classification
+#' History:
+#'   wll-01-10-2007: commence
+#'   lwc-21-05-2012: use wrapper function of "mvr".
+#'   lwc-21-05-2012: It should not be difficcult to get R2 for "accest" with
+#'                   methods of plsc and plslda.
+#' =========================================================================
 plsc.default <- function(x, y, pls="simpls",ncomp=10,tune=FALSE,...)
 {
-  ## arguments validility checking
+  #' arguments validility checking
   if (missing(x) || missing(y))
     stop("data set or class are missing")
   if (nrow(x) != length(y)) stop("x and y don't match.")
@@ -41,7 +41,7 @@ plsc.default <- function(x, y, pls="simpls",ncomp=10,tune=FALSE,...)
   pls    <- match.arg(pls, c("kernelpls", "simpls", "oscorespls"))
   pls.fit <- paste(pls,".fit", sep="")
 
-  ## initilisation
+  #' initilisation
   x <- as.matrix(x)
   y <- as.factor(y)
   n <- nrow(x)
@@ -49,29 +49,29 @@ plsc.default <- function(x, y, pls="simpls",ncomp=10,tune=FALSE,...)
 
   if (ncomp < 1 || ncomp > min(n - 1, p)){
     ncomp <- min(n - 1, p)
-    ## stop("Invalid number of components, ncomp")
+    #' stop("Invalid number of components, ncomp")
   }
 
-  ## find the best number of components
+  #' find the best number of components
   if(tune) {
     val   <- tune.plsc(x, y, pls="simpls",ncomp=ncomp,...)
     ncomp <- val$ncomp
   }
 
-  ## Convert response to be sitable format for PLS
+  #' Convert response to be sitable format for PLS
   y.1 <- mt:::class.ind(y)
 
-  ## Call PLS for regression
-  ## pls.out <- do.call(pls.fit, c(list(X=x, Y=y.1, ncomp=ncomp), list(...)))
+  #' Call PLS for regression
+  #' pls.out <- do.call(pls.fit, c(list(X=x, Y=y.1, ncomp=ncomp), list(...)))
 
-  ## lwc-21-05-2012: use wrapper function of "mvr".
+  #' lwc-21-05-2012: use wrapper function of "mvr".
   pls.out <- plsr(y.1 ~ x, method=pls, ncomp = ncomp, ...)
   names(pls.out$Ymeans) <- colnames(y.1)
-  ## NOTE: New version of pls strip off the names of Ymeans
+  #' NOTE: New version of pls strip off the names of Ymeans
 
-  ## Predict with models containing ncomp components.
+  #' Predict with models containing ncomp components.
   B     <- pls.out$coefficients[,,ncomp, drop=T]
-  if (length(pls.out$Xmeans) > 1){                  ## wll: 07-01-2008
+  if (length(pls.out$Xmeans) > 1){                  #' wll: 07-01-2008
     B0    <- pls.out$Ymeans - pls.out$Xmeans %*% B
   } else {
     B0    <- pls.out$Ymeans - pls.out$Xmeans * B
@@ -79,10 +79,10 @@ plsc.default <- function(x, y, pls="simpls",ncomp=10,tune=FALSE,...)
   B0    <- rep(B0, each=nrow(x))
   B1    <- x %*% B
   pred  <- B1 + B0
-  ## softmax for convert values to probobilities
+  #' softmax for convert values to probobilities
   poste <- exp(pred)
   poste <- poste / rowSums(poste)
-  ## generates the predict class
+  #' generates the predict class
   nm      <- names(pls.out$Ymeans)
   pred.cl <- factor(nm[max.col(poste)], levels=levels(y))
   dimnames(poste) <- list(rownames(x), nm)
@@ -90,7 +90,7 @@ plsc.default <- function(x, y, pls="simpls",ncomp=10,tune=FALSE,...)
   conf    <- table(y,pred.cl)
   acc     <- round(sum(diag(conf))*100/n,2)
 
-  lc <- unclass(pls.out$scores)        ## latent components
+  lc <- unclass(pls.out$scores)        #' latent components
   colnames(lc) <- paste("LC", 1:ncol(lc),sep="")
 
   res <- list(x=lc,cl=y,pred=pred.cl,posterior = poste,conf=conf, acc=acc,
@@ -103,11 +103,11 @@ plsc.default <- function(x, y, pls="simpls",ncomp=10,tune=FALSE,...)
   return(res)
 }
 
-## =========================================================================
-## wll-01-10-2007: predict mthod. See predict.mvr and coef.mvr in package
-##                 pls for details.
-## NOTE: More cpmments are in function pred.pls which can be call directly
-##       by simpls.fit etc.
+#' =========================================================================
+#' wll-01-10-2007: predict mthod. See predict.mvr and coef.mvr in package
+#'                 pls for details.
+#' NOTE: More cpmments are in function pred.pls which can be call directly
+#'       by simpls.fit etc.
 predict.plsc <- function(object, newdata, ...)
 {
   if(!inherits(object, "plsc")) stop("object not of class \"plsc\"")
@@ -116,19 +116,19 @@ predict.plsc <- function(object, newdata, ...)
                 x=unclass(object$pls.out$scores)))
   }
   if(is.null(dim(newdata)))
-    dim(newdata) <- c(1, length(newdata))  ## a row vector
+    dim(newdata) <- c(1, length(newdata))  #' a row vector
 
   newdata <- as.matrix(newdata)
   if(ncol(newdata) != length(object$pls.out$Xmeans))
     stop("wrong number of variables")
 
-  ## rotated data (projection)
+  #' rotated data (projection)
   x <- scale(newdata,center=object$pls.out$Xmeans,scale=FALSE) %*% object$pls.out$projection
 
-  ## Predict with models containing ncomp components.
+  #' Predict with models containing ncomp components.
   ncomp <- object$ncomp
   B     <- object$pls.out$coefficients[,,ncomp, drop=T]
-  if (length(object$pls.out$Xmeans) > 1){                  ## wll: 07-01-2008
+  if (length(object$pls.out$Xmeans) > 1){                  #' wll: 07-01-2008
     B0    <- object$pls.out$Ymeans - object$pls.out$Xmeans %*% B
   } else {
     B0    <- object$pls.out$Ymeans - object$pls.out$Xmeans * B
@@ -139,18 +139,18 @@ predict.plsc <- function(object, newdata, ...)
   poste <- exp(pred)
   poste <- poste / rowSums(poste)
 
-  ## predict clasification
+  #' predict clasification
   nm <- names(object$pls.out$Ymeans)
   cl <- factor(nm[max.col(poste)],levels=levels(object$cl))
-  ## NOTE: The levels of factor must be consistent with train data set.
+  #' NOTE: The levels of factor must be consistent with train data set.
   dimnames(poste) <- list(rownames(x), nm)
 
   list(class=cl, posterior = poste, x = x)
 }
 
-## ========================================================================
-## wll-23-05-2007: print method for plsc
-## ========================================================================
+#' ========================================================================
+#' wll-23-05-2007: print method for plsc
+#' ========================================================================
 print.plsc <- function(x, ...)
 {
   alg <- switch(x$pls.method,
@@ -160,7 +160,7 @@ print.plsc <- function(x, ...)
            stop("Unknown fit method.")
          )
   cat("Partial least squares classification, fitted with the", alg, "algorithm.")
-  ## cat("\nCall:\n", deparse(x$call), "\n")
+  #' cat("\nCall:\n", deparse(x$call), "\n")
   cat("\nCall:\n"); dput(x$call)
 
   cat("\nConfusion matrix of training data:\n")
@@ -170,15 +170,15 @@ print.plsc <- function(x, ...)
   invisible(x)
 }
 
-## ========================================================================
-## wll-23-05-2007: summary method for plsc
-## ========================================================================
+#' ========================================================================
+#' wll-23-05-2007: summary method for plsc
+#' ========================================================================
 summary.plsc <- function(object, ...)
   structure(object, class="summary.plsc")
 
-## ========================================================================
-## lwc-23-05-2007: summary method for plsc
-## ========================================================================
+#' ========================================================================
+#' lwc-23-05-2007: summary method for plsc
+#' ========================================================================
 print.summary.plsc <- function (x, ...) {
   print.plsc(x)
 
@@ -228,12 +228,12 @@ plsc.formula <-
   return (ret)
 }
 
-## ========================================================================
-## wll-13-12-2007: plot method for plsc using lattice.
-## =========================================================================
+#' ========================================================================
+#' wll-13-12-2007: plot method for plsc using lattice.
+#' =========================================================================
 plot.plsc <- function(x, dimen, ...)
 {
-  ## -------------------------------------------------------------------
+  #' -------------------------------------------------------------------
   lc.names <- function(object, comps) {
     labs <- paste("LC", 1:length(object$Xvar), sep="")
     if (missing(comps))
@@ -247,12 +247,12 @@ plot.plsc <- function(x, dimen, ...)
                   " %)", sep = "")
     return(labs)
   }
-  ## -------------------------------------------------------------------
+  #' -------------------------------------------------------------------
 
   if (missing(dimen)){
     dimen <- seq(along=colnames(x$x))
   } else {
-    ## check validaty
+    #' check validaty
     if (!all(dimen %in% c(1:ncol(x$x))))
       stop("dimen is not valid")
   }
@@ -262,23 +262,23 @@ plot.plsc <- function(x, dimen, ...)
   x <- data.frame(x$x[, dimen, drop=FALSE])
   names(x) <- dfn
 
-  ## call group plot
+  #' call group plot
   p <- grpplot(x,y,plot="pairs",...)
   p
 }
 
 
-## =========================================================================
-## wll-22-05-2007: plot method for plsc. It plot PLS latent components.
-## =========================================================================
+#' =========================================================================
+#' wll-22-05-2007: plot method for plsc. It plot PLS latent components.
+#' =========================================================================
 plot.plsc.1 <- function(x, panel = panel.plsc, cex=0.7, dimen, abbrev = FALSE, ...)
 {
-  ## -------------------------------------------------------------------
+  #' -------------------------------------------------------------------
   panel.plsc <- function(x, y, ...) {
     text(x, y, as.character(g.nlda), cex=tcex, col=unclass(g),...)
   }
 
-  ## -------------------------------------------------------------------
+  #' -------------------------------------------------------------------
   lc.names <- function(object, comps) {
     labs <- paste("LC", 1:length(object$Xvar), sep="")
     if (missing(comps))
@@ -292,7 +292,7 @@ plot.plsc.1 <- function(x, panel = panel.plsc, cex=0.7, dimen, abbrev = FALSE, .
                   " %)", sep = "")
     return(labs)
   }
-  ## -------------------------------------------------------------------
+  #' -------------------------------------------------------------------
 
   xval <- x$x
   g    <- x$cl
@@ -304,7 +304,7 @@ plot.plsc.1 <- function(x, panel = panel.plsc, cex=0.7, dimen, abbrev = FALSE, .
   if (missing(dimen)){
     dimen <- seq(along=colnames(xval))
   } else {
-    ## check validaty
+    #' check validaty
     if (!all(dimen %in% c(1:ncol(xval))))
       stop("dimen is not valid")
   }
@@ -314,32 +314,32 @@ plot.plsc.1 <- function(x, panel = panel.plsc, cex=0.7, dimen, abbrev = FALSE, .
   nDimen <- length(dimen)
 
   if (nDimen <= 2) {
-    if (nDimen == 1) {    ## One component
+    if (nDimen == 1) {    #' One component
       MASS:::ldahist(xval[,1], g, ...)
-      ## MASS:::ldahist(xval, g, xlab=varlab,...)
-    } else {              ## Second component versus first
+      #' MASS:::ldahist(xval, g, xlab=varlab,...)
+    } else {              #' Second component versus first
       xlab <- varlab[1]
       ylab <- varlab[2]
       eqscplot(xval, xlab=xlab, ylab=ylab, type="n", ...)
       panel(xval[, 1], xval[, 2], ...)
     }
-  } else {               ## Pairwise scatterplots of several components
+  } else {               #' Pairwise scatterplots of several components
     pairs(xval, labels = varlab, panel=panel, ...)
   }
   invisible(NULL)
 }
 
 ########################################################################
-## ================ list of functions ===========================
-## tune.plsc
-## plsc.default
-## predict.plsc
-## print.plsc
-## summary.plsc
-## print.summary.plsc
-## plsc
-## plot.plsc
-##   lc.names
-## plot.plsc.1
-##   panel.plsc
-##   lc.names
+#' ================ list of functions ===========================
+#' tune.plsc
+#' plsc.default
+#' predict.plsc
+#' print.plsc
+#' summary.plsc
+#' print.summary.plsc
+#' plsc
+#' plot.plsc
+#'   lc.names
+#' plot.plsc.1
+#'   panel.plsc
+#'   lc.names
