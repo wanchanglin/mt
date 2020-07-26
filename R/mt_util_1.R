@@ -2083,7 +2083,7 @@ save.tab <- function(x, filename="temp.csv", firstline="\n"){
 #' lwc-28-01-2016: There are two internal functions in package 'plyr':
 #'  'list_to_dataframe' and 'quickdf'. However they require the equal
 #'   lengths of each component in the list.
-list2df <- function(x){
+list2df <- function(x) {
   len <- max(sapply(x,length))
   df  <- sapply(x, function(y) c(y,rep(NA,len - length(y))))
   #' lwc-26-06-2008: bug fix. Convert into matrix if fs.order is a vector.
@@ -2116,7 +2116,7 @@ un.list <- function(x, y=""){
 #' lwc-16-09-2010: Remove all NULL or NA entries from a list.
 #'  Hacked from function compact of package plyr.
 #' wll-15-09-2015: Has some problem in new version of R. Use shrink.list.1.R
-shrink.list <- function(x){
+shrink.list <- function(x) {
   tmp <- Filter(Negate(is.null),x)
   tmp <- Filter(Negate(is.na),tmp)
   #' Note-16-09-2010: Get a warning if swapping the above two lines.
@@ -2147,9 +2147,9 @@ shrink.list.1 <- function(x){
 .marg <- function(prob, observed) {
 
   if (missing(observed) || missing(prob)) stop("arguments miss")
-  if(length(observed) != nrow(prob)) stop("lengths differ")
+  if (length(observed) != nrow(prob)) stop("lengths differ")
 
-  if( any(prob > 1) ) {
+  if (any(prob > 1)) {
     prob <- sweep(prob, 1, rowSums(prob), "/")
   }
   observed <- as.factor(observed)
