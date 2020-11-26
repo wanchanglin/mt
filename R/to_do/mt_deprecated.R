@@ -11,7 +11,7 @@
 ##   7). pcaplot (remove ep)
 ## Change RD files:
 ##   1). grpplot.rd
-##   2). pcaplot.rd 
+##   2). pcaplot.rd
 ##   3). data.visualisation.rd
 ##   4). panel.elli.rd
 ##   5). plot.pcalda.rd
@@ -44,47 +44,49 @@
 ## subscripts have direct relationship with x and y. But groups is not.
 ## Therefore the groups can be manupulate by the subscripts.
 ##
-panel.elli.1 <- function(x, y, groups, subscripts, ep=0, conf.level = 0.975,
-                         com.grp=NULL,no.grp=NULL, ...) {
+panel.elli.1 <- function(x, y, groups, subscripts, ep = 0, conf.level = 0.975,
+                         com.grp = NULL, no.grp = NULL, ...) {
   ## ------------------------------------------------------------------
-  plot.elli <- function(x,y,subscripts,...){ ## plot ellipse
-    Var  <- var(cbind(x,y))
-    Mean <- cbind(mean(x),mean(y))
+  plot.elli <- function(x, y, subscripts, ...) { ## plot ellipse
+    Var <- var(cbind(x, y))
+    Mean <- cbind(mean(x), mean(y))
     Elli <- ellipse(Var, centre = Mean, level = conf.level)
     ## here conf.level comes from outside
 
-    if (missing(subscripts)){
-      panel.points(Elli[,1], Elli[,2],...)
+    if (missing(subscripts)) {
+      panel.points(Elli[, 1], Elli[, 2], ...)
     }
     ## dealing with individual group plotting (called by panel.superpose).
     else {
       grp <- levels(factor(groups[subscripts]))
       ## here groups comes from outside
-      if (!(grp %in% no.grp)){
-        panel.points(Elli[,1], Elli[,2],...)
+      if (!(grp %in% no.grp)) {
+        panel.points(Elli[, 1], Elli[, 2], ...)
       }
     }
     ## label the centre
     ## ltext(x=Mean[1],y=Mean[2], labels="Centre",col="red")
   }
   ## ------------------------------------------------------------------
-  panel.superpose(x,y,groups, subscripts,...)
-  panel.abline(h=0, v=0,col=c("gray"), lty=2)
+  panel.superpose(x, y, groups, subscripts, ...)
+  panel.abline(h = 0, v = 0, col = c("gray"), lty = 2)
 
   ## overall ellipse based on all data
-  if (ep == 1){
-    plot.elli(x,y,type="l",col="red",lwd=2,...)
+  if (ep == 1) {
+    plot.elli(x, y, type = "l", col = "red", lwd = 2, ...)
   }
   ## ellipse based on groups, individual or combination.
-  else if (ep == 2){
+  else if (ep == 2) {
     if (is.null(com.grp)) { ## individual group ellipse
-       panel.superpose(x,y,groups=groups, subscripts=subscripts,...,
-                       panel.groups = plot.elli, type="l", lty=2)
-    } else {                ## combined group ellipse
+      panel.superpose(x, y,
+        groups = groups, subscripts = subscripts, ...,
+        panel.groups = plot.elli, type = "l", lty = 2
+      )
+    } else { ## combined group ellipse
       grp <- groups[subscripts]
-      for (i in names(com.grp)){
+      for (i in names(com.grp)) {
         id <- grp %in% com.grp[[i]]
-        plot.elli(x[id],y[id],type="l",col="gray",lwd=2,...)
+        plot.elli(x[id], y[id], type = "l", col = "gray", lwd = 2, ...)
       }
     }
   }
@@ -92,23 +94,23 @@ panel.elli.1 <- function(x, y, groups, subscripts, ep=0, conf.level = 0.975,
 
 ## =========================================================================
 ## lwc-14-02-2010: Panel function for plotting ellipse  used by lattice.
-panel.elli <- function(x, y, ep=0,conf.level = 0.975, ...) {
-  plot.elli <- function(x,y,...){ ## plot ellipse
-    Var  <- var(cbind(x,y))
-    Mean <- cbind(mean(x),mean(y))
+panel.elli <- function(x, y, ep = 0, conf.level = 0.975, ...) {
+  plot.elli <- function(x, y, ...) { ## plot ellipse
+    Var <- var(cbind(x, y))
+    Mean <- cbind(mean(x), mean(y))
     Elli <- ellipse(Var, centre = Mean, level = conf.level)
     ## panel.xyplot(x, y,...)
     ## panel.xyplot(Elli[,1], Elli[,2],...)
-    panel.points(Elli[,1], Elli[,2],...)
+    panel.points(Elli[, 1], Elli[, 2], ...)
   }
 
-  panel.superpose(x,y,...)
-  panel.abline(h=0, v=0,col=c("gray"), lty=2)
-  if (ep == 1){
+  panel.superpose(x, y, ...)
+  panel.abline(h = 0, v = 0, col = c("gray"), lty = 2)
+  if (ep == 1) {
     ## overline ellipse
-    plot.elli(x,y,type="l",col="red",lwd=2,...)
-  } else if (ep == 2){
+    plot.elli(x, y, type = "l", col = "red", lwd = 2, ...)
+  } else if (ep == 2) {
     ## group ellipse
-    panel.superpose(x,y,..., panel.groups = plot.elli, type="l", lty=2)
+    panel.superpose(x, y, ..., panel.groups = plot.elli, type = "l", lty = 2)
   }
 }
