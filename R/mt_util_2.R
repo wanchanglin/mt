@@ -1,4 +1,3 @@
-
 #' lwc-07-09-2010: Functions not documented
 #' wl-20-11-2020, Fri: tidy up
 
@@ -10,7 +9,6 @@
 #'   The original implementation is from Bill Venables, the author of R great
 #' book MASS. For details, see
 #' https://stat.ethz.ch/pipermail/r-help/2001-November/016201.html
-#'
 #' Arguments:
 #'  x - a data frame or matrix for correlation analysis column-wise
 #'  cor.method - method for correlation
@@ -312,7 +310,6 @@ plot.mat <- function(mat, ...) {
 #' ========================================================================
 #' lwc-22-06-2011: check whether or not matrix has negative value and return
 #'   index of negative columns.
-#' ========================================================================
 check_neg <- function(x) {
   #' tmp <- unlist(x)
   #' idx <- which(tmp < 0)
@@ -341,7 +338,7 @@ if (F) {
     prepanel = prepanel.qqmathline,
     panel = function(x, ...) {
       panel.qqconf(x, ...)
-      ## panel.qqmathline(x, ...)
+      #' panel.qqmathline(x, ...)
       panel.qqmath(x, ...)
     }
   )
@@ -358,7 +355,7 @@ if (F) {
     aspect = "xy",
     prepanel = prepanel.qqmathline,
     panel = function(x, ...) {
-      ## panel.qqmathline(x, ...)
+      #' panel.qqmathline(x, ...)
       panel.qqconf(x, ...)
       panel.qqmath(x, ...)
     }
@@ -662,7 +659,7 @@ test.perm <- function(x, y, alternative = c("two.sided", "less", "greater"),
     abline(v = meano)
     abline(v = -meano, lty = 2)
     mtext(side = 3, line = 0.5, text = expression(bar(x) - bar(y)), at = meano)
-    mtext(side = 3, line = 0.5, text = expression(-(bar(x) - bar(y))), at = -meano)
+    mtext(side = 3, line = 0.5, text = expression(- (bar(x) - bar(y))), at = -meano)
   }
   pval
 }
@@ -837,7 +834,7 @@ venn <- function(id, category, cutoff = 1, duplicates = FALSE, tab, main) {
   }
 
   #' Convert rows to binary numbers and count them
-  index <- tab %*% 2^(1:ncol(tab) - 1)
+  index <- tab %*% 2^ (1:ncol(tab) - 1)
   itab <- table(index)
 
   save <- par(

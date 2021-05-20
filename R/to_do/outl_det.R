@@ -149,7 +149,7 @@ aq.plot.1 <- function(x, conf.level = 0.975, plotting = TRUE, ...) {
     text(s$x, (1:length(dist)) / length(dist), as.character(s$ix), col = 3, cex = 0.8)
 
     t <- seq(0, max(dist), length.out = 100)
-    ## t <- seq(0,max(dist), by=0.01)    #' lwc: too many points
+    #' t <- seq(0,max(dist), by=0.01)    #' lwc: too many points
     lines(t, pchisq(t, df = ncol(x)), col = 6)
 
     abline(v = delta, col = 5)

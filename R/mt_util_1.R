@@ -1,6 +1,5 @@
 #' wll-24-11-2015: Use emacs to beautify this script
 
-
 #' ========================================================================
 #' lwc-29-03-2013: PCA outlier plot by lattice
 #' wll-29-11-2015: Examples of 'panel.elli' and 'panel.outl' give more
@@ -9,27 +8,28 @@
 #' different groups or in conditional panel, you can write an wrapper
 #' function combining with 'pca.comp', 'panel.elli' and 'panel.oult'. The
 #' example is 'pca.plot.wrap'.
-pca.outlier <- function(x, center = TRUE, scale=TRUE,
-                        conf.level = 0.975,...) {
-  #' --------------------------------------------------------------------
+pca.outlier <- function(x, center = TRUE, scale = TRUE,
+                        conf.level = 0.975, ...) {
+
   #' lwc-29-03-2013: Lattice panel for plotting outliers with ellips
   #' lwc-03-04-2013: To avoid error: formal argument "***" matched by
   #' multiple actual arguments, use: ..., type,col, lty, lwd.
   #' wll-29-11-2015: More general panel function for outlier 'panel.outl'
-  panel.outlier <- function(x, y, groups=NULL, elli, labs, id, ...,
-                            type, col,lty, lwd) {
+  panel.outlier <- function(x, y, groups = NULL, elli, labs, id, ...,
+                            type, col, lty, lwd) {
     #' dots <- list(...)
-    if (is.null(groups))
-      panel.xyplot(x,y,...)
-    else
-      panel.superpose(x,y,groups, ...)
+    if (is.null(groups)) {
+      panel.xyplot(x, y, ...)
+    } else {
+      panel.superpose(x, y, groups, ...)
+    }
 
-    panel.abline(h=0, v=0,col=c("gray"), lty=2)
+    panel.abline(h = 0, v = 0, col = c("gray"), lty = 2)
     #' overall ellipse line
-    panel.points(elli[,1], elli[,2],type="l",col="red",lwd=2,...)
+    panel.points(elli[, 1], elli[, 2], type = "l", col = "red", lwd = 2, ...)
     #' labeling outliers
     if (any(id)) {
-      ltext(x[id], y[id], labs[id],...)
+      ltext(x[id], y[id], labs[id], ...)
       #' cex = dots$cex, adj = dots$adj)
     }
   }
@@ -37,61 +37,63 @@ pca.outlier <- function(x, center = TRUE, scale=TRUE,
   require(ellipse)
   #' argument list
   dots <- list(...)
-  if (length(dots) > 0)
+  if (length(dots) > 0) {
     args <- dots
-  else
+  } else {
     args <- list()
+  }
 
-  #' -----------------------------------------------------------------------
+  #' -------------------------------------------------------------------
   #' calculate PCA
-  pcs  <- 1:2          #' only use PC1 and PC2
-  pca  <- prcomp(x, center=center, scale.=scale)  #' strip off dot arguments
+  pcs <- 1:2 #' only use PC1 and PC2
+  pca <- prcomp(x, center = center, scale. = scale) #' strip off dot arguments
   vars <- pca$sdev^2
-  vars <- vars/sum(vars)      #' Proportion of Variance
+  vars <- vars / sum(vars) #' Proportion of Variance
   names(vars) <- colnames(pca$rotation)
-  vars <- round(vars * 100,2)
-  dfn  <- paste(names(vars)," (",vars[names(vars)],"%)",sep="")
-  x    <- data.frame(pca$x)
+  vars <- round(vars * 100, 2)
+  dfn <- paste(names(vars), " (", vars[names(vars)], "%)", sep = "")
+  x <- data.frame(pca$x)
   names(x) <- dfn
-  x    <- x[,pcs]
+  x <- x[, pcs]
 
   #' -----------------------------------------------------------------------
   #' outlier detection by Mahalanobis distances
   cent <- colMeans(x)
   cova <- cov(x)
-  dist <- sqrt(mahalanobis(x, center=cent, cov=cova))
+  dist <- sqrt(mahalanobis(x, center = cent, cov = cova))
   cuto <- sqrt(qchisq(conf.level, ncol(x)))
-  id   <- dist > cuto
+  id <- dist > cuto
 
   #' get ellipse point
   elli <- ellipse(var(x), centre = cent, level = conf.level)
 
   #' handle args
   labs <- rownames(x)
-  args <- c(list(x=x[,2] ~ x[,1], data = x), args)
+  args <- c(list(x = x[, 2] ~ x[, 1], data = x), args)
 
-  if (is.null(args$xlab))  args$xlab <- names(x)[1]
-  if (is.null(args$ylab))  args$ylab <- names(x)[2]
+  if (is.null(args$xlab)) args$xlab <- names(x)[1]
+  if (is.null(args$ylab)) args$ylab <- names(x)[2]
   if (F) {
-    xlim <- c(min(x[, 1], elli[, 1]), max(x[,1],elli[,1]))
-    ylim <- c(min(x[, 2], elli[, 2]), max(x[,2],elli[,2]))
-    if (is.null(args$xlim))  args$xlim <- xlim
-    if (is.null(args$ylim))  args$ylim <- ylim
+    xlim <- c(min(x[, 1], elli[, 1]), max(x[, 1], elli[, 1]))
+    ylim <- c(min(x[, 2], elli[, 2]), max(x[, 2], elli[, 2]))
+    if (is.null(args$xlim)) args$xlim <- xlim
+    if (is.null(args$ylim)) args$ylim <- ylim
   }
 
   args <- c(args, panel = panel.outlier)
 
   #' arguments for panel.outlier
-  args$elli       <- elli
-  args$labs       <- labs
-  args$id         <- id
+  args$elli <- elli
+  args$labs <- labs
+  args$id <- id
 
   p <- do.call("xyplot", args)
 
-  ret <- list(plot=p, outlier=which(id), conf.level = conf.level,
-              mah.dist=dist, cutoff=cuto)
+  ret <- list(
+    plot = p, outlier = which(id), conf.level = conf.level,
+    mah.dist = dist, cutoff = cuto
+  )
   return(ret)
-
 }
 
 #' ========================================================================
@@ -102,57 +104,61 @@ pca.outlier <- function(x, center = TRUE, scale=TRUE,
 #'  2.) Another latice version
 #' To-Do:
 #'  1.) Display group text inside the ellipse
-pca.outlier.1 <- function(x, center = TRUE, scale=TRUE, conf.level = 0.975,
-                          group=NULL, main = "PCA", cex=0.7,...) {
+pca.outlier.1 <- function(x, center = TRUE, scale = TRUE, conf.level = 0.975,
+                          group = NULL, main = "PCA", cex = 0.7, ...) {
   #' calculate PCA
-  pcs  <- 1:2          #' only use PC1 and PC2
-  pca  <- prcomp(x, center=center, scale.=scale)  #' strip off dot arguments
+  pcs <- 1:2 #' only use PC1 and PC2
+  pca <- prcomp(x, center = center, scale. = scale) #' strip off dot arguments
   vars <- pca$sdev^2
-  vars <- vars/sum(vars)      #' Proportion of Variance
+  vars <- vars / sum(vars) #' Proportion of Variance
   names(vars) <- colnames(pca$rotation)
-  vars <- round(vars * 100,2)
-  dfn  <- paste(names(vars)," (",vars[names(vars)],"%)",sep="")
-  x    <- data.frame(pca$x)
+  vars <- round(vars * 100, 2)
+  dfn <- paste(names(vars), " (", vars[names(vars)], "%)", sep = "")
+  x <- data.frame(pca$x)
   names(x) <- dfn
-  x    <- x[,pcs]
+  x <- x[, pcs]
 
   #' outlier detection by Mahalanobis distances
-  cent    <- colMeans(x)
-  cova    <- cov(x)
-  dis     <- sqrt(mahalanobis(x, center=cent, cov=cova))
-  cutoff  <- sqrt(qchisq(conf.level, ncol(x)))
+  cent <- colMeans(x)
+  cova <- cov(x)
+  dis <- sqrt(mahalanobis(x, center = cent, cov = cova))
+  cutoff <- sqrt(qchisq(conf.level, ncol(x)))
   outlier <- which(dis > cutoff)
 
   #' Plot PCA with ellipse and outliers
-  z  <- ellipse::ellipse(x=cova, center=cent, level=conf.level)
-  x1 <- c(min(x[, 1], z[, 1]), max(x[,1],z[,1]))
-  y1 <- c(min(x[, 2], z[, 2]), max(x[,2],z[,2]))
+  z <- ellipse::ellipse(x = cova, center = cent, level = conf.level)
+  x1 <- c(min(x[, 1], z[, 1]), max(x[, 1], z[, 1]))
+  y1 <- c(min(x[, 2], z[, 2]), max(x[, 2], z[, 2]))
 
   if (is.null(group)) {
-    plot(x, xlim = x1, ylim = y1, main=main,... )
+    plot(x, xlim = x1, ylim = y1, main = main, ...)
   } else {
     col <- unclass(group)
     pch <- unclass(group)
-    plot(x, xlim = x1, ylim = y1, main=main,col=col, pch=pch,... )
-    legend("topright",legend=sort(unique(levels(group))),
-           cex=cex, col = sort(as.vector(unique(col))),
-           pch = sort(as.vector(unique(pch))))
+    plot(x, xlim = x1, ylim = y1, main = main, col = col, pch = pch, ...)
+    legend("topright",
+      legend = sort(unique(levels(group))),
+      cex = cex, col = sort(as.vector(unique(col))),
+      pch = sort(as.vector(unique(pch)))
+    )
   }
-  lines(z, type = "l", col="red")                     #' plot ellipse
+  lines(z, type = "l", col = "red") #' plot ellipse
 
   #' plot the outliers
-  if(length(outlier) > 0) {
+  if (length(outlier) > 0) {
     xrange <- par("usr")
-    xrange <- xrange[2] - xrange[1]     #' control offset of text position
+    xrange <- xrange[2] - xrange[1] #' control offset of text position
 
     #' display names
     txt <- names(dis[outlier])
     if (is.null(txt)) txt <- outlier
-    text(x[outlier,1], x[outlier,2] + xrange/50, txt, col="blue", cex=cex)
+    text(x[outlier, 1], x[outlier, 2] + xrange / 50, txt, col = "blue", cex = cex)
   }
 
-  ret <- list(outlier=outlier, conf.level = conf.level, mah.dist=dis,
-              cutoff=cutoff)
+  ret <- list(
+    outlier = outlier, conf.level = conf.level, mah.dist = dis,
+    cutoff = cutoff
+  )
   return(ret)
 }
 
@@ -167,7 +173,6 @@ pca.outlier.1 <- function(x, center = TRUE, scale=TRUE, conf.level = 0.975,
 #' Note: Some examples of auto.key:
 #'         auto.key=list(columns=nlevels(x.1$.y)),
 #'         auto.key = list(space = "right"),
-##
 #' Usages
 #'  data(iris)
 #'  x <- iris[,1:4]
@@ -175,7 +180,8 @@ pca.outlier.1 <- function(x, center = TRUE, scale=TRUE, conf.level = 0.975,
 #'  grpplot(x[,1:2],y, scale=T, pcs=c(2,1),ep=2)
 #'  grpplot(x,y, scale=T, pcs=c(2,1),ep=1)
 grpplot <- function(x, y, plot = "pairs", ...) {
-  ocall <- sys.call(sys.parent()); ocall[[1]] <- quote(grpplot)
+  ocall <- sys.call(sys.parent())
+  ocall[[1]] <- quote(grpplot)
   x <- as.data.frame(x)
   #' lwc-19-12-07: data.frame(x) will change names of columns in some
   #' situations.
@@ -184,26 +190,32 @@ grpplot <- function(x, y, plot = "pairs", ...) {
   plot <- match.arg(plot, c("strip", "box", "density", "pairs"))
 
   #' reshape data set for "strip", "boxplot" and "density".
-  x.1     <- stack(x)
+  x.1 <- stack(x)
   x.1$ind <- factor(x.1$ind, levels = unique.default(x.1$ind))
   #' lwc-21-11-2007: Original ind of stack is a sorted-level factor. Lattice
   #'   will use this factor level to arrange panel order. To be consist with
   #'   feature rank descent order, the fator levels are ordered by the
   #'   feature rank from to to bottom. Therefore, no sort used inside factor
   #'   function.
-  x.1$.y  <- rep(y, ncol(x))
+  x.1$.y <- rep(y, ncol(x))
 
   grpplot <-
     switch(tolower(plot),
-           strip = stripplot(values ~ .y|ind, data = x.1, as.table=T,
-              ,...),
-           box = bwplot(values ~ .y|ind, data = x.1, as.table=T,
-               pch='|', ...),
-           density = densityplot(~values |ind, data = x.1,
-               groups = x.1$.y, plot.points = F, #' kern = "rect",
-               as.table=T, ...),
-           pairs = .grpplot(x, y, ...)
-           )
+      strip = stripplot(values ~ .y | ind,
+        data = x.1, as.table = T, ,
+        ...
+      ),
+      box = bwplot(values ~ .y | ind,
+        data = x.1, as.table = T,
+        pch = "|", ...
+      ),
+      density = densityplot(~ values | ind,
+        data = x.1,
+        groups = x.1$.y, plot.points = F, #' kern = "rect",
+        as.table = T, ...
+      ),
+      pairs = .grpplot(x, y, ...)
+    )
   grpplot$call <- ocall
   return(grpplot)
 }
@@ -217,13 +229,11 @@ grpplot <- function(x, y, plot = "pairs", ...) {
 #'   Colors in supervose.symbol re-cycle after 7 by default. I did not
 #'   change the default number inside the function by: par.settings =
 #'   list(superpose.symbol=list(pch=1:nlevels(y), col=1:nlevels(y))),
-##
 #'   For convient, user can change the color scheme outside .grpplot, such as
 #'       superpose.symbol <- trellis.par.get("superpose.symbol")
 #'       superpose.symbol$col <- rainbow(16)
 #'       trellis.par.set("superpose.symbol",superpose.symbol)
 #'  Then call .grpplot.  A list of colors names is produced by colors().
-##
 #' lwc-17-01-2008: pch range from 1 to 25. So I recycle the symbols if number
 #'     of symbol exceed the limits.
 #' TO-DO: 1.) Check validity of arguments
@@ -233,64 +243,72 @@ grpplot <- function(x, y, plot = "pairs", ...) {
 #'           Deepayan Sarkar, author of package lattice). So
 #'           trellis.par.get(), trellis.par.set() or par.settings will be
 #'           help for global or local parameters setting.
-##
 #' lwc-15-07-2015: remove 'ep' and call panel.elli.1
-.grpplot <- function(x, y, auto.key=list(space="right"),
-                     par.settings = list(superpose.symbol=list(pch=rep(1:25))),
-                     xlab,ylab,...) {
-  ocall <- sys.call(sys.parent()); ocall[[1]] <- quote(.grpplot)
-  if (!is.matrix(x) && !is.data.frame(x))
+.grpplot <- function(x, y, auto.key = list(space = "right"),
+                     par.settings = list(superpose.symbol = list(pch = rep(1:25))),
+                     xlab, ylab, ...) {
+  ocall <- sys.call(sys.parent())
+  ocall[[1]] <- quote(.grpplot)
+  if (!is.matrix(x) && !is.data.frame(x)) {
     x <- as.matrix(x)
+  }
   y <- factor(y)
 
-  if (ncol(x) == 2){
+  if (ncol(x) == 2) {
     if (missing(xlab)) xlab <- names(x)[2]
     if (missing(ylab)) ylab <- names(x)[1]
     p <-
-      xyplot(x[,1] ~ x[,2], groups = y, as.table=T,
-             #' xlab=names(x)[2], ylab=names(x)[1],  #' lwc-07-08-14
-             xlab=xlab, ylab=ylab,
-             auto.key = auto.key,
-             par.settings = par.settings,
+      xyplot(x[, 1] ~ x[, 2],
+        groups = y, as.table = T,
+        #' xlab=names(x)[2], ylab=names(x)[1],  #' lwc-07-08-14
+        xlab = xlab, ylab = ylab,
+        auto.key = auto.key,
+        par.settings = par.settings,
 
-             #' par.settings = list(superpose.symbol=list(pch=rep(1:25, len = nlevels(y)))),
+        #' par.settings = list(superpose.symbol=list(pch=rep(1:25, len = nlevels(y)))),
 
-             scales = list(cex = 0.8),  #' for axis font
-             panel = function(x, y, ...) {
-               panel.xyplot(x, y, ...)
-               panel.elli.1(x, y, ...)
-               #' panel.outl(x,y, ...)
-             },...)
-  } else if (ncol(x) > 2){
+        scales = list(cex = 0.8), #' for axis font
+        panel = function(x, y, ...) {
+          panel.xyplot(x, y, ...)
+          panel.elli.1(x, y, ...)
+          #' panel.outl(x,y, ...)
+        }, ...
+      )
+  } else if (ncol(x) > 2) {
     p <-
-      splom(~x, groups = y, as.table=T, xlab="",
-            auto.key = auto.key,
-            par.settings = par.settings,
-            ##par.settings = list(superpose.symbol=list(pch=rep(1:25, len = nlevels(y))),
-            #'                    axis.text=list(cex=0.7)),
-            #' varname.cex = 1.0, cex=0.6, #' pscales = 0,    #' lwc-27-07-2009: comment here.
-            panel = function(x, y, ...) {
-              panel.xyplot(x, y, ...)
-              panel.elli.1(x, y, ...)
-              #' panel.outl(x,y, ...)
-            },...)
+      splom(~x,
+        groups = y, as.table = T, xlab = "",
+        auto.key = auto.key,
+        par.settings = par.settings,
+        #' par.settings = list(superpose.symbol=list(pch=rep(1:25, len = nlevels(y))),
+        #'                    axis.text=list(cex=0.7)),
+        #' varname.cex = 1.0, cex=0.6, #' pscales = 0,    #' lwc-27-07-2009: comment here.
+        panel = function(x, y, ...) {
+          panel.xyplot(x, y, ...)
+          panel.elli.1(x, y, ...)
+          #' panel.outl(x,y, ...)
+        }, ...
+      )
   } else {
-    p <- stripplot(x[,1] ~ y, groups=y, as.table=T, ylab= colnames(x)[1], ...)
+    p <- stripplot(x[, 1] ~ y, groups = y, as.table = T, ylab = colnames(x)[1], ...)
     #' p <- stripplot(x ~ y, groups=y, as.table=T, ylab= "", ...)
     #' p <- densityplot(~ x, groups = y, as.table=T,
     #'                  auto.key = auto.key,
     #'                  par.settings = list(superpose.line = list(lty=c(1:7))),
     #'                  plot.points = FALSE, ref = TRUE,...)
-    if (F){
-      p <- histogram( ~ x | y,
-                     xlab = "", type = "density",
-                     layout = c(1, nlevels(y)),
-                     panel = function(x, ...) {
-                       panel.histogram(x, ...)
-                       panel.mathdensity(dmath = dnorm, col = "black",
-                                         args = list(mean=mean(x),sd=sd(x)))
-                     }
-                    ,...)
+    if (F) {
+      p <- histogram(~ x | y,
+        xlab = "", type = "density",
+        layout = c(1, nlevels(y)),
+        panel = function(x, ...) {
+          panel.histogram(x, ...)
+          panel.mathdensity(
+            dmath = dnorm, col = "black",
+            args = list(mean = mean(x), sd = sd(x))
+          )
+        },
+        ...
+      )
     }
   }
   p$call <- ocall
@@ -306,106 +324,104 @@ grpplot <- function(x, y, plot = "pairs", ...) {
 #'   x <- iris[,1:4]
 #'   y <- iris[,5]
 #'   pcaplot(x,y, scale=T, pcs=c(2,1),ep=2)
-##
-pcaplot <- function(x, y, scale=TRUE, pcs=1:2,...) {
+pcaplot <- function(x, y, scale = TRUE, pcs = 1:2, ...) {
   #' pca  <- prcomp(x, scale.=scale, ...)
-  pca  <- prcomp(x, scale.=scale)
+  pca <- prcomp(x, scale. = scale)
   vars <- pca$sdev^2
-  vars <- vars/sum(vars)      #' Proportion of Variance
+  vars <- vars / sum(vars) #' Proportion of Variance
   names(vars) <- colnames(pca$rotation)
-  vars <- round(vars * 100,2)
-  dfn  <- paste(names(vars)," (",vars[names(vars)],"%)",sep="")
+  vars <- round(vars * 100, 2)
+  dfn <- paste(names(vars), " (", vars[names(vars)], "%)", sep = "")
 
-  x    <- data.frame(pca$x)
+  x <- data.frame(pca$x)
   names(x) <- dfn
-  x    <- x[,pcs]
+  x <- x[, pcs]
 
   #' call group plot
-  p <- grpplot(x,y,plot="pairs",...)
+  p <- grpplot(x, y, plot = "pairs", ...)
   p
 }
 
 #' =========================================================================
 #' lwc-15-07-2015: ellipse panel function which support individual and
 #'  combined group plotting. It is the extension of panel.elli.
-#' ------------------------------------------------------------------------
 #' Usage: Under ep=2, there are three options to plot ellipse.
 #'        com.grp: control which combination of groups to be plotted.
 #'        no.grp:  control which individual group not to be plotted. Note
 #'                 it will be overided by com.grp.
 #'        If no com.grp and no.grp, the each individual group ellipse should
 #'        be plotted.
-panel.elli.1 <- function(x, y, subscripts, groups=NULL, conf.level = 0.975,
-                         ep=0, com.grp=NULL, no.grp=NULL, ell.grp=NULL,...) {
+panel.elli.1 <- function(x, y, subscripts, groups = NULL, conf.level = 0.975,
+                         ep = 0, com.grp = NULL, no.grp = NULL, ell.grp = NULL, ...) {
+
   #' ------------------------------------------------------------------
-  plot.elli <- function(x,y,...){ #' plot ellipse
-    Var  <- var(cbind(x,y))
-    Mean <- cbind(mean(x),mean(y))
+  plot.elli <- function(x, y, ...) { #' plot ellipse
+    Var <- var(cbind(x, y))
+    Mean <- cbind(mean(x), mean(y))
     Elli <- ellipse(Var, centre = Mean, level = conf.level)
     #' panel.xyplot(x, y,...)
     #' panel.xyplot(Elli[,1], Elli[,2],...)
-    panel.points(Elli[,1], Elli[,2],...)
+    panel.points(Elli[, 1], Elli[, 2], ...)
   }
 
-  #' -------------------------------------------------------------
   #' lwc-14-07-2015: do NOT plot x and y inside the panel function
-  if (FALSE){
+  if (FALSE) {
     if (!is.null(groups)) {
-      panel.superpose(x,y,subscripts,groups,...)
+      panel.superpose(x, y, subscripts, groups, ...)
     } else {
-      panel.xyplot(x,y,...)
+      panel.xyplot(x, y, ...)
     }
-    panel.abline(h=0, v=0,col=c("gray"), lty=2)
+    panel.abline(h = 0, v = 0, col = c("gray"), lty = 2)
   }
-  #' -------------------------------------------------------------
 
-  #' ------------------------------------------------------------------
-  if (!is.null(ell.grp)){         #' ellipse based on other group info
+  if (!is.null(ell.grp)) { #' ellipse based on other group info
     grp <- ell.grp[subscripts]
-    tmp <- data.frame(x=x,y=y,grp=grp)
-    ddply(tmp, .(grp), function(x){
-            plot.elli(x$x, x$y,...,type="l", lty=2, col="cyan")
-          })
-    #' ------------------------------------------------------------------
-  } else if (ep == 1){            #' overline ellipse
-    plot.elli(x,y,type="l",col="red",...)  #' lwd=2
-    #' ------------------------------------------------------------------
+    tmp <- data.frame(x = x, y = y, grp = grp)
+    ddply(tmp, .(grp), function(x) {
+      plot.elli(x$x, x$y, ..., type = "l", lty = 2, col = "cyan")
+    })
+  } else if (ep == 1) { #' overline ellipse
+    plot.elli(x, y, type = "l", col = "red", ...) #' lwd=2
     #' ellipse based on groups, individual or combination.
-  } else if (ep == 2) {            #' plot group ellipse
-    if (!is.null(com.grp)){        #' plot combined groups
+  } else if (ep == 2) { #' plot group ellipse
+    if (!is.null(com.grp)) { #' plot combined groups
       grp <- groups[subscripts]
-      for (i in names(com.grp)){
+      for (i in names(com.grp)) {
         id <- grp %in% com.grp[[i]]
-        plot.elli(x[id],y[id],..., type="l",col="gray")
+        plot.elli(x[id], y[id], ..., type = "l", col = "gray")
       }
-    } else if (!is.null(no.grp)){  #' plot remained groups
+    } else if (!is.null(no.grp)) { #' plot remained groups
       grp <- groups[subscripts]
-      for (i in levels(grp)){
+      for (i in levels(grp)) {
         id <- i == grp
-        if (!(i %in% no.grp))
-          plot.elli(x[id],y[id],..., type="l",col="gray")
+        if (!(i %in% no.grp)) {
+          plot.elli(x[id], y[id], ..., type = "l", col = "gray")
+        }
       }
-    } else {                       #' plot all groups
-      panel.superpose(x,y,subscripts,groups, ..., panel.groups = plot.elli,
-                      type="l", lty=2)
+    } else { #' plot all groups
+      panel.superpose(x, y, subscripts, groups, ...,
+        panel.groups = plot.elli,
+        type = "l", lty = 2
+      )
     }
   }
-
 }
 
 #' =======================================================================
 #' lwc-02-04-2013: Panel function for plotting ellipse  used by lattice.
 #' Note: For details, see panel.ellipse of package latticeExtra
-panel.elli <- function(x, y, groups = NULL,conf.level = 0.975, ...) {
-  if (!is.null(groups))
-    panel.superpose(x = x, y = y, groups = groups, conf.level = conf.level,
-                    panel.groups = panel.elli, ...)
-  else {
-    Var  <- var(cbind(x,y))
-    Mean <- cbind(mean(x),mean(y))
+panel.elli <- function(x, y, groups = NULL, conf.level = 0.975, ...) {
+  if (!is.null(groups)) {
+    panel.superpose(
+      x = x, y = y, groups = groups, conf.level = conf.level,
+      panel.groups = panel.elli, ...
+    )
+  } else {
+    Var <- var(cbind(x, y))
+    Mean <- cbind(mean(x), mean(y))
     Elli <- ellipse(Var, centre = Mean, level = conf.level)
     #' panel.xyplot(x, y,...)
-    panel.xyplot(Elli[,1], Elli[,2], ...)
+    panel.xyplot(Elli[, 1], Elli[, 2], ...)
   }
 }
 
@@ -413,24 +429,26 @@ panel.elli <- function(x, y, groups = NULL,conf.level = 0.975, ...) {
 #' lwc-02-04-2013: Panel function for plotting outliers with ellipse in
 #' lattice
 #' To-Do: How to keep colour of text as consistent with groups?
-panel.outl <- function(x, y, subscripts, groups=NULL,
+panel.outl <- function(x, y, subscripts, groups = NULL,
                        conf.level = 0.975, labs, ...) {
   if (!is.null(groups)) {
-    panel.superpose(x = x, y = y, groups = groups, subscripts=subscripts,
-                    conf.level = conf.level,labs=labs,
-                    panel.groups = panel.outl, ...)
+    panel.superpose(
+      x = x, y = y, groups = groups, subscripts = subscripts,
+      conf.level = conf.level, labs = labs,
+      panel.groups = panel.outl, ...
+    )
   } else {
     #' outlier detection by Mahalanobis distances
-    mat  <- cbind(x,y)
+    mat <- cbind(x, y)
     #' row.names(mat) <- labs[subscripts]
     cent <- colMeans(mat)
     cova <- cov(mat)
-    dist <- sqrt(mahalanobis(mat, center=cent, cov=cova))
+    dist <- sqrt(mahalanobis(mat, center = cent, cov = cova))
     cuto <- sqrt(qchisq(conf.level, ncol(mat)))
-    id   <- dist > cuto
+    id <- dist > cuto
 
     if (any(id)) {
-      panel.text(x[id], y[id], labs[subscripts][id],...)
+      panel.text(x[id], y[id], labs[subscripts][id], ...)
       #' ltext(x[id], y[id], labs[subscripts][id],...)
       #' from lattice: panel.text <- function(...) ltext(...)
     }
@@ -443,17 +461,17 @@ panel.outl <- function(x, y, subscripts, groups=NULL,
 #' lwc-08-01-2014: tidy up and minor changes.
 #' wll-24-11-2015: add the adjusted p-values. Beware that 'stats.vec' has no
 #' such thing.
-stats.mat <- function(x,y, method="mean",test.method = "wilcox.test",
-                      padj.method= "fdr", fc=TRUE,...){
+stats.mat <- function(x, y, method = "mean", test.method = "wilcox.test",
+                      padj.method = "fdr", fc = TRUE, ...) {
   #' function for calculation based on column vector.
-  x   <- as.data.frame(x, stringsAsFactors=F)
-  res <- t(sapply(x, function(i) stats.vec(i,y,method,test.method,fc,...)))
+  x <- as.data.frame(x, stringsAsFactors = F)
+  res <- t(sapply(x, function(i) stats.vec(i, y, method, test.method, fc, ...)))
   #' res <- t(colwise(stats.vec)(x,y,method,test.method))
-  res <- as.data.frame(res, stringsAsFactors=FALSE)
+  res <- as.data.frame(res, stringsAsFactors = FALSE)
 
   #' get adjusted p-values
-  padj <- round(p.adjust(res$pval,method=padj.method),digits=4)
-  res  <- cbind(res,padj)   #' or res <- data.frame(res, padj)
+  padj <- round(p.adjust(res$pval, method = padj.method), digits = 4)
+  res <- cbind(res, padj) #' or res <- data.frame(res, padj)
 
   return(res)
 }
@@ -467,23 +485,23 @@ stats.mat <- function(x,y, method="mean",test.method = "wilcox.test",
 #' wll-01-12-2015: add an argument for fold-change. fc is only for positive
 #'   values of 'x'. If not, the results are useless.
 #' wll-26-11-2016: drop the change direction so the results are numeric, not
-#'   the character. Note that the fold change indicates the chaning 
+#'   the character. Note that the fold change indicates the chaning
 #'   direction.
-stats.vec <- function(x,y, method= "mean",test.method = "wilcox.test",
-                      fc=TRUE,...){
+stats.vec <- function(x, y, method = "mean", test.method = "wilcox.test",
+                      fc = TRUE, ...) {
   #' overall mean
-  omn <- do.call(method, list(x,na.rm=TRUE))
+  omn <- do.call(method, list(x, na.rm = TRUE))
   names(omn) <- method
   #' group mean
-  gmn <- tapply(x,y, method, na.rm=TRUE)
-  names(gmn) <- paste(names(gmn), method, sep=".")
+  gmn <- tapply(x, y, method, na.rm = TRUE)
+  names(gmn) <- paste(names(gmn), method, sep = ".")
 
-  auc       <- round(mt:::cl.auc(x,y), digits=2)
-  p.val     <- round(mt:::.pval(x,y,test.method=test.method,...), digits=4)
+  auc <- round(mt:::cl.auc(x, y), digits = 2)
+  p.val <- round(mt:::.pval(x, y, test.method = test.method, ...), digits = 4)
   #' p.val  <- wilcox.test(x ~ y,correct = FALSE)$"p.value"
 
-  if (F) {  #' wll-26-01-2016: drop off
-    direc <- if (gmn[1] > gmn[2]){
+  if (F) { #' wll-26-01-2016: drop off
+    direc <- if (gmn[1] > gmn[2]) {
       "Down"
     } else if (gmn[1] < gmn[2]) {
       "Up"
@@ -493,28 +511,32 @@ stats.vec <- function(x,y, method= "mean",test.method = "wilcox.test",
   }
 
   if (fc) {
-    fc        <- round(mt:::.foldchange(gmn[2], gmn[1]), digits=2)
+    fc <- round(mt:::.foldchange(gmn[2], gmn[1]), digits = 2)
     #' lwc-23-08-2013: gmn[1] is baseline
     names(fc) <- NULL
-    log2.fc   <- round(mt:::.foldchange2logratio(fc), digits=2)
+    log2.fc <- round(mt:::.foldchange2logratio(fc), digits = 2)
 
     res <- c(omn, gmn, #' direction=direc,
-             fold.change=fc, log2.fold.change=log2.fc, auc=auc, pval=p.val)
+      fold.change = fc, log2.fold.change = log2.fc, auc = auc, pval = p.val
+    )
   } else {
-    res <- c(omn, gmn, #' direction=direc, 
-             auc=auc, pval=p.val)
+    res <- c(omn, gmn, #' direction=direc,
+      auc = auc, pval = p.val
+    )
   }
   return(res)
 }
 
 #' ==========================================================
 #' lwc-30-07-2013: wrapper functions for p-values from test
-.pval <- function(x, y, test.method = "oneway.test", ...){
-  test.method <- if (is.function(test.method))
-                   test.method
-                 else if (is.character(test.method))
-                   get(test.method)
-                 else eval(test.method)
+.pval <- function(x, y, test.method = "oneway.test", ...) {
+  test.method <- if (is.function(test.method)) {
+    test.method
+  } else if (is.character(test.method)) {
+    get(test.method)
+  } else {
+    eval(test.method)
+  }
   pval <- test.method(x ~ y, ...)$p.value
   return(pval)
 }
@@ -523,26 +545,28 @@ stats.vec <- function(x,y, method= "mean",test.method = "wilcox.test",
 #' lwc-16-07-2013: Fold change from gtools
 #' Usage:
 if (F) {
-  a <- 1:21; b <- 21:1
-  f <- .foldchange(a,b)
-  cbind(a,b,f)
-}
-#' ----------------------------------------------------------------------
-.foldchange <- function(num, denom){
-  ifelse(num >= denom, num/denom, -denom/num)
+  a <- 1:21
+  b <- 21:1
+  f <- .foldchange(a, b)
+  cbind(a, b, f)
 }
 
 #' ----------------------------------------------------------------------
-.foldchange2logratio <- function (foldchange, base = 2){
-  retval <- ifelse(foldchange < 0, 1/-foldchange, foldchange)
+.foldchange <- function(num, denom) {
+  ifelse(num >= denom, num / denom, -denom / num)
+}
+
+#' ----------------------------------------------------------------------
+.foldchange2logratio <- function(foldchange, base = 2) {
+  retval <- ifelse(foldchange < 0, 1 / -foldchange, foldchange)
   retval <- log(retval, base)
   retval
 }
 
 #' ----------------------------------------------------------------------
-.logratio2foldchange <- function (logratio, base = 2) {
-  retval <- base^(logratio)
-  retval <- ifelse(retval < 1, -1/retval, retval)
+.logratio2foldchange <- function(logratio, base = 2) {
+  retval <- base^ (logratio)
+  retval <- ifelse(retval < 1, -1 / retval, retval)
   retval
 }
 
@@ -553,42 +577,38 @@ if (F) {
 #' Arguments:
 #'  x   - an vector
 #'  bar - which bar need to be calculated.
-#' ------------------------------------------------------------------------
 #' Usages:
 #'  vec.segment(iris[,1])
 #'  df.summ(iris, method=vec.segment, bar="SE")
-##
 #'  (tmp <- dlply(iris, .(Species), mt:::df.summ, method=vec.segment))
 #'  do.call("rbind", tmp)
-##
 #'  mat <- melt(iris)
-#'  ddply(mat, .(Species,variable), function(x,bar){
+#'  ddply(mat, .(Species,variable), function(x,bar) {
 #' 	  vec.segment(x$value, bar=bar)
 #'  }, bar="SD")
-#' ------------------------------------------------------------------------
-vec.segment <- function(x, bar=c("SD", "SE", "CI")) {
+vec.segment <- function(x, bar = c("SD", "SE", "CI")) {
   bar <- match.arg(bar)
 
-  centre <- mean(x, na.rm=T)
+  centre <- mean(x, na.rm = T)
 
   if (bar == "SD") {
-    stderr <- sd(x, na.rm=T)        #' Standard derivation (SD)
-    lower  <- centre - stderr
-    upper  <- centre + stderr
-  } else if (bar == "SE") {      #' Standard error(SE) of mean
-    stderr <- sd(x, na.rm=T)/sqrt(sum(!is.na(x)))
+    stderr <- sd(x, na.rm = T) #' Standard derivation (SD)
+    lower <- centre - stderr
+    upper <- centre + stderr
+  } else if (bar == "SE") { #' Standard error(SE) of mean
+    stderr <- sd(x, na.rm = T) / sqrt(sum(!is.na(x)))
     #' stderr <- sqrt(var(x, na.rm = T)/length(x[complete.cases(x)]))
-    lower  <- centre - stderr
-    upper  <- centre + stderr
-  } else if (bar == "CI") {      #' Confidence interval (CI), here 95%.
-    conf   <- t.test(x)$conf.int
-    lower  <- conf[1]
-    upper  <- conf[2]
+    lower <- centre - stderr
+    upper <- centre + stderr
+  } else if (bar == "CI") { #' Confidence interval (CI), here 95%.
+    conf <- t.test(x)$conf.int
+    lower <- conf[1]
+    upper <- conf[2]
   } else {
     stop("'method' invalid")
   }
 
-  res <- c(lower=lower, centre=centre, upper=upper)
+  res <- c(lower = lower, centre = centre, upper = upper)
   return(res)
 }
 
@@ -598,39 +618,43 @@ vec.segment <- function(x, bar=c("SD", "SE", "CI")) {
 #' Usage:
 #'   x <- iris[,1]
 #'   vec.summ.1(x)
-vec.summ.1 <- function(x){
-  if ( sum(!is.na(x)) < 2 ){
-    ##if (all(is.na(x))) {
+vec.summ.1 <- function(x) {
+  if (sum(!is.na(x)) < 2) {
+    #' if (all(is.na(x))) {
     mean <- median <- sd <- iqr <- CI.L <- CI.H <- NA
   } else {
-    mean   <- mean(x, na.rm=T)
-    median <- median(x, na.rm=T)
-    sd     <- sd(x, na.rm=T)
-    iqr    <- IQR(x, na.rm=T)
-    conf   <- t.test(x)$conf.int
-    CI.L   <- conf[1]
-    CI.H   <- conf[2]
+    mean <- mean(x, na.rm = T)
+    median <- median(x, na.rm = T)
+    sd <- sd(x, na.rm = T)
+    iqr <- IQR(x, na.rm = T)
+    conf <- t.test(x)$conf.int
+    CI.L <- conf[1]
+    CI.H <- conf[2]
   }
 
-  res <- c(N = sum(!is.na(x)), Mean = mean, Median = median,
-           "95% CI.l"=CI.L, "95% CI.u"=CI.H,
-           IQR = iqr,Std = sd)
+  res <- c(
+    N = sum(!is.na(x)), Mean = mean, Median = median,
+    "95% CI.l" = CI.L, "95% CI.u" = CI.H,
+    IQR = iqr, Std = sd
+  )
 
   #' res <- format(res,digits=3)
-  res <- round(res, digits=3)
+  res <- round(res, digits = 3)
   return(res)
 }
 
 #' =======================================================================
 #' lwc-03-03-2010: Summary function for vector data
 #' lwc-11-11-2011: Change Nval as N.
-vec.summ <- function(x){
-  res <- c(N = sum(!is.na(x)), Min = min(x,na.rm=T),
-           Mean = mean(x, na.rm=T),
-           Median = median(x, na.rm=T),
-           Max = max(x, na.rm=T),
-           Std = sd(x, na.rm=T))
-  res <- round(res, digits=3)
+vec.summ <- function(x) {
+  res <- c(
+    N = sum(!is.na(x)), Min = min(x, na.rm = T),
+    Mean = mean(x, na.rm = T),
+    Median = median(x, na.rm = T),
+    Max = max(x, na.rm = T),
+    Std = sd(x, na.rm = T)
+  )
+  res <- round(res, digits = 3)
   return(res)
 }
 
@@ -646,21 +670,25 @@ vec.summ <- function(x){
 #'  dat <- mv.zene(dat)
 #'  summ   <- df.summ(dat, method=vec.summ)
 #'  summ.1 <- df.summ(dat, method=vec.summ.1)
-df.summ <- function(dat, method=vec.summ, ...) {
+df.summ <- function(dat, method = vec.summ, ...) {
   method <-
-    if (is.function(method)) method
-    else if (is.character(method)) get(method)
-    else eval(method)
+    if (is.function(method)) {
+      method
+    } else if (is.character(method)) {
+      get(method)
+    } else {
+      eval(method)
+    }
 
-  dat  <- as.data.frame(dat, stringsAsFactors=F)
+  dat <- as.data.frame(dat, stringsAsFactors = F)
   #' only numeric, not categorical data
-  dat  <- Filter(is.numeric, dat)
+  dat <- Filter(is.numeric, dat)
   #' lwc-11-10-2011: dat must be data frame here.
 
-  res <- t(sapply(dat, function(i) method(i,...)))
+  res <- t(sapply(dat, function(i) method(i, ...)))
   #' res <- t(colwise(method)(dat))
 
-  res <- as.data.frame(res, stringsAsFactors=FALSE)
+  res <- as.data.frame(res, stringsAsFactors = FALSE)
   #' res <- cbind(Variable=rownames(res),res)
   #' Do we need to add one column?
   return(res)
@@ -670,10 +698,10 @@ df.summ <- function(dat, method=vec.summ, ...) {
 #' lwc-11-10-2011: replace zero/negative with NA.
 mv.zene <- function(dat) {
   vec.func <- function(x) {
-    x <- ifelse(x < .Machine$double.eps, NA, x)  #' vectorisation of ifelse
+    x <- ifelse(x < .Machine$double.eps, NA, x) #' vectorisation of ifelse
   }
 
-  dat <- as.data.frame(dat, stringsAsFactors=F)
+  dat <- as.data.frame(dat, stringsAsFactors = F)
   res <- sapply(dat, function(i) vec.func(i))
   return(res)
 }
@@ -684,37 +712,36 @@ mv.zene <- function(dat) {
 #' lwc-21-06-2011: add method of "low" provided by David Wedge
 #' lwc-22-06-2011: Replace ifelse(x < .Machine$double.eps, m, x) with
 #'   ifelse(x < .Machine$double.eps, NA, x) and shange its line position.
-#' =======================================================================
 #' Usage
 #'   data(abr1)
 #'   dat <- abr1$pos[,1970:1980]
 #'   mt:::df.summ(dat)
 #'   dat.1 <- mv.fill(dat,method="mean",ze_ne = TRUE)
 #'   mt:::df.summ(dat.1)
-##
 #' User-defined methods:
 #' random <- function(x,...)
 #'   sample(x[!is.na(x)], sum(is.na(x)), replace=TRUE)
 #' low <- function(x, ...) {
 #'   max(mean(x,...) - 3 * sd(x,...), min(x, ...)/2)
 #' }
-##
 #' mv.fill(dat, method="random", ze_ne=TRUE)
 #' mv.fill(dat, method="low", ze_ne=TRUE)
-##
-#' =========================================================================
-mv.fill <- function(dat,method="mean",ze_ne = FALSE) {
+mv.fill <- function(dat, method = "mean", ze_ne = FALSE) {
   method <-
-    if (is.function(method)) method
-    else if (is.character(method)) get(method)
-    else eval(method)
+    if (is.function(method)) {
+      method
+    } else if (is.character(method)) {
+      get(method)
+    } else {
+      eval(method)
+    }
 
   vec.func <- function(x) {
     if (ze_ne) {
       x <- ifelse(x < .Machine$double.eps, NA, x)
       #' vectorisation of ifelse
     }
-    m <- method(x, na.rm=TRUE)
+    m <- method(x, na.rm = TRUE)
 
     x[is.na(x)] <- m
     #' 10-10-2011: more general for multiple filing points
@@ -723,7 +750,7 @@ mv.fill <- function(dat,method="mean",ze_ne = FALSE) {
     #' x <- ifelse(is.nan(x), m, x)  #' for missing values
   }
 
-  dat <- as.data.frame(dat, stringsAsFactors=F)
+  dat <- as.data.frame(dat, stringsAsFactors = F)
   res <- sapply(dat, function(i) vec.func(i))
   return(res)
 }
@@ -735,14 +762,14 @@ mv.fill.1 <- function(x, method = c("mean", "median")) {
   method <- match.arg(method)
   if (method == "median") {
     retval <- apply(x, 2, function(z) {
-                      z[is.na(z)] <- median(z, na.rm = TRUE)
-                      z
-                    })
+      z[is.na(z)] <- median(z, na.rm = TRUE)
+      z
+    })
   } else if (method == "mean") {
     retval <- apply(x, 2, function(z) {
-                      z[is.na(z)] <- mean(z, na.rm = TRUE)
-                      z
-                    })
+      z[is.na(z)] <- mean(z, na.rm = TRUE)
+      z
+    })
   } else {
     stop("'method' invalid")
   }
@@ -752,7 +779,6 @@ mv.fill.1 <- function(x, method = c("mean", "median")) {
 
 #' =======================================================================
 #' lwc-07-09-2010: Test codes for missing values processing
-#' =======================================================================
 #' wll-11-12-2007: Statistics and plot for missing values
 #' lwc-03-03-2010: Get number of missing values by column.
 #' lwc-15-06-2011: re-write
@@ -764,18 +790,16 @@ mv.fill.1 <- function(x, method = c("mean", "median")) {
 #'  cls <- rownames(dat)
 #'  cls <- sub("[.].*", "", cls)
 #'  cls <- factor(cls)
-##
 #'  tmp <- mv.stats(dat, grp=cls)
 #'  tmp <- mv.fill(dat, method = "median")
 #'  tmp <- mt:::mv.pattern(dat)
-##
-mv.stats <- function(dat,grp=NULL,...) {
+mv.stats <- function(dat, grp = NULL, ...) {
   #' overall mising values rate
-  mv.all <- sum(is.na(as.matrix(dat)))/length(as.matrix(dat))
+  mv.all <- sum(is.na(as.matrix(dat))) / length(as.matrix(dat))
 
   #' MV stats function for vector
-  vec.func  <-
-    function(x)  round(sum(is.na(x)|is.nan(x))/length(x), digits=3)
+  vec.func <-
+    function(x) round(sum(is.na(x) | is.nan(x)) / length(x), digits = 3)
   #' vec.func  <- function(x)  sum(is.na(x)|is.nan(x)) #' number of MV
   #' sum(is.na(x)|is.nan(x)|(x==0))
 
@@ -783,17 +807,16 @@ mv.stats <- function(dat,grp=NULL,...) {
   #' mv.rep <- apply(dat, 1, vec.func)
   mv.var <- apply(dat, 2, vec.func)
 
-  ret <- list(mv.overall = mv.all,mv.var = mv.var)
+  ret <- list(mv.overall = mv.all, mv.var = mv.var)
 
-  #' -------------------------------------------------------------------
-  if (!is.null(grp)){
+  if (!is.null(grp)) {
     #' MV rate with respect of variables and class info
     mv.grp <- sapply(levels(grp), function(y) {
-                       idx <- (grp == y)
-                       mat <- dat[idx,]
-                       mv <- apply(mat, 2, vec.func)
-                     })
-    #' --------------------------------------------------------------------
+      idx <- (grp == y)
+      mat <- dat[idx, ]
+      mv <- apply(mat, 2, vec.func)
+    })
+
     #' lwc-10-10-2011: Use aggregate. Beware that values pased in the
     #' function is vector(columns).
     #' mv.grp <- aggregate(dat, list(cls), vec.func)
@@ -802,26 +825,28 @@ mv.stats <- function(dat,grp=NULL,...) {
     #' mv.grp <- as.data.frame(t(mv.grp),stringsAsFactors=F)
 
     #' reshape matrix for lattice
-    mv.grp.1     <- data.frame(mv.grp)
-    mv.grp.1$all <- mv.var              #' Combine all
+    mv.grp.1 <- data.frame(mv.grp)
+    mv.grp.1$all <- mv.var #' Combine all
 
-    var         <- rep(1:nrow(mv.grp.1), ncol(mv.grp.1))
-    mv.grp.1     <- stack(mv.grp.1)
+    var <- rep(1:nrow(mv.grp.1), ncol(mv.grp.1))
+    mv.grp.1 <- stack(mv.grp.1)
     mv.grp.1$ind <- factor(mv.grp.1$ind,
-                           levels = unique.default(mv.grp.1$ind))
+      levels = unique.default(mv.grp.1$ind)
+    )
     mv.grp.1$var <- var
 
     mv.grp.plot <-
-      xyplot(values ~ var |ind, data=mv.grp.1, groups=ind, as.table=T,
-             layout=c(1,nlevels(mv.grp.1$ind)), type="l",
-             auto.key=list(space="right"),
-             #' main="Missing Values Percentage With Respect of Variables",
-             xlab="Index of variables", ylab="Percentage of missing values",
-             ...)
+      xyplot(values ~ var | ind,
+        data = mv.grp.1, groups = ind, as.table = T,
+        layout = c(1, nlevels(mv.grp.1$ind)), type = "l",
+        auto.key = list(space = "right"),
+        #' main="Missing Values Percentage With Respect of Variables",
+        xlab = "Index of variables", ylab = "Percentage of missing values",
+        ...
+      )
 
-    #' --------------------------------------------------------------------
-    ret$mv.grp       <- mv.grp
-    ret$mv.grp.plot  <- mv.grp.plot
+    ret$mv.grp <- mv.grp
+    ret$mv.grp.plot <- mv.grp.plot
   }
 
   ret
@@ -833,12 +858,15 @@ mv.stats <- function(dat,grp=NULL,...) {
 #'  col.regions = colorRampPalette(c("green", "black", "red"))
 #'  in lattice levelplot
 hm.cols <- function(low = "green", high = "red", n = 123) {
-  low <- col2rgb(low)/255
-  if (is.character(high))
-    high <- col2rgb(high)/255
-  col <- rgb(seq(low[1], high[1], len = n),
-             seq(low[2], high[2], len = n),
-             seq(low[3], high[3], len = n))
+  low <- col2rgb(low) / 255
+  if (is.character(high)) {
+    high <- col2rgb(high) / 255
+  }
+  col <- rgb(
+    seq(low[1], high[1], len = n),
+    seq(low[2], high[2], len = n),
+    seq(low[3], high[3], len = n)
+  )
   return(col)
 }
 
@@ -852,85 +880,95 @@ hm.cols <- function(low = "green", high = "red", n = 123) {
 #'               be noted the names of the first layer of data.list must be
 #'               given.
 #'   title     - A part of title string for plotting
-#' =========================================================================
-pca.plot.wrap <- function(data.list,title="plotting",...) {
-  if (is.null(names(data.list)))
+pca.plot.wrap <- function(data.list, title = "plotting", ...) {
+  if (is.null(names(data.list))) {
     names(data.list) <-
-      paste(deparse(substitute(data.list)),1:length(data.list), sep=":")
+      paste(deparse(substitute(data.list)), 1:length(data.list), sep = ":")
+  }
   dn <- names(data.list)
   pca <- lapply(dn, function(x) {
-                  pca  <- pca.comp(data.list[[x]]$dat, scale=F, pcs=1:2)
-                  scores <- cbind(pca$scores, cls=data.list[[x]]$cls, type=x)
-                  list(scores=scores, vars=pca$vars)
-                })
+    pca <- pca.comp(data.list[[x]]$dat, scale = F, pcs = 1:2)
+    scores <- cbind(pca$scores, cls = data.list[[x]]$cls, type = x)
+    list(scores = scores, vars = pca$vars)
+  })
   names(pca) <- dn
 
   pca.scores <- do.call(rbind, lapply(pca, function(x) x$scores))
-  pca.vars   <- do.call(rbind, lapply(pca, function(x) x$vars))
+  pca.vars <- do.call(rbind, lapply(pca, function(x) x$vars))
 
   pca.p <-
-    xyplot(PC2~PC1|type, data=pca.scores,groups = cls, as.table=T,
-           xlab="PC1", ylab="PC2", main=paste(title,": PCA",sep=""),
-           auto.key=list(space="right"),
-           par.settings = list(superpose.symbol=list(pch=rep(1:25))),
-           #' par.settings = list(superpose.symbol=list(pch=rep(1:25),
-           #'                                           col=c("black","brown3"))),
-           #' lwc-15-12-2010: check R_colour_card
+    xyplot(PC2 ~ PC1 | type,
+      data = pca.scores, groups = cls, as.table = T,
+      xlab = "PC1", ylab = "PC2", main = paste(title, ": PCA", sep = ""),
+      auto.key = list(space = "right"),
+      par.settings = list(superpose.symbol = list(pch = rep(1:25))),
+      #' par.settings = list(superpose.symbol=list(pch=rep(1:25),
+      #'                                           col=c("black","brown3"))),
+      #' lwc-15-12-2010: check R_colour_card
 
-           #' scales = "free",
-           panel = function(x, y, ...) {
-             panel.xyplot(x, y, ...)
-             panel.elli.1(x, y, ...)
-             #' panel.outl(x,y, ...)  #' wll-29-11-15: need to provide 'labs'
-           },...)
+      #' scales = "free",
+      panel = function(x, y, ...) {
+        panel.xyplot(x, y, ...)
+        panel.elli.1(x, y, ...)
+        #' panel.outl(x,y, ...)  #' wll-29-11-15: need to provide 'labs'
+      }, ...
+    )
 
   #' plot the PCA proportion of variance (#' reverse pca.vars for dotplot)
-  pca.p.1 <- dotplot(pca.vars[nrow(pca.vars):1, ,drop=F], groups=T, as.table=T,
-                     auto.key = list(space = 'right'),
-                     par.settings = list(superpose.symbol=list(pch=rep(1:25))),
-                     xlab = "Percentage",
-                     main = paste(title,": PCA proportion of variance",sep="")
-                    ,...)
-  list(pca.p=pca.p, pca.p.1=pca.p.1, pca.vars=pca.vars)
+  pca.p.1 <- dotplot(pca.vars[nrow(pca.vars):1, , drop = F],
+    groups = T, as.table = T,
+    auto.key = list(space = "right"),
+    par.settings = list(superpose.symbol = list(pch = rep(1:25))),
+    xlab = "Percentage",
+    main = paste(title, ": PCA proportion of variance", sep = ""),
+    ...
+  )
+  list(pca.p = pca.p, pca.p.1 = pca.p.1, pca.vars = pca.vars)
 }
 
 #' =========================================================================
 #' wll-01-06-2015: Wrapper function for plotting MDS. Only the first two
 #'   dimentions are  plotted.
-mds.plot.wrap <- function(data.list,method = "euclidean",
-                          title="plotting",...) {
-  if (is.null(names(data.list)))
-    names(data.list) <- paste(deparse(substitute(data.list)),1:length(data.list),
-                              sep=":")
+mds.plot.wrap <- function(data.list, method = "euclidean",
+                          title = "plotting", ...) {
+  if (is.null(names(data.list))) {
+    names(data.list) <- paste(deparse(substitute(data.list)), 1:length(data.list),
+      sep = ":"
+    )
+  }
   dn <- names(data.list)
 
   #' MDS
-  METHODS <- c("euclidean", "maximum", "manhattan", "canberra",
-               "binary", "minkowski")
-  meth    <- pmatch(method, METHODS)
+  METHODS <- c(
+    "euclidean", "maximum", "manhattan", "canberra",
+    "binary", "minkowski"
+  )
+  meth <- pmatch(method, METHODS)
 
-  mds <- lapply(dn, function(x){
-                  dis <- dist(data.list[[x]]$dat,method=METHODS[meth])
-                  mds <- cmdscale(dis)   #' only consider 2 dimention
-                  mds <- as.data.frame(mds)
-                  names(mds) <- c("Coord_1" ,"Coord_2")
-                  mds  <- cbind(mds, cls=data.list[[x]]$cls,type=x)
-                })
+  mds <- lapply(dn, function(x) {
+    dis <- dist(data.list[[x]]$dat, method = METHODS[meth])
+    mds <- cmdscale(dis) #' only consider 2 dimention
+    mds <- as.data.frame(mds)
+    names(mds) <- c("Coord_1", "Coord_2")
+    mds <- cbind(mds, cls = data.list[[x]]$cls, type = x)
+  })
   names(mds) <- dn
   mds <- do.call(rbind, lapply(mds, function(x) x))
 
   #' MDS plot
   mds.p <-
-    xyplot(Coord_2 ~ Coord_1|type, data=mds,groups = cls,as.table=T,
-           xlab="Coordinate 1", ylab="Coordinate 2",
-           main=paste(title,": MDS Plot",sep=""),
-           auto.key=list(space="right"),
-           par.settings = list(superpose.symbol=list(pch=rep(1:25))),
-           panel = function(x, y, ...) {
-             panel.xyplot(x, y, ...)
-             panel.elli.1(x, y, ...)
-             #' panel.outl(x,y, ...)#' wll-29-11-15: need to provide 'labs'
-           },...)
+    xyplot(Coord_2 ~ Coord_1 | type,
+      data = mds, groups = cls, as.table = T,
+      xlab = "Coordinate 1", ylab = "Coordinate 2",
+      main = paste(title, ": MDS Plot", sep = ""),
+      auto.key = list(space = "right"),
+      par.settings = list(superpose.symbol = list(pch = rep(1:25))),
+      panel = function(x, y, ...) {
+        panel.xyplot(x, y, ...)
+        panel.elli.1(x, y, ...)
+        #' panel.outl(x,y, ...)#' wll-29-11-15: need to provide 'labs'
+      }, ...
+    )
 }
 
 #' =========================================================================
@@ -946,113 +984,127 @@ mds.plot.wrap <- function(data.list,method = "euclidean",
 #'               be noted the names of the first layer of data.list must be
 #'               given.
 #'   title     - A part of title string for plotting
-#' =========================================================================
-lda.plot.wrap <- function(data.list, title="plotting",...){
-  if (is.null(names(data.list)))
-    names(data.list) <- paste(deparse(substitute(data.list)),1:length(data.list),
-                              sep=":")
-  dn  <- names(data.list)
-  lda <- lapply(dn, function(x) {  #' x=dn[1]
-                  res <- pcalda(data.list[[x]]$dat,data.list[[x]]$cls)
-                  dfs <- as.data.frame(res$x)
-                  eig <- res$lda.out$svd
+lda.plot.wrap <- function(data.list, title = "plotting", ...) {
+  if (is.null(names(data.list))) {
+    names(data.list) <- paste(deparse(substitute(data.list)), 1:length(data.list),
+      sep = ":"
+    )
+  }
+  dn <- names(data.list)
+  lda <- lapply(dn, function(x) { #' x=dn[1]
+    res <- pcalda(data.list[[x]]$dat, data.list[[x]]$cls)
+    dfs <- as.data.frame(res$x)
+    eig <- res$lda.out$svd
 
-                  if (ncol(dfs) > 2)  {
-                    dfs <- dfs[,1:2,drop=F]
-                    eig <- eig[1:2]
-                  }
-                  if (ncol(dfs)==1)  {
-                    dfs$LD2 <- dfs$LD1
-                    eig     <- c(eig, eig)
-                  }
-                  dfs <- cbind(dfs, cls=data.list[[x]]$cls, type=x)
+    if (ncol(dfs) > 2) {
+      dfs <- dfs[, 1:2, drop = F]
+      eig <- eig[1:2]
+    }
+    if (ncol(dfs) == 1) {
+      dfs$LD2 <- dfs$LD1
+      eig <- c(eig, eig)
+    }
+    dfs <- cbind(dfs, cls = data.list[[x]]$cls, type = x)
 
-                  names(eig) <- c("LD1", "LD2")
-                  list(dfs=dfs, eig=eig)
-                })
+    names(eig) <- c("LD1", "LD2")
+    list(dfs = dfs, eig = eig)
+  })
   names(lda) <- dn
 
   lda.dfs <- do.call(rbind, lapply(lda, function(x) x$dfs))
   lda.eig <- do.call(rbind, lapply(lda, function(x) x$eig))
 
-  lda.p <- xyplot(LD2~LD1|type, data=lda.dfs,groups = cls, as.table=T,
-                  xlab="DF1", ylab="DF2", main=paste(title,": LDA",sep=""),
-                  #' auto.key = list(columns=nlevels(cl)),
-                  auto.key=list(space="right"),
-                  par.settings = list(superpose.symbol=list(pch=rep(1:25))),
-                  #' scales = "free",
-                  panel = function(x, y, ...) {
-                    panel.xyplot(x, y, ...)
-                    panel.elli.1(x, y, ...)
-                    #' panel.outl(x,y, ...)#' wll-29-11-15: need to provide 'labs'
-                  },...)
+  lda.p <- xyplot(LD2 ~ LD1 | type,
+    data = lda.dfs, groups = cls, as.table = T,
+    xlab = "DF1", ylab = "DF2", main = paste(title, ": LDA", sep = ""),
+    #' auto.key = list(columns=nlevels(cl)),
+    auto.key = list(space = "right"),
+    par.settings = list(superpose.symbol = list(pch = rep(1:25))),
+    #' scales = "free",
+    panel = function(x, y, ...) {
+      panel.xyplot(x, y, ...)
+      panel.elli.1(x, y, ...)
+      #' panel.outl(x,y, ...)#' wll-29-11-15: need to provide 'labs'
+    }, ...
+  )
 
   #' plot LDA eigenvales
-  lda.p.1 <- dotplot(lda.eig[nrow(lda.eig):1, ,drop=F], groups=T, as.table=T,
-                     auto.key = list(space = 'right'),
-                     par.settings = list(superpose.symbol=list(pch=rep(1:25))),
-                     xlab = "Eigenvalues",
-                     main = paste(title,": LDA Eigenvalues",sep=""),...)
-  list(lda.p=lda.p, lda.p.1=lda.p.1, lda.eig=lda.eig)
+  lda.p.1 <- dotplot(lda.eig[nrow(lda.eig):1, , drop = F],
+    groups = T, as.table = T,
+    auto.key = list(space = "right"),
+    par.settings = list(superpose.symbol = list(pch = rep(1:25))),
+    xlab = "Eigenvalues",
+    main = paste(title, ": LDA Eigenvalues", sep = ""), ...
+  )
+  list(lda.p = lda.p, lda.p.1 = lda.p.1, lda.eig = lda.eig)
 }
 
 #' =========================================================================
 #' wll-23-10-2008: Wrapper function for plotting PCALDA
 #' Note: Will plot 2-class problem differently with stripplot.
-lda.plot.wrap.1 <- function(data.list, title="plotting",...){
-  if (is.null(names(data.list)))
-    names(data.list) <- paste(deparse(substitute(data.list)),1:length(data.list),
-                              sep=":")
-  dn  <- names(data.list)
+lda.plot.wrap.1 <- function(data.list, title = "plotting", ...) {
+  if (is.null(names(data.list))) {
+    names(data.list) <- paste(deparse(substitute(data.list)), 1:length(data.list),
+      sep = ":"
+    )
+  }
+  dn <- names(data.list)
   lda <- lapply(dn, function(x) {
-                  res <- pcalda(data.list[[x]]$dat,data.list[[x]]$cls)
-                  #' res <- nlda(data.list[[x]]$dat,data.list[[x]]$cls)
-                  dfs <- as.data.frame(res$x)
-                  dfs <- cbind(dfs, cls=data.list[[x]]$cls,
-                               type=rep(x, nrow(data.list[[x]]$dat)))
-                  #' list(dfs=dfs, eig=res$Tw)
-                  eig <- res$lda.out$svd
-                  names(eig) <- colnames(res$x)
-                  list(dfs=dfs, eig=eig)
-                })
+    res <- pcalda(data.list[[x]]$dat, data.list[[x]]$cls)
+    #' res <- nlda(data.list[[x]]$dat,data.list[[x]]$cls)
+    dfs <- as.data.frame(res$x)
+    dfs <- cbind(dfs,
+      cls = data.list[[x]]$cls,
+      type = rep(x, nrow(data.list[[x]]$dat))
+    )
+    #' list(dfs=dfs, eig=res$Tw)
+    eig <- res$lda.out$svd
+    names(eig) <- colnames(res$x)
+    list(dfs = dfs, eig = eig)
+  })
   names(lda) <- dn
 
   lda.dfs <- do.call(rbind, lapply(lda, function(x) x$dfs))
   lda.eig <- do.call(rbind, lapply(lda, function(x) x$eig))
 
-  if (length(grep("LD2", colnames(lda.dfs))) > 0 ){
+  if (length(grep("LD2", colnames(lda.dfs))) > 0) {
     lda.p <-
-      xyplot(LD2~LD1|type, data=lda.dfs,groups = cls, as.table=T,
-             xlab="LD1", ylab="LD2", main=paste(title,": LDA",sep=""),
-             #' auto.key = list(columns=nlevels(cl)),
-             auto.key=list(space="right"),
-             par.settings = list(superpose.symbol=list(pch=rep(1:25))),
-             #' scales = "free",
-             panel = function(x, y, ...) {
-               panel.xyplot(x, y, ...)
-               panel.elli.1(x, y, ...) #' panel.outl(x,y, ...)
-             },...)
+      xyplot(LD2 ~ LD1 | type,
+        data = lda.dfs, groups = cls, as.table = T,
+        xlab = "LD1", ylab = "LD2", main = paste(title, ": LDA", sep = ""),
+        #' auto.key = list(columns=nlevels(cl)),
+        auto.key = list(space = "right"),
+        par.settings = list(superpose.symbol = list(pch = rep(1:25))),
+        #' scales = "free",
+        panel = function(x, y, ...) {
+          panel.xyplot(x, y, ...)
+          panel.elli.1(x, y, ...) #' panel.outl(x,y, ...)
+        }, ...
+      )
   } else {
     lda.p <-
-      stripplot(LD1 ~ cls|type, data = lda.dfs, as.table=T, groups=cls,
-                auto.key=list(space="right"),
-                par.settings = list(superpose.symbol=list(pch=rep(1:25))),
-                #' scales = "free",
-                main=paste(title,": LDA",sep=""),...)
+      stripplot(LD1 ~ cls | type,
+        data = lda.dfs, as.table = T, groups = cls,
+        auto.key = list(space = "right"),
+        par.settings = list(superpose.symbol = list(pch = rep(1:25))),
+        #' scales = "free",
+        main = paste(title, ": LDA", sep = ""), ...
+      )
     #' wll-07-05-2009: I have added the auto.key and par.settings
     #'   only large number of subfigures. Otherwise, this two
     #'   line should be removed.
   }
 
   #' plot LDA eigenvales
-  lda.p.1 <- dotplot(lda.eig[nrow(lda.eig):1, ,drop=F], groups=T, as.table=T,
-                     auto.key = list(space = 'right'),
-                     par.settings = list(superpose.symbol=list(pch=rep(1:25))),
-                     xlab = "Eigenvalues",
-                     main = paste(title,": LDA Eigenvalues",sep=""),...)
-  list(lda.p=lda.p, lda.p.1=lda.p.1, lda.eig=lda.eig)
+  lda.p.1 <- dotplot(lda.eig[nrow(lda.eig):1, , drop = F],
+    groups = T, as.table = T,
+    auto.key = list(space = "right"),
+    par.settings = list(superpose.symbol = list(pch = rep(1:25))),
+    xlab = "Eigenvalues",
+    main = paste(title, ": LDA Eigenvalues", sep = ""), ...
+  )
+  list(lda.p = lda.p, lda.p.1 = lda.p.1, lda.eig = lda.eig)
 }
-
 
 #' =========================================================================
 #' wll-23-10-2008: Wrapper function for plotting PLSDA. Only the first two
@@ -1065,47 +1117,53 @@ lda.plot.wrap.1 <- function(data.list, title="plotting",...){
 #'               be noted the names of the first layer of data.list must be
 #'               given.
 #'   title     - A part of title string for plotting
-#' =========================================================================
-pls.plot.wrap <- function(data.list, title="plotting",...){
-  if (is.null(names(data.list)))
-    names(data.list) <- paste(deparse(substitute(data.list)),1:length(data.list),
-                              sep=":")
+pls.plot.wrap <- function(data.list, title = "plotting", ...) {
+  if (is.null(names(data.list))) {
+    names(data.list) <- paste(deparse(substitute(data.list)), 1:length(data.list),
+      sep = ":"
+    )
+  }
   dn <- names(data.list)
   pls <-
     lapply(dn, function(x) {
-             res    <- plsc(data.list[[x]]$dat,data.list[[x]]$cls)
-             scores <- as.data.frame(res$x)[,1:2]        #' The first two components
-             scores <-
-               cbind(scores,
-                     cls=data.list[[x]]$cls,type=rep(x, nrow(data.list[[x]]$dat)))
-             vars   <- round((res$pls.out$Xvar/ res$pls.out$Xtotvar)* 100,2)[1:2]
-             names(vars) <- c("LC1","LC2")
-             list(scores=scores, vars=vars)
-           })
+      res <- plsc(data.list[[x]]$dat, data.list[[x]]$cls)
+      scores <- as.data.frame(res$x)[, 1:2] #' The first two components
+      scores <-
+        cbind(scores,
+          cls = data.list[[x]]$cls, type = rep(x, nrow(data.list[[x]]$dat))
+        )
+      vars <- round((res$pls.out$Xvar / res$pls.out$Xtotvar) * 100, 2)[1:2]
+      names(vars) <- c("LC1", "LC2")
+      list(scores = scores, vars = vars)
+    })
   names(pls) <- dn
 
   pls.scores <- do.call(rbind, lapply(pls, function(x) x$scores))
-  pls.vars   <- do.call(rbind, lapply(pls, function(x) x$vars))
+  pls.vars <- do.call(rbind, lapply(pls, function(x) x$vars))
 
   pls.p <-
-    xyplot(LC2~LC1|type, data=pls.scores,groups = cls, as.table=T,
-           xlab="LC1", ylab="LC2", main=paste(title,": PLS",sep=""),
-           auto.key=list(space="right"),
-           par.settings = list(superpose.symbol=list(pch=rep(1:25))),
-           #' scales = "free",
-           panel = function(x, y, ...) {
-             panel.xyplot(x, y, ...)
-             panel.elli.1(x, y, ...)
-             #' panel.outl(x,y, ...)
-           },...)
+    xyplot(LC2 ~ LC1 | type,
+      data = pls.scores, groups = cls, as.table = T,
+      xlab = "LC1", ylab = "LC2", main = paste(title, ": PLS", sep = ""),
+      auto.key = list(space = "right"),
+      par.settings = list(superpose.symbol = list(pch = rep(1:25))),
+      #' scales = "free",
+      panel = function(x, y, ...) {
+        panel.xyplot(x, y, ...)
+        panel.elli.1(x, y, ...)
+        #' panel.outl(x,y, ...)
+      }, ...
+    )
 
   #' plot PLS proportion of variance
-  pls.p.1 <- dotplot(pls.vars[nrow(pls.vars):1, ,drop=F], groups=T, as.table=T,
-                     auto.key = list(space = 'right'),
-                     par.settings = list(superpose.symbol=list(pch=rep(1:25))),
-                     xlab = "Percentage",
-                     main = paste(title,": PLS proportion of variance",sep=""),...)
-  list(pls.p=pls.p, pls.p.1=pls.p.1, pls.vars=pls.vars)
+  pls.p.1 <- dotplot(pls.vars[nrow(pls.vars):1, , drop = F],
+    groups = T, as.table = T,
+    auto.key = list(space = "right"),
+    par.settings = list(superpose.symbol = list(pch = rep(1:25))),
+    xlab = "Percentage",
+    main = paste(title, ": PLS proportion of variance", sep = ""), ...
+  )
+  list(pls.p = pls.p, pls.p.1 = pls.p.1, pls.vars = pls.vars)
 }
 
 #' =======================================================================
@@ -1121,36 +1179,33 @@ pls.plot.wrap <- function(data.list, title="plotting",...){
 #'            synmbol/colours in legend to keep consistent with
 #'            sug-figure's.
 #' Note: Internal function.
-#' -----------------------------------------------------------------------
 #' Usage:
 #'  data(iris)
 #'  x <- subset(iris, select = -Species)
 #'  y <- iris$Species
 #'  #' generate data list by dat.sel
 #'  iris.pw <- dat.sel(x,y,choices=NULL)
-##
 #'  res <- pls.plot.wrap(iris.pw)
 #'  ph  <- plot.wrap.split(res[[1]], res[[3]], perc=F)
 #'  win.metafile(filename = paste("pls_plot","%02d.emf",sep="_"))
 #'  for(i in 1:length(ph)) plot(ph[[i]])
 #'  dev.off()
-#' -------------------------------------------------------------------------
-plot.wrap.split <- function(plot.handle, plot.lab, perc=T){
+plot.wrap.split <- function(plot.handle, plot.lab, perc = T) {
   n <- dim(plot.handle)
-  pca.ph <- lapply(1:n, function(x){
-                     ph    <- plot.handle[x]
-                     xylab <- round(plot.lab[x,,drop=F], digits=2)
-                     xylab <- lapply(colnames(xylab),function(y){
-                                       if (perc) {
-                                         paste(y," (", xylab[,y],"%)", sep="")
-                                       } else {
-                                         paste(y," (", xylab[,y],")", sep="")
-                                       }
-                                     })
-                     ph$ylab <- xylab[[1]]
-                     if (length(xylab) > 1) ph$xlab <- xylab[[2]]
-                     ph
-                   })
+  pca.ph <- lapply(1:n, function(x) {
+    ph <- plot.handle[x]
+    xylab <- round(plot.lab[x, , drop = F], digits = 2)
+    xylab <- lapply(colnames(xylab), function(y) {
+      if (perc) {
+        paste(y, " (", xylab[, y], "%)", sep = "")
+      } else {
+        paste(y, " (", xylab[, y], ")", sep = "")
+      }
+    })
+    ph$ylab <- xylab[[1]]
+    if (length(xylab) > 1) ph$xlab <- xylab[[2]]
+    ph
+  })
 }
 
 #' ========================================================================
@@ -1161,25 +1216,27 @@ plot.wrap.split <- function(plot.handle, plot.lab, perc=T){
 #'   y <- iris[,5]
 #'   mdsplot(x,y, dimen=c(1,2),ep=2)
 #'   mdsplot(x,y, dimen=c(2,1),ep=1)
-mdsplot <- function(x, y, method = "euclidean",dimen=c(1,2), ep=0,...) {
-  METHODS <- c("euclidean", "maximum", "manhattan", "canberra",
-               "binary", "minkowski")
-  meth    <- pmatch(method, METHODS)
+mdsplot <- function(x, y, method = "euclidean", dimen = c(1, 2), ep = 0, ...) {
+  METHODS <- c(
+    "euclidean", "maximum", "manhattan", "canberra",
+    "binary", "minkowski"
+  )
+  meth <- pmatch(method, METHODS)
 
-  dis <- dist(x, method=METHODS[meth])
+  dis <- dist(x, method = METHODS[meth])
 
   #' mds <- cmdscale(dis)      #' only consider 2 dimention
   #' mds <- as.data.frame(mds)
-  mds <- cmdscale(dis, k = 2, eig = TRUE)  #' Classical MDS
+  mds <- cmdscale(dis, k = 2, eig = TRUE) #' Classical MDS
   #' mds <- isoMDS(dis, k=2)                  #' Nonmetric MDS
   mds <- as.data.frame(mds$points)
-  names(mds) <- c("Coordinate 1" ,"Coordinate 2")
+  names(mds) <- c("Coordinate 1", "Coordinate 2")
 
   #' want to change order?
-  mds <- mds[,dimen]
+  mds <- mds[, dimen]
 
   #' call group plot
-  p <- grpplot(mds,y,plot="pairs",ep=ep,...)
+  p <- grpplot(mds, y, plot = "pairs", ep = ep, ...)
   p
 }
 
@@ -1187,35 +1244,37 @@ mdsplot <- function(x, y, method = "euclidean",dimen=c(1,2), ep=0,...) {
 #' lwc-29-05-2008: Another version of PCA plot with proportion indication.
 #'   Use text indicate different groups.
 #' lwc-13-09-2010: major changes and add ellipse plot
-pca.plot <- function(x, y, scale=TRUE, abbrev = FALSE, ep.plot=FALSE,...) {
-  #' -------------------------------------------------------------------
+pca.plot <- function(x, y, scale = TRUE, abbrev = FALSE, ep.plot = FALSE, ...) {
+
   #' lwc-12-12-2008: Plot ellipse
-  elli.plot <- function(x,y,...){
-    Var  <- var(cbind(x,y))
-    Mean <- cbind(mean(x),mean(y))
+  elli.plot <- function(x, y, ...) {
+    Var <- var(cbind(x, y))
+    Mean <- cbind(mean(x), mean(y))
     Elli <- ellipse(Var, centre = Mean, level = 0.975)
-    lines(Elli[,1], Elli[,2],...)
+    lines(Elli[, 1], Elli[, 2], ...)
   }
 
   x <- as.matrix(x)
   y <- factor(y)
 
-  pca <- pca.comp(x, scale=scale, pcs=1:2,...)
+  pca <- pca.comp(x, scale = scale, pcs = 1:2, ...)
   val <- pca$scores
-  val <- val[c("PC2","PC1")]    #' Swap position
+  val <- val[c("PC2", "PC1")] #' Swap position
 
-  if(abbrev) levels(y) <- abbreviate(levels(y), abbrev)
+  if (abbrev) levels(y) <- abbreviate(levels(y), abbrev)
 
-  plot(val,type="n", cex=1.0,cex.lab=1.0,cex.axis=1.0,cex.main=1.0,
-       ylab=paste("PC1", " (", pca$vars[1],"%)", sep = ""),
-       xlab=paste("PC2", " (", pca$vars[2],"%)", sep = ""),...)
+  plot(val,
+    type = "n", cex = 1.0, cex.lab = 1.0, cex.axis = 1.0, cex.main = 1.0,
+    ylab = paste("PC1", " (", pca$vars[1], "%)", sep = ""),
+    xlab = paste("PC2", " (", pca$vars[2], "%)", sep = ""), ...
+  )
 
-  text(val[,1], val[,2], as.character(y), cex=0.7, col=unclass(y),...)
-  if(ep.plot) {
+  text(val[, 1], val[, 2], as.character(y), cex = 0.7, col = unclass(y), ...)
+  if (ep.plot) {
     tmp <- as.factor(as.numeric(unclass(y)))
-    for(i in levels(tmp)){
-      idx <- tmp==i
-      elli.plot(val[idx,1],val[idx,2],col=i)
+    for (i in levels(tmp)) {
+      idx <- tmp == i
+      elli.plot(val[idx, 1], val[idx, 2], col = i)
     }
     #' Note: I think that it is not a good way to keep the colors
     #'   of ellipse consistent with group text colors.
@@ -1226,21 +1285,21 @@ pca.plot <- function(x, y, scale=TRUE, abbrev = FALSE, ep.plot=FALSE,...) {
 #' =========================================================================
 #' wll-29-03-2008: Compute the PCA scores and propotion of variance
 #' TO-DO: 1.) check validility of argument pcs.
-pca.comp <- function(x, scale=FALSE, pcs=1:2,...) {
-  pca  <- prcomp(x, scale.=scale,...)
-  vars <- pca$sdev^2          #' i.e. eigenvalues/variance
-  vars <- vars/sum(vars)      #' Proportion of Variance
+pca.comp <- function(x, scale = FALSE, pcs = 1:2, ...) {
+  pca <- prcomp(x, scale. = scale, ...)
+  vars <- pca$sdev^2 #' i.e. eigenvalues/variance
+  vars <- vars / sum(vars) #' Proportion of Variance
   names(vars) <- colnames(pca$rotation)
-  vars <- round(vars * 100,2)
+  vars <- round(vars * 100, 2)
   #' dfn  <- paste(names(vars)," (",vars[names(vars)],"%)",sep="")
-  dfn  <- paste(names(vars),": ",vars[names(vars)],"%",sep="")
-  x    <- data.frame(pca$x)
-  x    <- x[,pcs]
+  dfn <- paste(names(vars), ": ", vars[names(vars)], "%", sep = "")
+  x <- data.frame(pca$x)
+  x <- x[, pcs]
   vars <- vars[pcs]
-  dfn  <- dfn[pcs]
+  dfn <- dfn[pcs]
   #' names(x) <- dfn
 
-  return(list(scores=x,vars=vars,varsn=dfn))
+  return(list(scores = x, vars = vars, varsn = dfn))
 }
 
 #' ========================================================================
@@ -1250,13 +1309,12 @@ pca.comp <- function(x, scale=FALSE, pcs=1:2,...) {
 #' Arguments:
 #'   adjp  - a matrix-like p-values of simutanouesly testing
 #'   alpha - a vector of cutoff of p-values or Type I error rate.
-##
 #' Note: See mt.reject in package multest.
-pval.reject <- function(adjp,alpha){
+pval.reject <- function(adjp, alpha) {
   adjp <- as.data.frame(adjp)
-  tmp <- sapply(alpha, function(y){
-                  p.num <- sapply(adjp, function(x) sum(x <= y,na.rm = TRUE))
-                })
+  tmp <- sapply(alpha, function(y) {
+    p.num <- sapply(adjp, function(x) sum(x <= y, na.rm = TRUE))
+  })
   colnames(tmp) <- alpha
   tmp <- t(tmp)
   return(tmp)
@@ -1272,21 +1330,24 @@ pval.reject <- function(adjp,alpha){
 #'   x      - data frame or matrix
 #'   y      - categorical data
 #'   method - hypothesis test such as t.test and wilcox.test.
-#' ------------------------------------------------------------------------
 #' TO-DO: 1. User defined permutation test.
-pval.test <- function(x,y, method="oneway.test",...) {
+pval.test <- function(x, y, method = "oneway.test", ...) {
   method <-
-    if (is.function(method)) method
-    else if (is.character(method)) get(method)
-    else eval(method)
+    if (is.function(method)) {
+      method
+    } else if (is.character(method)) {
+      get(method)
+    } else {
+      eval(method)
+    }
 
-  pval <- sapply(as.data.frame(x),function(x) {
-                   method(x ~ y,...)$p.value
-                   #' Normality test. Note that H0 is normal distribution!
-                   #' shapiro.test(x)$p.value
-                   #' t.test(x ~ y,var.equal=F)$p.value
-                   #' oneway.test(x ~ y,var.equal=F)$p.value
-                 })
+  pval <- sapply(as.data.frame(x), function(x) {
+    method(x ~ y, ...)$p.value
+    #' Normality test. Note that H0 is normal distribution!
+    #' shapiro.test(x)$p.value
+    #' t.test(x ~ y,var.equal=F)$p.value
+    #' oneway.test(x ~ y,var.equal=F)$p.value
+  })
   return(pval)
   #' return(list(pval=pval, method=method))
 }
@@ -1298,34 +1359,32 @@ pval.test <- function(x,y, method="oneway.test",...) {
 #'  co    - Correlation matrices
 #'  lable - Logical value indicating wether the corellation coefficient (x
 #'          100) should be displayed.
-#' -------------------------------------------------------------------------
 #'  \references{
 #'    Michael Friendly (2002).
 #'    \emph{Corrgrams: Exploratory displays for correlation matrices}.
 #'    The American Statistician, 56, 316--324.
-##
 #'    D.J. Murdoch, E.D. Chow (1996).
 #'    \emph{A graphical display of large correlation matrices}.
 #'    The American Statistician, 50, 178--180.
 #'  }
-##
-#' -------------------------------------------------------------------------
 #' Usages:
 #'   tmp <- iris[,1:4]
 #'   co  <- cor(tmp)
 #'   corrgram.ellipse(co,label=T)
 #'   corrgram.circle(co)
-corrgram.ellipse <- function(co,label=FALSE,
+corrgram.ellipse <- function(co, label = FALSE,
                              col.regions =
                                colorRampPalette(c("red", "white", "blue")),
-                             scales = list(x = list(rot = 90)),...) {
+                             scales = list(x = list(rot = 90)), ...) {
   ph <-
-    levelplot(co, xlab=NULL, ylab=NULL,at = do.breaks(c(-1.01, 1.01), 20),
-              colorkey = list(space = "right"),
-              #' col.regions = heat.colors,#terrain.colors,#cm.colors,
-              #' col.regions = colorRampPalette(c("yellow", "red")),
-              col.regions = col.regions, scales=scales,
-              panel = panel.corrgram.ell, label = label,...)
+    levelplot(co,
+      xlab = NULL, ylab = NULL, at = do.breaks(c(-1.01, 1.01), 20),
+      colorkey = list(space = "right"),
+      #' col.regions = heat.colors,#terrain.colors,#cm.colors,
+      #' col.regions = colorRampPalette(c("yellow", "red")),
+      col.regions = col.regions, scales = scales,
+      panel = panel.corrgram.ell, label = label, ...
+    )
   return(ph)
 }
 
@@ -1339,13 +1398,15 @@ corrgram.ellipse <- function(co,label=FALSE,
 corrgram.circle <- function(co,
                             col.regions =
                               colorRampPalette(c("red", "white", "blue")),
-                            scales = list(x = list(rot = 90)),...) {
+                            scales = list(x = list(rot = 90)), ...) {
   ph <-
-    levelplot(co, xlab = NULL, ylab = NULL,
-              colorkey = list(space = "right"),
-              at = do.breaks(c(-1.01, 1.01), 101),
-              col.regions = col.regions, scales = scales,
-              panel = panel.corrgram.cir,...)
+    levelplot(co,
+      xlab = NULL, ylab = NULL,
+      colorkey = list(space = "right"),
+      at = do.breaks(c(-1.01, 1.01), 101),
+      col.regions = col.regions, scales = scales,
+      panel = panel.corrgram.cir, ...
+    )
   return(ph)
 }
 
@@ -1360,13 +1421,18 @@ panel.corrgram.ell <- function(x, y, z, subscripts, at, level = 0.9,
   z <- as.numeric(z)[subscripts]
   zcol <- level.colors(z, at = at, ...)
   for (i in seq(along = z)) {
-    ell <- ellipse(z[i], level = level, npoints = 50, scale = c(.2, .2),
-                   centre = c(x[i], y[i]))
+    ell <- ellipse(z[i],
+      level = level, npoints = 50, scale = c(.2, .2),
+      centre = c(x[i], y[i])
+    )
     panel.polygon(ell, col = zcol[i], border = zcol[i], ...)
   }
-  if (label)
-    panel.text(x = x, y = y, lab = 100 * round(z, 2),
-               cex = 0.8, col = ifelse(z < 0, "white", "black"))
+  if (label) {
+    panel.text(
+      x = x, y = y, lab = 100 * round(z, 2),
+      cex = 0.8, col = ifelse(z < 0, "white", "black")
+    )
+  }
 }
 
 #' =========================================================================
@@ -1382,79 +1448,89 @@ panel.corrgram.cir <- function(x, y, z, subscripts, at = pretty(z),
   for (i in seq(along = z)) {
     lims <- range(0, z[i])
     tval <- 2 * base::pi * seq(from = lims[1], to = lims[2], by = 0.01)
-    grid.polygon(x = x[i] + .5 * scale * c(0, sin(tval)),
-                 y = y[i] + .5 * scale * c(0, cos(tval)),
-                 default.units = "native", gp = gpar(fill = zcol[i]))
-    grid.circle(x = x[i], y = y[i], r = .5 * scale,
-                default.units = "native")
+    grid.polygon(
+      x = x[i] + .5 * scale * c(0, sin(tval)),
+      y = y[i] + .5 * scale * c(0, cos(tval)),
+      default.units = "native", gp = gpar(fill = zcol[i])
+    )
+    grid.circle(
+      x = x[i], y = y[i], r = .5 * scale,
+      default.units = "native"
+    )
   }
 }
-
 
 #' ========================================================================
 #' lwc-15-04-2010: pairwise combination of categorical data set
 #' Note: Old version of dat.sel became as dat.sel.1.
 dat.sel <- function(dat, cls, choices = NULL) {
   #' get the index of pairwise combination
-  idx <- combn.pw(cls,choices = choices)
+  idx <- combn.pw(cls, choices = choices)
   #' constructe data set consisting of data matrix and its class info
   dat.pair <-
-    lapply(idx, function(x){
-             cls.pw  <- factor(cls[x])   #' force drop factor levels
+    lapply(idx, function(x) {
+      cls.pw <- factor(cls[x]) #' force drop factor levels
 
-             dat.pw  <- dat[x,,drop=F]
-             list(dat=dat.pw, cls=cls.pw)
-           })
+      dat.pw <- dat[x, , drop = F]
+      list(dat = dat.pw, cls = cls.pw)
+    })
   return(dat.pair)
 }
 
 #' ========================================================================
 #' lwc-13-04-2010: Index of pairwise combination for categorical vectors.
 combn.pw <- function(cls, choices = NULL) {
+
   #' ---------------------------------------------------------------------
-  .combn.pw <- function(choices, lev){
-    choices <- if (is.null(choices)) lev  else unique(choices)
+  .combn.pw <- function(choices, lev) {
+    choices <- if (is.null(choices)) lev else unique(choices)
     pm <- pmatch(choices, lev)
-    if (any(is.na(pm)))
+    if (any(is.na(pm))) {
       stop("'choices' should be one of ", paste(lev, collapse = ", "))
+    }
 
     #' Get the binary combinations using combn (core package utils)
     if (length(choices) == 1) {
-      if (F) {      #' simple implementation
-        lev.1 <- setdiff(lev,choices)
-        com   <- cbind(choices, lev.1)
+      if (F) { #' simple implementation
+        lev.1 <- setdiff(lev, choices)
+        com <- cbind(choices, lev.1)
         dimnames(com) <- NULL
-      } else {      #' Keep compatable with dat.sel.1
-        com <- t(combn(lev,2))
-        idx <- sapply(1:nrow(com), function(x){
-                        if (match(choices, com[x,],nomatch=0) > 0) return (T) else (F)
-                      })
-        com <- com[idx,,drop=F]     #' lwc-01-12-2009: fix a bug
+      } else { #' Keep compatable with dat.sel.1
+        com <- t(combn(lev, 2))
+        idx <- sapply(1:nrow(com), function(x) {
+          if (match(choices, com[x, ], nomatch = 0) > 0) {
+            return(T)
+          } else {
+            (F)
+          }
+        })
+        com <- com[idx, , drop = F] #' lwc-01-12-2009: fix a bug
       }
     } else {
       com <- t(combn(choices, 2))
     }
     return(com)
   }
+
   #' ---------------------------------------------------------------------
   cls <- as.factor(cls)
   lev <- levels(cls)
   if (is.list(choices)) {
-    com <- lapply(choices, function(x) .combn.pw(x,lev))
+    com <- lapply(choices, function(x) .combn.pw(x, lev))
     com <- do.call("rbind", com)
     com <- unique(com)
   } else {
-    com <- .combn.pw(choices,lev)
+    com <- .combn.pw(choices, lev)
   }
-  idx <- apply(com, 1, function(x){
-                 ind <- cls %in% x
-                 #' ind <- which(ind)
-                 #' comment: don't use this otherwise you have to switch
-                 #' data frame to list.
-               })
-  colnames(idx) <- apply(com, 1, paste, collapse="~")
+  idx <- apply(com, 1, function(x) {
+    ind <- cls %in% x
+    #' ind <- which(ind)
+    #' comment: don't use this otherwise you have to switch
+    #' data frame to list.
+  })
+  colnames(idx) <- apply(com, 1, paste, collapse = "~")
 
-  idx <- as.data.frame(idx)    #' for easy manipulation.
+  idx <- as.data.frame(idx) #' for easy manipulation.
   return(idx)
 }
 
@@ -1467,17 +1543,16 @@ combn.pw <- function(cls, choices = NULL) {
 #'               plooting with lattice, it may be difficult to extract some
 #'               combination for condition plotting.
 #'           3.) This function was replaced by new version.
-#' =========================================================================
 dat.sel.1 <- function(dat, cl, choices = NULL) {
-  dat.pair <- .dat.sel(dat, cl, choices=choices)
-  com      <- apply(dat.pair$com, 1, paste, collapse="~")
+  dat.pair <- .dat.sel(dat, cl, choices = choices)
+  com <- apply(dat.pair$com, 1, paste, collapse = "~")
 
   #' reshape dat.pair
-  dat.pair.1 <- lapply(com, function(x){
-                         dat.tmp <- dat.pair$dat[[x]]
-                         cls.tmp <- dat.pair$cl[[x]]
-                         list(dat=dat.tmp, cls=cls.tmp)
-                       })
+  dat.pair.1 <- lapply(com, function(x) {
+    dat.tmp <- dat.pair$dat[[x]]
+    cls.tmp <- dat.pair$cl[[x]]
+    list(dat = dat.tmp, cls = cls.tmp)
+  })
   names(dat.pair.1) <- com
   #' t(sapply(dat.pair.1, function(x) c(length(x$cls),dim(x$dat))))
   return(dat.pair.1)
@@ -1493,55 +1568,71 @@ dat.sel.1 <- function(dat, cl, choices = NULL) {
 #'               function
 #' NOTE: Using drop=F to keep the format of matrix even the matrix has one
 #'       element.
-#' ================================================================
 .dat.sel <- function(dat, cl, choices = NULL) {
-  #' ======================================================================
+
   #' lwc-29-10-2006: combnations is from package gtools.
-  ##
   #' $Id: mt_util_1.r,v 1.16 2009/07/27 10:23:41 wll Exp $
-  ##
   #' From email by Brian D Ripley <ripley@stats.ox.ac.uk> to r-help
   #' dated Tue, 14 Dec 1999 11:14:04 +0000 (GMT) in response to
   #' Alex Ahgarin <datamanagement@email.com>.  Original version was
   #' named "subsets" and was Written by Bill Venables.
-  ##
-  #' ======================================================================
-  combinations <- function(n, r, v = 1:n, set = TRUE, repeats.allowed=FALSE) {
-    if(mode(n) != "numeric" || length(n) != 1
-       || n < 1 || (n %% 1) != 0) stop("bad value of n")
-    if(mode(r) != "numeric" || length(r) != 1
-       || r < 1 || (r %% 1) != 0) stop("bad value of r")
-    if(!is.atomic(v) || length(v) < n)
+  combinations <- function(n, r, v = 1:n, set = TRUE, repeats.allowed = FALSE) {
+    if (mode(n) != "numeric" || length(n) != 1
+    || n < 1 || (n %% 1) != 0) {
+      stop("bad value of n")
+    }
+    if (mode(r) != "numeric" || length(r) != 1
+    || r < 1 || (r %% 1) != 0) {
+      stop("bad value of r")
+    }
+    if (!is.atomic(v) || length(v) < n) {
       stop("v is either non-atomic or too short")
-    if( (r > n) & repeats.allowed==FALSE)
+    }
+    if ((r > n) & repeats.allowed == FALSE) {
       stop("r > n and repeats.allowed=FALSE")
-    if(set) {
+    }
+    if (set) {
       v <- unique(sort(v))
       if (length(v) < n) stop("too few different elements")
     }
     v0 <- vector(mode(v), 0)
 
     #' Inner workhorse
-    if(repeats.allowed)
-      sub <- function(n, r, v){
-        if(r == 0) v0 else
-        if(r == 1) matrix(v, n, 1) else
-        if(n == 1) matrix(v, 1, r) else
-        rbind(cbind(v[1], Recall(n, r-1, v)), Recall(n-1, r, v[-1]))
+    if (repeats.allowed) {
+      sub <- function(n, r, v) {
+        if (r == 0) {
+          v0
+        } else
+        if (r == 1) {
+          matrix(v, n, 1)
+        } else
+        if (n == 1) {
+          matrix(v, 1, r)
+        } else {
+          rbind(cbind(v[1], Recall(n, r - 1, v)), Recall(n - 1, r, v[-1]))
+        }
       }
-    else
-      sub <- function(n, r, v){
-        if(r == 0) v0 else
-        if(r == 1) matrix(v, n, 1) else
-        if(r == n) matrix(v, 1, n) else
-        rbind(cbind(v[1], Recall(n-1, r-1, v[-1])), Recall(n-1, r, v[-1]))
+    } else {
+      sub <- function(n, r, v) {
+        if (r == 0) {
+          v0
+        } else
+        if (r == 1) {
+          matrix(v, n, 1)
+        } else
+        if (r == n) {
+          matrix(v, 1, n)
+        } else {
+          rbind(cbind(v[1], Recall(n - 1, r - 1, v[-1])), Recall(n - 1, r, v[-1]))
+        }
       }
+    }
 
     sub(n, r, v[1:n])
   }
 
   #' ---------------------------------------------------------------------
-  func <- function(choices){
+  func <- function(choices) {
     if (is.null(choices)) {
       choices <- g
     } else {
@@ -1549,27 +1640,32 @@ dat.sel.1 <- function(dat, cl, choices = NULL) {
     }
 
     i <- pmatch(choices, g)
-    if (any(is.na(i)))
+    if (any(is.na(i))) {
       stop("'choices' should be one of ", paste(g, collapse = ", "))
+    }
 
     #' Get the binary combinations based on the class labels (package GTOOLS)
     if (length(choices) == 1) {
-      com <- combinations(length(g),2,v=g)
-      idx <- sapply(1:nrow(com), function(x){
-                      if (match(choices, com[x,],nomatch=0) > 0) return (T) else (F)
-                    })
-      com <- com[idx,,drop=F]     #' lwc-01-12-2009: fix a bug
+      com <- combinations(length(g), 2, v = g)
+      idx <- sapply(1:nrow(com), function(x) {
+        if (match(choices, com[x, ], nomatch = 0) > 0) {
+          return(T)
+        } else {
+          (F)
+        }
+      })
+      com <- com[idx, , drop = F] #' lwc-01-12-2009: fix a bug
     } else {
-      com <- combinations(length(choices),2,v=choices)
+      com <- combinations(length(choices), 2, v = choices)
     }
     return(com)
   }
-  #' ---------------------------------------------------------------------
 
-  if(missing(dat) || missing(cl))
+  if (missing(dat) || missing(cl)) {
     stop(" The data set and/or class label are missing!")
+  }
   cl <- as.factor(cl)
-  g  <- levels(cl)
+  g <- levels(cl)
 
   if (is.list(choices)) {
     com <- lapply(choices, function(x) func(x))
@@ -1581,35 +1677,35 @@ dat.sel.1 <- function(dat, cl, choices = NULL) {
 
   #' process the data set labels being selected
   dat.sub <- list()
-  cl.sub  <- list()
+  cl.sub <- list()
   for (i in (1:nrow(com))) {
-    idx      <- (cl==com[i,][1])|(cl==com[i,][2])
-    cl.sub[[i]]  <- cl[idx]
-    cl.sub[[i]]  <- cl.sub[[i]][,drop=T]     #' drop the levels
-    dat.sub[[i]] <- dat[idx,,drop = F]
+    idx <- (cl == com[i, ][1]) | (cl == com[i, ][2])
+    cl.sub[[i]] <- cl[idx]
+    cl.sub[[i]] <- cl.sub[[i]][, drop = T] #' drop the levels
+    dat.sub[[i]] <- dat[idx, , drop = F]
   }
 
   #' get comparison names
-  com.names  <- apply(com, 1, paste, collapse="~")
+  com.names <- apply(com, 1, paste, collapse = "~")
   names(dat.sub) <- names(cl.sub) <- com.names
 
-  return(list(dat=dat.sub,cl=cl.sub, com=com))
+  return(list(dat = dat.sub, cl = cl.sub, com = com))
 }
 
 #' =======================================================================
 #' lwc-28-07-2009: panel function for plotting regression line with red
 #' color.
 #' lwc-29-03-2010: add dots arguments for panel.xyplot.
-panel.smooth.line <- function(x, y,...) {
-  panel.grid(h=-1, v= -1)
+panel.smooth.line <- function(x, y, ...) {
+  panel.grid(h = -1, v = -1)
   panel.xyplot(x, y, ...)
   #' panel.xyplot(x, y, type="p")     #' lwc-27-02-2010: change from "l"
-  if (sd(y) > 0.001) #.Machine$double.eps)
-    panel.loess(x,y, span=1, col="red")
-  else
-    panel.lmline(x, y, col="red")
+  if (sd(y) > 0.001) { # .Machine$double.eps)
+    panel.loess(x, y, span = 1, col = "red")
+  } else {
+    panel.lmline(x, y, col = "red")
+  }
 }
-
 
 #' ===============================================================
 #' lwc-04-12-2006: Pre-process Data Set
@@ -1618,56 +1714,60 @@ panel.smooth.line <- function(x, y,...) {
 #'   standard to deal with vector, matrix and data.frame using S3 method.
 #'   Also another version of range method. Need to check source code to hack
 #'   something.
-preproc <- function(x, y=NULL,method="log",add=1) {
+preproc <- function(x, y = NULL, method = "log", add = 1) {
+
   #' ------------------------------------------------------------
   #' TIC normalisation
-  TICnorm <- function(x,y=NULL){
-    scale <- apply(x, 1,function(x) sum(x,na.rm=T))
+  TICnorm <- function(x, y = NULL) {
+    scale <- apply(x, 1, function(x) sum(x, na.rm = T))
 
-    if(!is.null(y)){
-      grpm = as.vector(by(scale,y,mean))
-      grpm = grpm - mean(scale)
-      for(k in 1:nlevels(y)){
-        scale[y==levels(y)[k]] <- scale[y==levels(y)[k]] - grpm[k]
+    if (!is.null(y)) {
+      grpm <- as.vector(by(scale, y, mean))
+      grpm <- grpm - mean(scale)
+      for (k in 1:nlevels(y)) {
+        scale[y == levels(y)[k]] <- scale[y == levels(y)[k]] - grpm[k]
       }
     }
     x <- sweep(x, 1, scale, "/")
   }
+
   #' ------------------------------------------------------------
-  me  <- function(x) mean(x,na.rm=T)
-  se  <- function(x) sd(x,na.rm=T)
-  mx  <- function(x) max(x,na.rm=T)
-  mn  <- function(x) min(x,na.rm=T)
+  me <- function(x) mean(x, na.rm = T)
+  se <- function(x) sd(x, na.rm = T)
+  mx <- function(x) max(x, na.rm = T)
+  mn <- function(x) min(x, na.rm = T)
   #' sm  <- function(x) sum(x,na.rm=T)
-  #' ------------------------------------------------------------
 
-  if (!is.matrix(x) && !is.data.frame(x))
+  if (!is.matrix(x) && !is.data.frame(x)) {
     stop("x must be a matrix or data frame.")
+  }
   x <- as.data.frame(x)
-  if(!is.null(y))
+  if (!is.null(y)) {
     y <- as.factor(y)
+  }
 
-
-  for (i in method){
-    i <- match.arg(i, c("center", "auto", "range","pareto","vast","level",
-                        "log","log10","sqrt","asinh","TICnorm"))
+  for (i in method) {
+    i <- match.arg(i, c(
+      "center", "auto", "range", "pareto", "vast", "level",
+      "log", "log10", "sqrt", "asinh", "TICnorm"
+    ))
 
     x <- switch(i,
-                #' by colmns
-                "center"  = sapply(x, function(x) (x - me(x))),
-                "auto"    = sapply(x, function(x) (x - me(x))/se(x)),
-                "range"   = sapply(x, function(x) (x - me(x))/(mx(x)-mn(x))),
-                "pareto"  = sapply(x, function(x) (x - me(x))/sqrt(se(x))),
-                "vast"    = sapply(x, function(x) (x - me(x))*me(x)/se(x)^2),
-                "level"   = sapply(x, function(x) (x - me(x))/me(x)),
-                #' by all
-                "log"     = log(x+add),
-                "log10"   = log10(x+add),
-                "sqrt"    = sqrt(x),
-                "asinh"   = asinh(x),
-                #' by row
-                "TICnorm" = TICnorm(x,y)
-                )
+      #' by colmns
+      "center"  = sapply(x, function(x) (x - me(x))),
+      "auto"    = sapply(x, function(x) (x - me(x)) / se(x)),
+      "range"   = sapply(x, function(x) (x - me(x)) / (mx(x) - mn(x))),
+      "pareto"  = sapply(x, function(x) (x - me(x)) / sqrt(se(x))),
+      "vast"    = sapply(x, function(x) (x - me(x)) * me(x) / se(x)^2),
+      "level"   = sapply(x, function(x) (x - me(x)) / me(x)),
+      #' by all
+      "log"     = log(x + add),
+      "log10"   = log10(x + add),
+      "sqrt"    = sqrt(x),
+      "asinh"   = asinh(x),
+      #' by row
+      "TICnorm" = TICnorm(x, y)
+    )
   }
 
   rownames(x) <- 1:nrow(x)
@@ -1679,23 +1779,23 @@ preproc <- function(x, y=NULL,method="log",add=1) {
 #' lwc-18-01-2007:  For more details, ?.Machine
 #' lwc-15-03-2008:  Fix a bug
 #' lwc-01-03-2010:  add na.rm
-preproc.sd <- function(x, y=NULL,na.rm = FALSE) {
+preproc.sd <- function(x, y = NULL, na.rm = FALSE) {
   if (is.null(y)) {
     #' take off the columns with the same values.
-    id  <- which(apply(x,2,sd, na.rm=na.rm) > .Machine$double.eps)
+    id <- which(apply(x, 2, sd, na.rm = na.rm) > .Machine$double.eps)
     x <- x[, id]
     return(x)
   } else {
-    y  <- factor(y)
+    y <- factor(y)
     #' group s.d. with respect to features
-    z  <- sapply(data.frame(x), function(i) tapply(i,y,sd,na.rm=na.rm))
+    z <- sapply(data.frame(x), function(i) tapply(i, y, sd, na.rm = na.rm))
     #' minimal s.d.
     z.1 <- sapply(data.frame(z), function(i) min(i))
 
     #' which one is zero withing group?
     if (any(z.1 <= .Machine$double.eps)) {
-      z.2  <- which(z.1 <= .Machine$double.eps)
-      x  <- x[,-z.2, drop=F]
+      z.2 <- which(z.1 <= .Machine$double.eps)
+      x <- x[, -z.2, drop = F]
     }
     return(x)
   }
@@ -1706,26 +1806,26 @@ preproc.sd <- function(x, y=NULL,na.rm = FALSE) {
 #' lwc-24-01-2007: The function is hacked from lda.default in MASS package
 #' lwc-25-01-2007: Fix a bug
 preproc.const <- function(x, y, tol = 1.0e-4) {
-  if(is.null(dim(x))) stop("'x' is not a matrix or data frame")
-  x <- as.matrix(x)      #' lwc-04-03-2008: must be matrix
+  if (is.null(dim(x))) stop("'x' is not a matrix or data frame")
+  x <- as.matrix(x) #' lwc-04-03-2008: must be matrix
   n <- nrow(x)
   p <- ncol(x)
-  if(n != length(y))
+  if (n != length(y)) {
     stop("nrow(x) and length(y) are different")
+  }
   g <- as.factor(y)
 
   group.means <- tapply(x, list(rep(g, p), col(x)), mean)
 
-  f1 <- sqrt(diag(var(x - group.means[g,  ])))
+  f1 <- sqrt(diag(var(x - group.means[g, ])))
 
   #' which one is constant withing group?
   if (any(f1 < tol)) {
     const <- (1:p)[f1 < tol]
-    x     <- x[,-const,drop=F]
+    x <- x[, -const, drop = F]
   }
   x
 }
-
 
 #' ========================================================================
 #' lwc-19-06-2008: Correlation analysis of data set and extract the
@@ -1737,34 +1837,34 @@ preproc.const <- function(x, y, tol = 1.0e-4) {
 #' Arguments:
 #'   mat     - A matrix-like data set
 #'   cutoff  - A scalar value of threshold
-##
 #' Returns:
 #'   A data frame with three columns, in which the first and second columns
 #'   are variable names and their correlation (lager than cutoff) are
 #'   given in the third column.
-##
-cor.cut <- function(mat,cutoff=0.75,abs.f=FALSE,
-                    use = "pairwise.complete.obs", method = "pearson",...) {
+cor.cut <- function(mat, cutoff = 0.75, abs.f = FALSE,
+                    use = "pairwise.complete.obs", method = "pearson", ...) {
   #' co <- cor(mat,use=use, method=method)
-  co <- cor(x=mat,use=use, method=method,...)    #' added on 23-06-2015
+  co <- cor(x = mat, use = use, method = method, ...) #' added on 23-06-2015
   co[upper.tri(co)] <- NA
   diag(co) <- NA
-  co <- co[-1,-ncol(co),drop=F]
+  co <- co[-1, -ncol(co), drop = F]
   #' extract items above the cutoff value
   if (abs.f) {
-    idx <- which(abs(co) >= cutoff,arr.ind = T)
+    idx <- which(abs(co) >= cutoff, arr.ind = T)
   } else {
-    idx <- which(co >= cutoff,arr.ind = T)
+    idx <- which(co >= cutoff, arr.ind = T)
   }
 
-  if (length(idx) !=0) {
+  if (length(idx) != 0) {
     #' idx <- idx[(idx[,1]!=idx[,2]),,drop=F]    #' lwc-23-06-2008: mistake
     #' tow-columns correlation
-    fs1 <- rownames(co)[idx[,1]]
-    fs2 <- colnames(co)[idx[,2]]
-    res <- data.frame(com1=fs1, com2=fs2, cor=co[idx],stringsAsFactors = FALSE)
+    fs1 <- rownames(co)[idx[, 1]]
+    fs2 <- colnames(co)[idx[, 2]]
+    res <- data.frame(com1 = fs1, com2 = fs2, cor = co[idx], stringsAsFactors = FALSE)
     #' lwc-07-06-2011: add stringsAsFactors
-  } else res <- NA
+  } else {
+    res <- NA
+  }
   res
 }
 
@@ -1776,7 +1876,6 @@ cor.cut <- function(mat,cutoff=0.75,abs.f=FALSE,
 #' lwc-14-10-2009: Change name from my.fs.cor to fs.cor.bas
 #' lwc-17-02-2010: change name from fs.cor.bas to cor.hcl.
 #' lwc-18-02-2010: add use and method for function cor
-
 #' LWC-13-02-2012: plot cluster use plot method for dendrogram instead of
 #' for hclust.
 #' Arguments:
@@ -1785,45 +1884,46 @@ cor.cut <- function(mat,cutoff=0.75,abs.f=FALSE,
 #'   fig.f     - A logical value for plotting clustering
 #' Returns:
 #'   A list including all clustering information.
-##
-cor.hcl <- function(mat, cutoff=0.75, use = "pairwise.complete.obs",
-                    method = "pearson",fig.f=TRUE, hang=-1,
+cor.hcl <- function(mat, cutoff = 0.75, use = "pairwise.complete.obs",
+                    method = "pearson", fig.f = TRUE, hang = -1,
                     horiz = FALSE, main = "Cluster Dendrogram",
-                    ylab = ifelse(!horiz, "1 - correlation",""),
-                    xlab = ifelse(horiz, "1 - correlation",""),...) {
-  co <- cor(mat,use=use, method=method)
+                    ylab = ifelse(!horiz, "1 - correlation", ""),
+                    xlab = ifelse(horiz, "1 - correlation", ""), ...) {
+  co <- cor(mat, use = use, method = method)
   res <- list()
-  if (ncol(co) <= 1) {    #' if number of FS is less than 2, no clustering.
+  if (ncol(co) <= 1) { #' if number of FS is less than 2, no clustering.
     res$all <- co
   } else {
-    hc  <- hclust(as.dist(1 - co))
-    if (fig.f && ncol(co) > 2 ) { #' 14-10-09: change & to &&
+    hc <- hclust(as.dist(1 - co))
+    if (fig.f && ncol(co) > 2) { #' 14-10-09: change & to &&
       #' plot(hc, hang=-1,sub="", ylab="1 - correlation", xlab="Variables",
       #'      cex=0.6,...)
       #' lwc-13-02-2012: Not plot hc directly.
 
-      den.hc <- as.dendrogram(hc, hang=hang)
-      plot(den.hc, main=main, ylab=ylab, xlab=xlab,horiz=horiz,...)
+      den.hc <- as.dendrogram(hc, hang = hang)
+      plot(den.hc, main = main, ylab = ylab, xlab = xlab, horiz = horiz, ...)
       if (horiz) {
-        abline(v=1-cutoff, col="red")
+        abline(v = 1 - cutoff, col = "red")
       } else {
-        abline(h=1-cutoff, col="red")
+        abline(h = 1 - cutoff, col = "red")
       }
     }
-    id  <- cutree(hc, h = 1 - cutoff)
-    res <- lapply(unique(id), function(x){
-                    cent <- mat[,id == x, drop = FALSE]
-                    res  <- if (ncol(cent) < 2 ) NA  else cor(cent,use=use, method=method)
-                  })
+    id <- cutree(hc, h = 1 - cutoff)
+    res <- lapply(unique(id), function(x) {
+      cent <- mat[, id == x, drop = FALSE]
+      res <- if (ncol(cent) < 2) NA else cor(cent, use = use, method = method)
+    })
     #' names(res) <- paste("Cluster",unique(id), sep="_")
 
     #' shrink the list
-    id <- sapply(res, function(x){if(!any(is.na(x))) TRUE else FALSE})
-    if (all(id==FALSE)) {     #' lwc-21-05-2008: Dont't use if (!all(id)) !!!
+    id <- sapply(res, function(x) {
+      if (!any(is.na(x))) TRUE else FALSE
+    })
+    if (all(id == FALSE)) { #' lwc-21-05-2008: Dont't use if (!all(id)) !!!
       res$all <- co
     } else {
       res <- res[id]
-      names(res) <- paste("Cluster",1:length(res), sep="_")
+      names(res) <- paste("Cluster", 1:length(res), sep = "_")
       res$all <- co
     }
   }
@@ -1834,41 +1934,52 @@ cor.hcl <- function(mat, cutoff=0.75, use = "pairwise.complete.obs",
 #' lwc-18-02-2010: Correlation heatmap using lattice
 #' lwc-17-03-2010: add dendrogram.
 cor.heat <- function(mat, use = "pairwise.complete.obs", method = "pearson",
-                     dend = c("right", "top", "none"),...) {
+                     dend = c("right", "top", "none"), ...) {
   dend <- match.arg(dend)
 
-  co   <- cor(mat,use=use, method=method)
+  co <- cor(mat, use = use, method = method)
   #' Prepare for dendrogram
-  dd  <- as.dendrogram(hclust(as.dist(1-co)))  #' for correlation only
+  dd <- as.dendrogram(hclust(as.dist(1 - co))) #' for correlation only
   ord <- order.dendrogram(dd)
 
   co.p <-
     switch(dend,
-           right =
-             levelplot(co[ord, ord],
-                       aspect = "fill",
-                       scales = list(x = list(rot = 90),cex=0.6),
-                       colorkey = list(space = "bottom"),
-                       legend = list(right = list(fun = dendrogramGrob,
-                                         args = list(x = dd, ord = ord,
-                                             side = "right", size = 6))),...),
-           top =
-             levelplot(co[ord, ord],
-                       aspect = "fill",
-                       scales = list(x = list(rot = 90),cex=0.6),
-                       colorkey = list(space = "bottom"),
-                       legend = list(top = list(fun = dendrogramGrob,
-                                         args = list(x = dd, ord = ord,
-                                             side = "top", size = 6))), ...),
-           none =
-             levelplot(co[ord, ord],     #' still want to order them by HCL.
-                       aspect = "fill",
-                       scales = list(x = list(rot = 90),cex=0.6),
-                       colorkey = list(space = "bottom"),...)
-           )
+      right =
+        levelplot(co[ord, ord],
+          aspect = "fill",
+          scales = list(x = list(rot = 90), cex = 0.6),
+          colorkey = list(space = "bottom"),
+          legend = list(right = list(
+            fun = dendrogramGrob,
+            args = list(
+              x = dd, ord = ord,
+              side = "right", size = 6
+            )
+          )), ...
+        ),
+      top =
+        levelplot(co[ord, ord],
+          aspect = "fill",
+          scales = list(x = list(rot = 90), cex = 0.6),
+          colorkey = list(space = "bottom"),
+          legend = list(top = list(
+            fun = dendrogramGrob,
+            args = list(
+              x = dd, ord = ord,
+              side = "top", size = 6
+            )
+          )), ...
+        ),
+      none =
+        levelplot(co[ord, ord], #' still want to order them by HCL.
+          aspect = "fill",
+          scales = list(x = list(rot = 90), cex = 0.6),
+          colorkey = list(space = "bottom"), ...
+        )
+    )
   #' Fix-Me: Is there any efficient and simple way to do switch inside
   #' levelplot?
-  return(co.p)    #' must use return for lattice object.
+  return(co.p) #' must use return for lattice object.
 }
 
 #' ========================================================================
@@ -1880,16 +1991,17 @@ cor.heat <- function(mat, use = "pairwise.complete.obs", method = "pearson",
 #'   gclus can be used. These functions are order.single, order.endlink and
 #'   order.hclust.
 #' lwc-14-02-2012: change "des" as "main".
-#' ========================================================================
 cor.heat.gram <- function(mat.1, mat.2, use = "pairwise.complete.obs",
-                          method = "pearson", main="Heatmap of correlation",
-                          cex=0.75, ...) {
-  co   <- cor(mat.1, mat.2, use=use, method=method)
-  co   <- co[complete.cases(co),]
+                          method = "pearson", main = "Heatmap of correlation",
+                          cex = 0.75, ...) {
+  co <- cor(mat.1, mat.2, use = use, method = method)
+  co <- co[complete.cases(co), ]
 
   if (F) {
-    ph <- levelplot(co, scales = list(x = list(rot = 90), cex=cex),
-                    xlab="",ylab="", main=main,...)
+    ph <- levelplot(co,
+      scales = list(x = list(rot = 90), cex = cex),
+      xlab = "", ylab = "", main = main, ...
+    )
     #' heatmap.2(co, Rowv=T, Colv=T, col=rev(heat.colors(16)),
     #'          #' distfun=function(x) as.dist(1 - x),
     #'          trace="none", dendrogram = "both", density.info="none")
@@ -1897,49 +2009,60 @@ cor.heat.gram <- function(mat.1, mat.2, use = "pairwise.complete.obs",
 
   #' The heatmap need to be ordered by some rules so we can easily spot some
   #' patterns.
-  row.dd  <- as.dendrogram(hclust(dist(co)))
+  row.dd <- as.dendrogram(hclust(dist(co)))
   #' not as.dist since co is not squared.
   row.ord <- order.dendrogram(row.dd)
-  col.dd  <- as.dendrogram(hclust(dist(t(co))))
+  col.dd <- as.dendrogram(hclust(dist(t(co))))
   col.ord <- order.dendrogram(col.dd)
   ph <-
     levelplot(co[row.ord, col.ord],
-              aspect = "fill",
-              scales = list(x = list(rot = 60), cex=cex),
-              xlab="",ylab="", main=main,
-              #' main=list(paste("Heatmap of correlation between data - ",des, sep=""),
-              #'           cex=cex),
-              #' wll-10-09-2015: Use panel.fill() to fill the background with
-              #' your 'NA' color.From Deepayan Sarkar
-              panel = function(...) {
-                panel.fill(col = "black")
-                panel.levelplot(...)
-              },
+      aspect = "fill",
+      scales = list(x = list(rot = 60), cex = cex),
+      xlab = "", ylab = "", main = main,
+      #' main=list(paste("Heatmap of correlation between data - ",des, sep=""),
+      #'           cex=cex),
+      #' wll-10-09-2015: Use panel.fill() to fill the background with
+      #' your 'NA' color.From Deepayan Sarkar
+      panel = function(...) {
+        panel.fill(col = "black")
+        panel.levelplot(...)
+      },
 
-              colorkey = list(space = "bottom"),
-              #' colorkey = list(space = "bottom", labels=list(cex=cex)),
-              legend =
-                list(right =
-                       list(fun = dendrogramGrob,
-                            args =
-                              list(x = col.dd, ord = col.ord,
-                                   side = "right",
-                                   size = 10)),
-                     top =
-                       list(fun = dendrogramGrob,
-                            args =
-                              list(x = row.dd, ord = row.ord,
-                                   side = "top",
-                                   type = "rectangle", size=5))), ...)
+      colorkey = list(space = "bottom"),
+      #' colorkey = list(space = "bottom", labels=list(cex=cex)),
+      legend =
+        list(
+          right =
+            list(
+              fun = dendrogramGrob,
+              args =
+                list(
+                  x = col.dd, ord = col.ord,
+                  side = "right",
+                  size = 10
+                )
+            ),
+          top =
+            list(
+              fun = dendrogramGrob,
+              args =
+                list(
+                  x = row.dd, ord = row.ord,
+                  side = "top",
+                  type = "rectangle", size = 5
+                )
+            )
+        ), ...
+    )
   ph
 
-  ph.1 <- corrgram.circle(co[row.ord, col.ord], main=main, ...)
-  ph.1 <- update(ph.1,scales = list(x = list(rot = 60), cex=cex))
+  ph.1 <- corrgram.circle(co[row.ord, col.ord], main = main, ...)
+  ph.1 <- update(ph.1, scales = list(x = list(rot = 60), cex = cex))
   ph.1
 
   #' convert short format to long format
-  co.1    <- melt(co)
-  co.1    <- co.1[complete.cases(co.1),]     #' 17-03-2010: in case NA
+  co.1 <- melt(co)
+  co.1 <- co.1[complete.cases(co.1), ] #' 17-03-2010: in case NA
   #' co.max  <- max(co.1[,3], na.rm=T)
   #' co.thre <- co.1[co.1[,3] >= 0.4,] #' lwc-09-03-2010: Very specific
 
@@ -1949,15 +2072,15 @@ cor.heat.gram <- function(mat.1, mat.2, use = "pairwise.complete.obs",
     co.1 <- co
     co.1[upper.tri(co.1)] <- NA
     diag(co.1) <- NA
-    co.1 <- co.1[-1,-ncol(co.1),drop=F]
+    co.1 <- co.1[-1, -ncol(co.1), drop = F]
 
     co.1 <- melt(co.1)
-    co.1 <- co.1[complete.cases(co.1),]
+    co.1 <- co.1[complete.cases(co.1), ]
   }
   #' ------------------------------------------------------------------
 
   #' res <- list(cor.heat=ph, cor.gram=ph.1, cor.thre=co.thre, cor.max=co.max)
-  res <- list(cor.heat=ph, cor.gram=ph.1, cor.short=co, cor.long=co.1)
+  res <- list(cor.heat = ph, cor.gram = ph.1, cor.short = co, cor.long = co.1)
 }
 
 #' =========================================================================
@@ -1965,7 +2088,6 @@ cor.heat.gram <- function(mat.1, mat.2, use = "pairwise.complete.obs",
 #'   function will call heatmap.2 in package gplots.
 #'  Arguments:
 #'    data - matrix of correlation analysis
-##
 #' NOTE: 1.) Some definition of dissimilarity:
 #'     * Dissimilarity = 1 - Correlation
 #'     * Dissimilarity = 1 - Abs(Correlation)
@@ -1979,13 +2101,12 @@ cor.heat.gram <- function(mat.1, mat.2, use = "pairwise.complete.obs",
 #'          is computed and reordered based on the order of the vector. So
 #'          the modification is to ignore the reordered based on the row
 #'          means and keep it "as-is".
-#' =========================================================================
 cor.heat.1 <- function(mat, dend = c("both", "row", "column", "none"),
-                       distfun=function(x) as.dist(1 - x),hclustfun = hclust,
+                       distfun = function(x) as.dist(1 - x), hclustfun = hclust,
                        use = "pairwise.complete.obs",
-                       method = "pearson",...) {
+                       method = "pearson", ...) {
   #' require("gplots", quietly = TRUE) #' for heatmap.2
-  co <- cor(mat,use=use, method=method)
+  co <- cor(mat, use = use, method = method)
 
   #' process dendrogram
   Rowv <- FALSE
@@ -1998,10 +2119,11 @@ cor.heat.1 <- function(mat, dend = c("both", "row", "column", "none"),
     Rowv <- as.dendrogram(hclustfun(distfun(t(co))))
   }
 
-  heatmap.2(co, Colv = Colv, Rowv = Rowv, trace="none",  density.info="none",
-            dendrogram=dend, ...)
+  heatmap.2(co,
+    Colv = Colv, Rowv = Rowv, trace = "none", density.info = "none",
+    dendrogram = dend, ...
+  )
 }
-
 
 #' =========================================================================
 #' lwc-19-04-2008: Plot heatmap with dendrogram for correlation matrix.
@@ -2014,28 +2136,29 @@ cor.heat.1 <- function(mat, dend = c("both", "row", "column", "none"),
 #' lwc-23-02-2010: minor change to be consistent with cor.heat.1
 #'  Arguments:
 #'    data - matrix of correlation analysis
-##
 #' NOTE: Some definition of dissimilarity:
 #'     * Dissimilarity = 1 - Correlation
 #'     * Dissimilarity = 1 - Abs(Correlation)
 #'     * Dissimilarity = Sqrt(1 - Correlation^2)
-#' =========================================================================
 cor.heat.2 <- function(mat, dend = c("both", "row", "column", "none"),
                        lowcol = "green", highcol = "red",
-                       distfun=function(x) as.dist(1 - x),hclustfun = hclust,
+                       distfun = function(x) as.dist(1 - x), hclustfun = hclust,
                        use = "pairwise.complete.obs",
-                       method = "pearson",...) {
+                       method = "pearson", ...) {
   #' require("gplots", quietly = TRUE)       #' for heatmap.2
-  co <- cor(mat,use=use, method=method)
+  co <- cor(mat, use = use, method = method)
 
   #' process the heat colors
   cols <- function(low = lowcol, high = highcol, ncolors = 123) {
-    low <- col2rgb(low)/255
-    if (is.character(high))
-      high <- col2rgb(high)/255
-    col <- rgb(seq(low[1], high[1], len = ncolors),
-               seq(low[2], high[2], len = ncolors),
-               seq(low[3], high[3], len = ncolors))
+    low <- col2rgb(low) / 255
+    if (is.character(high)) {
+      high <- col2rgb(high) / 255
+    }
+    col <- rgb(
+      seq(low[1], high[1], len = ncolors),
+      seq(low[2], high[2], len = ncolors),
+      seq(low[3], high[3], len = ncolors)
+    )
     return(col)
   }
 
@@ -2050,30 +2173,35 @@ cor.heat.2 <- function(mat, dend = c("both", "row", "column", "none"),
     Rowv <- as.dendrogram(hclustfun(distfun(t(co))))
   }
 
-  heatmap.2(co, Colv = Colv, Rowv = Rowv, trace="none",  density.info="none",
-            dendrogram=dend, col=cols(),...)
+  heatmap.2(co,
+    Colv = Colv, Rowv = Rowv, trace = "none", density.info = "none",
+    dendrogram = dend, col = cols(), ...
+  )
 }
 
 #' ==================================================================
 #' lwc-26-04-2008: save a list into a table file.
 #' NOTE: It is easy to save components of a list into some seperate files
-#'   by function mt:::list2xls().
-save.tab <- function(x, filename="temp.csv", firstline="\n"){
-  options(warn=-1)               #' disable warning message
-  write(firstline, file=filename)
-  #' if (is.list(x)) {
-  if (is.list(x) && !is.data.frame(x)){  #' lwc-18-02-2010: fix
-    for(i in names(x)){
-      write(paste('\n', i, sep=""), file=filename, sep=',', append=T)
-      write.table(x[[i]], file=filename, append=T, sep=",", na = "",
-                  quote=F,row.names=T,col.names=NA)
+#'   by function mt:::list2xls.
+save.tab <- function(x, filename = "temp.csv", firstline = "\n") {
+  options(warn = -1) #' disable warning message
+  write(firstline, file = filename)
+  if (is.list(x) && !is.data.frame(x)) { #' lwc-18-02-2010: fix
+    for (i in names(x)) {
+      write(paste("\n", i, sep = ""), file = filename, sep = ",", append = T)
+      write.table(x[[i]],
+        file = filename, append = T, sep = ",", na = "",
+        quote = F, row.names = T, col.names = NA
+      )
     }
   } else {
-    write(paste('\n', sep=""), file=filename, sep=',', append=T)
-    write.table(x, file=filename, append=T, sep=",", na = "",
-                quote=F,row.names=T,col.names=NA)
+    write(paste("\n", sep = ""), file = filename, sep = ",", append = T)
+    write.table(x,
+      file = filename, append = T, sep = ",", na = "",
+      quote = F, row.names = T, col.names = NA
+    )
   }
-  options(warn=0)                #' restore to default value
+  options(warn = 0) #' restore to default value
   invisible()
 }
 
@@ -2084,27 +2212,26 @@ save.tab <- function(x, filename="temp.csv", firstline="\n"){
 #'  'list_to_dataframe' and 'quickdf'. However they require the equal
 #'   lengths of each component in the list.
 list2df <- function(x) {
-  len <- max(sapply(x,length))
-  df  <- sapply(x, function(y) c(y,rep(NA,len - length(y))))
+  len <- max(sapply(x, length))
+  df <- sapply(x, function(y) c(y, rep(NA, len - length(y))))
   #' lwc-26-06-2008: bug fix. Convert into matrix if fs.order is a vector.
   if (is.vector(df)) df <- t(df)
   return(df)
 }
-
 
 #' =======================================================================
 #' lwc-26-04-2008: my version of unlist, which collapse the higher-depths
 #' list to 1-depth list. This function uses recursive programing skill to
 #' tackle any depths of list.
 #' Note: Previous name is my.unlist
-un.list <- function(x, y=""){
+un.list <- function(x, y = "") {
   res <- list()
-  for (i in names(x)){
-    id <- if(y=="") i else paste(y,i,sep="_")
+  for (i in names(x)) {
+    id <- if (y == "") i else paste(y, i, sep = "_")
     if (is.list(x[[i]]) && !is.data.frame(x[[i]])) {
       #' Since data frame has also property of list
-      tmp <- un.list(x[[i]], y=id)
-      res <- c(res,tmp)
+      tmp <- un.list(x[[i]], y = id)
+      res <- c(res, tmp)
     } else {
       res[[id]] <- x[[i]]
     }
@@ -2117,8 +2244,8 @@ un.list <- function(x, y=""){
 #'  Hacked from function compact of package plyr.
 #' wll-15-09-2015: Has some problem in new version of R. Use shrink.list.1.R
 shrink.list <- function(x) {
-  tmp <- Filter(Negate(is.null),x)
-  tmp <- Filter(Negate(is.na),tmp)
+  tmp <- Filter(Negate(is.null), x)
+  tmp <- Filter(Negate(is.na), tmp)
   #' Note-16-09-2010: Get a warning if swapping the above two lines.
   return(tmp)
 }
@@ -2126,11 +2253,12 @@ shrink.list <- function(x) {
 #' ========================================================================
 #' lwc-21-05-2008: shrink the list if with NA components.
 #' TO-DO: Any depths of list structure (should use recursive programming).
-##
-shrink.list.1 <- function(x){
-  #' id <- sapply(x, function(y){if(!any(is.na(y))) TRUE else FALSE})
-  id <- sapply(x, function(y){if(!all(is.na(y))) TRUE else FALSE})
-  if (all(id==FALSE)) {    #' lwc-21-05-2008: Dont't use if (!all(id)) !!!
+shrink.list.1 <- function(x) {
+  #' id <- sapply(x, function(y) {if(!any(is.na(y))) TRUE else FALSE})
+  id <- sapply(x, function(y) {
+    if (!all(is.na(y))) TRUE else FALSE
+  })
+  if (all(id == FALSE)) { #' lwc-21-05-2008: Dont't use if (!all(id)) !!!
     x <- NA
   } else {
     x <- x[id]
@@ -2145,7 +2273,6 @@ shrink.list.1 <- function(x){
 #'       description, see package 'randomForest'.
 #'       2. Internal function
 .marg <- function(prob, observed) {
-
   if (missing(observed) || missing(prob)) stop("arguments miss")
   if (length(observed) != nrow(prob)) stop("lengths differ")
 
@@ -2162,12 +2289,12 @@ shrink.list.1 <- function(x){
 
   nlev <- length(levels(observed))
 
-  ans <- apply(mat, 1, function(x){
-                 pos <- match(x[nlev+1], names(x));
-                 t1  <- as.numeric(x[pos]);
-                 t2  <- max(as.numeric(x[-c(pos, nlev+1)]));
-                 t1 - t2
-               })
+  ans <- apply(mat, 1, function(x) {
+    pos <- match(x[nlev + 1], names(x))
+    t1 <- as.numeric(x[pos])
+    t2 <- max(as.numeric(x[-c(pos, nlev + 1)]))
+    t1 - t2
+  })
 
   names(ans) <- observed
   ans
@@ -2180,8 +2307,8 @@ shrink.list.1 <- function(x){
 class.ind <- function(cl) {
   n <- length(cl)
   cl <- as.factor(cl)
-  x <- matrix(0, n, length(levels(cl)) )
-  x[(1:n) + n*(unclass(cl)-1)] <- 1
+  x <- matrix(0, n, length(levels(cl)))
+  x[(1:n) + n * (unclass(cl) - 1)] <- 1
   dimnames(x) <- list(names(cl), levels(cl))
   x
 }
@@ -2189,25 +2316,29 @@ class.ind <- function(cl) {
 #' =========================================================================
 #' NOTE: tic() and toc() are hacked with a bit of modification by David Enot
 #'       from package MATLAB
-tic <- function (gcFirst = FALSE) {
-  if (gcFirst == TRUE) {gc(verbose = FALSE)}
+tic <- function(gcFirst = FALSE) {
+  if (gcFirst == TRUE) {
+    gc(verbose = FALSE)
+  }
   assign("savedTime", proc.time()[3], envir = .GlobalEnv)
   invisible()
 }
 
-toc <- function (echo = TRUE) {
+toc <- function(echo = TRUE) {
   prevTime <- get("savedTime", envir = .GlobalEnv)
   diffTimeSecs <- proc.time()[3] - prevTime
   if (echo) {
-    cat(sprintf("elapsed time is %f seconds", diffTimeSecs),"\n")
+    cat(sprintf("elapsed time is %f seconds", diffTimeSecs), "\n")
     return(invisible())
   }
-  else {return(diffTimeSecs) }
+  else {
+    return(diffTimeSecs)
+  }
 }
 
-
+#' =========================================================================
 #' TOC on 24-11-2015:
-#' -----------------
+#' =========================================================================
 #' (1). grpplot
 #' (2). pcaplot
 #' (3). panel.elli.1

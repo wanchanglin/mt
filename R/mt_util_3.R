@@ -21,9 +21,11 @@ colwise.1 <- function(.fun, .cols = true) {
   function(df, ...) {
     stopifnot(is.data.frame(df))
     filtered <- filter(df)
-    if (ncol(filtered) == 0) return(data.frame())
+    if (ncol(filtered) == 0) {
+      return(data.frame())
+    }
 
-    df <- as.data.frame(lapply(filtered, .fun, ...), stringsAsFactors=F)
+    df <- as.data.frame(lapply(filtered, .fun, ...), stringsAsFactors = F)
     #' df <- as.data.frame(lapply(filtered, .fun, ...))
     names(df) <- names(filtered)
     df
@@ -39,15 +41,15 @@ colwise.1 <- function(.fun, .cols = true) {
 #' Return:
 #'   A scalar values. Possitive indicates no overlap and width of boundary
 #'   and negative for the depth of overlap.
-overlap <- function(x,y){
-  tmp   <- c(x,y)
+overlap <- function(x, y) {
+  tmp <- c(x, y)
   tmp.s <- sort(tmp)
 
   #' sum of two differences
-  dif <- sum(diff(tmp)[c(1,3)])
+  dif <- sum(diff(tmp)[c(1, 3)])
 
   #' difference between max and min of all 4 values
-  dif1 <- diff(tmp.s[c(1,4)])
+  dif1 <- diff(tmp.s[c(1, 4)])
 
   overlap <- dif1 - dif
   names(overlap) <- NULL
@@ -57,11 +59,9 @@ overlap <- function(x,y){
 #' ======================================================================
 #' wll-18-02-2008: Wrapper function for pairwise.lap
 compare.lap <- function(i, j, x) {
-  #' i = "Ailsa"
-  #' j = "Brodick"
-  xi <- x[i,]
-  xj <- x[j,]
-  overlap(xi,xj)
+  xi <- x[i, ]
+  xj <- x[j, ]
+  overlap(xi, xj)
 }
 
 #' ===========================================================================
@@ -70,25 +70,24 @@ compare.lap <- function(i, j, x) {
 #' Arguments:
 #'   compare.lap - Function to compute (raw) p value given indices i and j
 #'   level.names - Names of the group levels
-##
 pairwise.lap <- function(compare.lap, level.names, x) {
-  ix <- seq(along=level.names)
+  ix <- seq(along = level.names)
   names(ix) <- level.names
-  pp <- outer(ix[-1], ix[-length(ix)],function(ivec, jvec)
-    sapply(seq(along=ivec), function(k) {
-             i<-ivec[k]
-             j<-jvec[k]
-             if (i > j) compare.lap(names(i), names(j), x) else NA #' wll-18-02-2008: add names
-           }))
+  pp <- outer(ix[-1], ix[-length(ix)], function(ivec, jvec) {
+    sapply(seq(along = ivec), function(k) {
+      i <- ivec[k]
+      j <- jvec[k]
+      if (i > j) compare.lap(names(i), names(j), x) else NA #' wll-18-02-2008: add names
+    })
+  })
 
-  lap   <- pp[lower.tri(pp,T)]
+  lap <- pp[lower.tri(pp, T)]
   #' sort out the pairwise names
   dname <- dimnames(pp)
-  tmp   <- outer(dname[[1]], dname[[2]],paste, sep="~")
-  names(lap) <- tmp[lower.tri(tmp,T)]
+  tmp <- outer(dname[[1]], dname[[2]], paste, sep = "~")
+  names(lap) <- tmp[lower.tri(tmp, T)]
 
   lap
-  #'  pp
 }
 
 #' =======================================================================
@@ -97,7 +96,7 @@ pairwise.lap <- function(compare.lap, level.names, x) {
 #'   x <- rnorm(6)
 #'   names(x) = paste("V", 1:length(x), sep="")
 #'   p.diff(x)
-p.diff <- function(x){
+p.diff <- function(x) {
   n <- length(x)
   if (is.null(names(x))) names(x) <- 1:n
 
@@ -118,19 +117,22 @@ p.diff <- function(x){
 pairwise.diffs <- function(x) {
   stopifnot(is.matrix(x))
 
-                                        # create column combination pairs
+  # create column combination pairs
   prs <- cbind(rep(1:ncol(x), each = ncol(x)), 1:ncol(x))
   col.diffs <- prs[prs[, 1] < prs[, 2], , drop = FALSE]
 
-                                        # do pairwise differences
+  # do pairwise differences
   result <- x[, col.diffs[, 1]] - x[, col.diffs[, 2], drop = FALSE]
 
-                                        # set colnames
-  if(is.null(colnames(x)))
+  # set colnames
+  if (is.null(colnames(x))) {
     colnames(x) <- 1:ncol(x)
+  }
 
   colnames(result) <- paste(colnames(x)[col.diffs[, 1]], ".vs.",
-                            colnames(x)[col.diffs[, 2]], sep = "")
+    colnames(x)[col.diffs[, 2]],
+    sep = ""
+  )
   result
 }
 
@@ -138,11 +140,11 @@ pairwise.diffs <- function(x) {
 #' wll-18-06-2008: Nice way to print pairwise comparison matrix such as of
 #'   the coefficient of correlation analysis and pairwise test
 #'   NOTE: x must be a pairwise matrix of correlation analysis or p-values.
-pairwise.print <- function(x){
+pairwise.print <- function(x) {
   x[upper.tri(x)] <- NA
   diag(x) <- NA
-  x <- x[-1,-ncol(x)]
-  print(x, na.print="")      #' debug
+  x <- x[-1, -ncol(x)]
+  print(x, na.print = "") #' debug
   #' return(x)
 }
 
@@ -160,18 +162,18 @@ pairwise.print <- function(x){
 #'   [1] 0+4.472136i
 #'   geo.mean1 <- function(x) prod(x)^(1/length(x))
 #'   geo.mean2 <- function(x) exp(mean(log(x)))
-geo.mean <- function(x, na.rm = FALSE){
-	if(na.rm) x <- x[!is.na(x)]
-	n <- length(x)
-	prod(x)^(1/n)
+geo.mean <- function(x, na.rm = FALSE) {
+  if (na.rm) x <- x[!is.na(x)]
+  n <- length(x)
+  prod(x)^ (1 / n)
 }
 
 #' ======================================================================
 #' lwc-05-08-2010: Round 0.5 upwards by  Duncan Murdoch.
 #' Note: Excel always round up numbers ending in 5 but R's round dosen't.
-roundup <- function(x, digits=0) {
+roundup <- function(x, digits = 0) {
   factor <- 10^digits
-  trunc(x*factor + 0.5)/factor
+  trunc(x * factor + 0.5) / factor
 }
 
 #' =======================================================================
@@ -183,31 +185,38 @@ roundup <- function(x, digits=0) {
 #' object you create. This StackOverflow question offers some useful tips
 #' for managing objects in RAM, including code for the function lsos to list
 #' objects sorted by size: improved list of objects
-.ls.objects <- function (pos = 1, pattern, order.by,
-                         decreasing=FALSE, head=FALSE, n=5) {
-  napply <- function(names, fn) sapply(names, function(x)
-    fn(get(x, pos = pos)))
+.ls.objects <- function(pos = 1, pattern, order.by,
+                        decreasing = FALSE, head = FALSE, n = 5) {
+  napply <- function(names, fn) {
+    sapply(names, function(x) {
+      fn(get(x, pos = pos))
+    })
+  }
   names <- ls(pos = pos, pattern = pattern)
   obj.class <- napply(names, function(x) as.character(class(x))[1])
   obj.mode <- napply(names, mode)
   obj.type <- ifelse(is.na(obj.class), obj.mode, obj.class)
   obj.size <- napply(names, object.size)
-  obj.dim <- t(napply(names, function(x)
-    as.numeric(dim(x))[1:2]))
+  obj.dim <- t(napply(names, function(x) {
+    as.numeric(dim(x))[1:2]
+  }))
   vec <- is.na(obj.dim)[, 1] & (obj.type != "function")
   obj.dim[vec, 1] <- napply(names, length)[vec]
   out <- data.frame(obj.type, obj.size, obj.dim)
   names(out) <- c("Type", "Size", "Rows", "Columns")
-  if (!missing(order.by))
-    out <- out[order(out[[order.by]], decreasing=decreasing), ]
-  if (head)
+  if (!missing(order.by)) {
+    out <- out[order(out[[order.by]], decreasing = decreasing), ]
+  }
+  if (head) {
     out <- head(out, n)
+  }
   out
 }
 
+#' =======================================================================
 #' shorthand
-lsos <- function(..., n=10) {
-  .ls.objects(..., order.by="Size", decreasing=TRUE, head=TRUE, n=n)
+lsos <- function(..., n = 10) {
+  .ls.objects(..., order.by = "Size", decreasing = TRUE, head = TRUE, n = n)
 }
 
 #' =======================================================================
@@ -218,21 +227,21 @@ clog <- function(x) log(x + 0.5)
 
 #' =========================================================================
 #' lwc-05-09-2013: Get all objects size
-my.ls <- function (pos = 1, sorted = FALSE, envir = as.environment(pos)) {
-  .result <- sapply(ls(envir = envir, all.names = TRUE), function(..x)
+my.ls <- function(pos = 1, sorted = FALSE, envir = as.environment(pos)) {
+  .result <- sapply(ls(envir = envir, all.names = TRUE), function(..x) {
     object.size(eval(as.symbol(..x), envir = envir))
-                    )
+  })
   if (sorted) {
     .result <- rev(sort(.result))
   }
   .ls <- as.data.frame(rbind(as.matrix(.result), `**Total` = sum(.result)))
   names(.ls) <- "Size"
   .ls$Size <- formatC(.ls$Size, big.mark = ",", digits = 0, format = "f")
-  .ls$Mode <- c(unlist(lapply(rownames(.ls)[-nrow(.ls)], function(x)
-    mode(eval(as.symbol(x), envir = envir)))), "-------")
+  .ls$Mode <- c(unlist(lapply(rownames(.ls)[-nrow(.ls)], function(x) {
+    mode(eval(as.symbol(x), envir = envir))
+  })), "-------")
   .ls
 }
-
 
 #' ==================================================
 #' TOC on 25-11-2015
