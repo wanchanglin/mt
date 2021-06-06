@@ -1322,15 +1322,13 @@ pval.reject <- function(adjp, alpha) {
 
 #' =========================================================================
 #' lwc-20-01-2009: Calculate the p-values for columns of data matix
-#' according to group information using oneway test. Support multiple
-#' categorical data.
+#'   with respect to group information. Support multiple categorical data.
 #' lwc-16-06-2010: Provide argument method. Support user defined test method
 #'   which has formula format and returned p.value.
 #' Arguments:
 #'   x      - data frame or matrix
 #'   y      - categorical data
 #'   method - hypothesis test such as t.test and wilcox.test.
-#' TO-DO: 1. User defined permutation test.
 pval.test <- function(x, y, method = "oneway.test", ...) {
   method <-
     if (is.function(method)) {
@@ -1343,13 +1341,15 @@ pval.test <- function(x, y, method = "oneway.test", ...) {
 
   pval <- sapply(as.data.frame(x), function(x) {
     method(x ~ y, ...)$p.value
+
     #' Normality test. Note that H0 is normal distribution!
     #' shapiro.test(x)$p.value
     #' t.test(x ~ y,var.equal=F)$p.value
     #' oneway.test(x ~ y,var.equal=F)$p.value
   })
-  return(pval)
+
   #' return(list(pval=pval, method=method))
+  return(pval)
 }
 
 #' =========================================================================

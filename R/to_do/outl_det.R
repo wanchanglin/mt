@@ -5,6 +5,49 @@
 #' functions such as such as `influencePlot` and `outlierTest` in 'car'.
 #' also check Cook's distance.
 
+#' =======================================================================
+#' wl-19-09-2020, Sat: Univariate outlier detection.
+#'   Modified from R package GmAMisc.
+#' --
+#' Three methods, "mean", "median" and "boxplot", are implemented. "mean" is
+#' less robust. These methods are those described in: Wilcox R R,
+#' "Fundamentals of Modern Statistical Methods: Substantially Improving Power
+#' and Accuracy", Springer 2010 (2nd edition), pages 31-35.
+#' --
+#' (1) With the mean-based method, an observation is considered outlier if the
+#' absolute difference between that observation and the sample mean is more than
+#' 2 Standard Deviations away (in either direction) from the mean.
+#' --
+#' (2) The median-based method considers an observation as being outlier if the
+#' absolute difference between the observation and the sample median is larger
+#' than the Median Absolute Deviation divided by 0.6745.
+#' --
+#' (3) The boxplot-based method considers an observation as being an outlier if
+#' it is either smaller than the 1st quartile minus 1.5 times the interQuartile
+#' Range, or larger than the 3rd quartile minus 1.5 times the interquartile
+#' Range.
+#' Usages:
+#' x <- c(2, 3, 4, 5, 6, 7, 8, 9, 50, 50)
+#' univa_outl(x, "boxplot")
+univa_outl <- function(x, method = c("boxplot", "median", "mean")) {
+  method <- match.arg(method)
+  if (method == "mean") {
+    outlier <- abs(x - mean(x)) > 2 * sd(x)
+  }
+  if (method == "median") {
+    med <- median(x)
+    mad <- median(abs(med - x))
+    outlier <- abs(x - med) > 2 * (mad / 0.6745)
+  }
+  if (method == "boxplot") {
+    q1 <- quantile(x, 0.25)
+    q3 <- quantile(x, 0.75)
+    iqr <- q3 - q1
+    outlier <- x < q1 - 1.5 * iqr | x > q3 + 1.5 * iqr
+  }
+  return(as.numeric(outlier))
+}
+
 #' ========================================================================
 #' lwc-30-01-2013: Multivariate outlier detection
 #' lwc-04-02-2013: Major changes.

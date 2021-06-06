@@ -922,7 +922,8 @@ fs.welch <- function(x, y, ...) {
   nam <- names(stats[fs.order])
   if (!is.null(nam)) fs.order <- nam #'  fs.order <- noquote(nam)
 
-  res <- list(fs.order = fs.order, fs.rank = fs.rank, stats = abs(stats), pval = pval)
+  res <- list(fs.order = fs.order, fs.rank = fs.rank, stats = abs(stats),
+              pval = pval)
   return(res)
 }
 
@@ -947,7 +948,8 @@ fs.welch.1 <- function(x, y, ...) {
   nam <- names(pval[fs.order])
   if (!is.null(nam)) fs.order <- nam
 
-  res <- list(fs.order = fs.order, fs.rank = fs.rank, pval = pval, stats = stats)
+  res <- list(fs.order = fs.order, fs.rank = fs.rank, pval = pval,
+              stats = stats)
   return(res)
 }
 
@@ -995,10 +997,8 @@ fs.anova <- function(x, y, ...) {
   nam <- names(stats[fs.order])
   if (!is.null(nam)) fs.order <- nam
 
-  res <- list(
-    fs.order = fs.order, fs.rank = fs.rank, stats = abs(stats),
-    pval = pval
-  )
+  res <- list(fs.order = fs.order, fs.rank = fs.rank, stats = abs(stats),
+              pval = pval)
   return(res)
 }
 
