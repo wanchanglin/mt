@@ -1,5 +1,5 @@
 
-#' =========================================================================
+#' =======================================================================
 #' Orthogonal signal correction (OSC) for data pre-processing
 #' History:
 #'   wll-04-06-2007: commence
@@ -56,7 +56,7 @@ osc.default <- function(x, y, method = "wold", center = TRUE, osc.ncomp = 4,
   return(res)
 }
 
-#' =========================================================================
+#' ========================================================================
 #' wll-04-06-2007: predict method for OSC
 predict.osc <- function(object, newdata, ...) {
   #' if(!inherits(object, "osc")) stop("object not of class \"osc\"")
@@ -108,12 +108,12 @@ print.osc <- function(x, ...) {
 }
 
 #' ========================================================================
-#' wll-04-06-2007:summary method for osc
+#' wll-04-06-2007: summary method for osc
 summary.osc <- function(object, ...) {
   structure(object, class = "summary.osc")
 }
 
-#' ========================================================================
+#' =======================================================================
 #' wll-04-06-2007: summary method for osc
 print.summary.osc <- function(x, ...) {
   print.osc(x)
@@ -128,10 +128,10 @@ print.summary.osc <- function(x, ...) {
   cat("\n")
 }
 
-#' =========================================================================
+#' =======================================================================
 osc <- function(x, ...) UseMethod("osc")
 
-#' =========================================================================
+#' =======================================================================
 osc.formula <-
   function(formula, data = NULL, ..., subset, na.action = na.omit) {
     call <- match.call()
@@ -165,9 +165,9 @@ osc.formula <-
   }
 
 #' ========================================================================
-#' wll-04-06-2007:Wold algorithm for OSC
-osc.wold <- function(x, y, center = TRUE, osc.ncomp = 4, pls.ncomp = 10, tol = 1e-3,
-                     iter = 20, ...) {
+#' wll-04-06-2007: Wold algorithm for OSC
+osc.wold <- function(x, y, center = TRUE, osc.ncomp = 4, pls.ncomp = 10,
+                     tol = 1e-3, iter = 20, ...) {
   if (center) x <- sweep(x, 2, colMeans(x), "-") #' column-wise center
   x.ori <- x
   y <- class.ind(y) #' convert class labels to numeric values
@@ -297,7 +297,7 @@ osc.sjoblom <- function(x, y, center = TRUE, osc.ncomp = 4, pls.ncomp = 10,
 }
 
 #' ========================================================================
-#' wll-03-06-2007:Wise algorithm
+#' wll-03-06-2007: Wise algorithm
 osc.wise <- function(x, y, center = TRUE, osc.ncomp = 4, pls.ncomp = 10,
                      tol = 1e-3, iter = 20, ...) {
   if (center) x <- sweep(x, 2, colMeans(x), "-")
