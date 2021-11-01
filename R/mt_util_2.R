@@ -1,5 +1,4 @@
-#' lwc-07-09-2010: Functions not documented
-#' wl-20-11-2020, Fri: tidy up
+#' lwc-07-09-2010, Tue: Functions not documented
 
 #' ========================================================================
 #' wll-23-06-2015: Get correlation coefficient and p-values
@@ -104,37 +103,6 @@ sym2long <- function(x, tri = c("upper", "lower")) {
 }
 
 #' ========================================================================
-#' wll-23-06-2015: get long format of correlation analysis
-#' wll-24-11-2015: function 'sym2long' is more general.
-#' Arguments:
-#'   x     - A matrix-like data set
-#' Returns:
-#'   A data frame of paire-wise correleation coeficients
-cor.long <- function(x, use = "pairwise.complete.obs", method = "pearson") {
-  co <- cor(x, use = use, method = method)
-  co[upper.tri(co)] <- NA
-  diag(co) <- NA
-  co <- co[-1, -ncol(co), drop = F]
-
-  if (T) {
-    #' remove NAs
-    idx <- which(!is.na(co), arr.ind = T)
-    fs1 <- rownames(co)[idx[, 1]]
-    fs2 <- colnames(co)[idx[, 2]]
-    res <- data.frame(
-      com1 = fs1, com2 = fs2, cor = co[idx],
-      stringsAsFactors = FALSE
-    )
-  } else {
-    require(reshape)
-    res <- melt(co)
-    res <- res[complete.cases(res), ]
-    colnames(res) <- c("com1", "com2", "cor")
-  }
-  return(res)
-}
-
-#' ========================================================================
 #' lwc-07-07-2011: batch shifting: remove mean withing each batch/block
 #' Arguments:
 #'  x - data matrix
@@ -166,32 +134,6 @@ rsd <- function(x) {
 }
 
 #' ========================================================================
-#' lwc-02-06-2011: Relative standard deviation.
-#' lwc-16-06-2011: Re-write according to function sd.
-#' Note: The code style steal from function 'sd', i.e.,  provide a vector 
-#' function and use apply/sapply for matrix/data frame.
-rsd.1 <- function(x, na.rm = TRUE) {
-  if (is.matrix(x)) {
-    apply(x, 2, rsd.1, na.rm = na.rm)
-  } else if (is.vector(x)) {
-    100 * (sd(x, na.rm = na.rm) / mean(x, na.rm = na.rm))
-  } else if (is.data.frame(x)) {
-    sapply(x, rsd.1, na.rm = na.rm)
-  } else {
-    100 * sd(as.vector(x), na.rm = na.rm) / mean(as.vector(x), na.rm = na.rm)
-  }
-}
-
-#' ========================================================================
-#' lwc-07-12-2010: Order a data frame by its colums. Only returns ord.
-#' Note: Hacked from arrange function from package plyr
-arrange_ord <- function(df, ...) {
-  ord <- eval(substitute(order(...)), df, parent.frame())
-  #' unrowname(df[ord, ])
-  return(ord)
-}
-
-#' ========================================================================
 #' lwc-01-12-2011: General matrix plot by lattice
 #' 1.) Modified from function plot.ranef.mer in package lme4.
 #' 2.) The combination of eval and substitute for generalisation is useful;
@@ -214,24 +156,6 @@ plot.mat <- function(mat, ...) {
     ),
     splom(~mat, ...)
   )
-}
-
-#' ========================================================================
-#' lwc-22-06-2011: check whether or not matrix has negative value and return
-#'   index of negative columns.
-check_neg <- function(x) {
-  #' tmp <- unlist(x)
-  #' idx <- which(tmp < 0)
-  #' tmp[idx]
-
-  tmp <- x < 0
-  #' tmp  <- is.nan(y)
-  tmp[is.na(tmp)] <- FALSE
-  ind <- apply(tmp, 2, function(x) any(x))
-  names(ind) <- NULL
-  ind <- which(ind)
-  if (length(ind) == 0) ind <- NULL
-  return(ind)
 }
 
 #' ========================================================================
@@ -610,265 +534,6 @@ sub.samp <- function(y, k, n = 10) {
   return(out.idx)
 }
 
-#' =========================================================================
-#' wll-07-08-2014: Mahalanobis distances between groups.
-#'  Modified from Chapter 4 Multidimensional Scaling, Applied Multivariate
-#'  Analysis by Brian Everitt and Torsten Hothorn, Springer 2011.
-#' Usages
-if (F) {
-  data("skulls", package = "HSAUR2")
-  skulls
-
-  mah <- mah.dis(skulls[, -1], skulls[, 1])
-  #' mah <- mah.dis.1(skulls[,-1], skulls[,1])
-  mds <- cmdscale(as.dist(mah))
-  lim <- range(mds) * 1.2
-  plot(mds,
-    xlab = "Coordinate 1", ylab = "Coordinate 2",
-    xlim = lim, ylim = lim, type = "n"
-  )
-  text(mds, labels = levels(skulls$epoch), cex = 0.7)
-}
-
-mah.dis <- function(x, y) {
-  #' Get covariance matrices of the data in each group (Not use here)
-  grp_var <- tapply(1:nrow(x), y, function(i) var(x[i, ]))
-
-  #' Get common covariance matrix
-  com_var <- var(x)
-
-  #' Get group mean
-  grp_cen <- sapply(x, function(i) tapply(i, y, mean))
-
-  #' Get Mahalanobis distances between groups
-  grp_mah <-
-    apply(grp_cen, 1, function(cen) mahalanobis(grp_cen, cen, com_var))
-
-  return(grp_mah)
-}
-
-#' =========================================================================
-#' wll-28-08-2008: Mahalanobis distances between groups by Gobor
-#' wll-06-08-2014: fix a bug
-mah.dis.1 <- function(x, y) {
-  stopifnot(is.data.frame(x), !missing(y))
-  stopifnot(dim(x)[1] != dim(y)[1])
-  y <- as.factor(y)
-  man <- manova(as.matrix(x) ~ y)
-  E <- summary(man)$SS[2] #' Matrix E
-  S <- as.matrix(E$Residuals) / man$df.residual
-  InvS <- solve(S)
-
-  #' Get group mean
-  #' wll-06-08-2014: by(x,y,mean) does not work in the new version of R.
-  #' mds  = matrix(unlist(by(x, y, mean)), byrow=T, ncol=ncol(x))
-  mds <- sapply(x, function(x) tapply(x, y, mean))
-  #' or
-  #' tmp <- aggregate(x, list(y), mean)
-  #' mds <- tmp[,-1]
-  #' rownames(mds) <- tmp[,1]
-
-  f <- function(a, b) {
-    mapply(function(a, b) mahalanobis(mds[a, ], mds[b, ], InvS, TRUE), a, b)
-  }
-  seq. <- seq(length = nrow(mds))
-  names(seq.) <- levels(y)
-  res <- outer(seq., seq., f)
-
-  #' From Chapter 4 Multidimensional Scaling, Applied Multivariate Analysis
-  #' res <- apply(mds, 1, function(cen) mahalanobis(mds, cen, InvS))
-}
-
-#' ========================================================================
-#' wll-07-08-2014: Mahalanobis distance among units in a dataset or among
-#'  observations in two distinct datasets. From R package StatMatch.
-#' Usages:
-if (F) {
-  md1 <- mah.dist.2(iris[1:6, 1:4])
-  md2 <- mah.dist.2(data.x = iris[1:6, 1:4], data.y = iris[51:60, 1:4])
-  vv <- var(iris[, 1:4])
-  md1a <- mah.dist.2(data.x = iris[1:6, 1:4], vc = vv)
-  md2a <- mah.dist.2(data.x = iris[1:6, 1:4], data.y = iris[51:60, 1:4], vc = vv)
-}
-
-mah.dist.2 <- function(data.x, data.y = NULL, vc = NULL) {
-  xx <- as.matrix(data.x)
-  if (is.null(data.y)) {
-    yy <- as.matrix(data.x)
-  } else {
-    yy <- as.matrix(data.y)
-  }
-
-  if (is.null(vc)) {
-    if (is.null(data.y)) {
-      vc <- var(xx)
-    } else {
-      vc <- var(rbind(xx, yy))
-    }
-  }
-
-  ny <- nrow(yy)
-  md <- matrix(0, nrow(xx), ny)
-  for (i in 1:ny) {
-    md[, i] <- mahalanobis(xx, yy[i, ], cov = vc)
-  }
-  if (is.null(data.y)) {
-    dimnames(md) <- list(rownames(data.x), rownames(data.x))
-  } else {
-    dimnames(md) <- list(rownames(data.x), rownames(data.y))
-  }
-  sqrt(md)
-}
-
-#' ======================================================================
-#' wll-04-02-2008: Venn diagram functions
-#' NOTE: venn and incidence.table are from Duncan Murdoch's venn package
-#' ======================================================================
-venn <- function(id, category, cutoff = 1, duplicates = FALSE, tab, main) {
-  if (missing(tab)) {
-    #' Create incidence table from id and category
-    tab <- incidence.table(as.character(id), category,
-      cutoff = cutoff,
-      duplicates = duplicates
-    )
-
-    if (missing(main)) {
-      main <- paste(
-        "Count of", deparse(substitute(id)),
-        "by", deparse(substitute(category))
-      )
-    }
-  } else if (missing(main)) {
-    main <- paste("Venn diagram of", deparse(substitute(tab)))
-  }
-
-  #' Convert rows to binary numbers and count them
-  index <- tab %*% 2^ (1:ncol(tab) - 1)
-  itab <- table(index)
-
-  save <- par(
-    pty = "s", # Must be square to get labels right
-    mar = c(1, 0, 1, 0) * par("mar")
-  ) # Don"t need side margins
-
-  on.exit(par(save))
-
-  if (ncol(tab) == 2) {
-    #' Set up coordinates.  xlim and ylim must be same length or coordinate
-    #' system will not be isometric
-    plot(1, 1,
-      xlim = c(-1.3, 2.3), ylim = c(-1.8, 1.8), bty = "n", axes = FALSE,
-      type = "n", xlab = "", ylab = "", main = main
-    )
-
-    if (!is.na(zero <- itab[as.character(0)])) {
-      title(sub = paste(zero, "not shown"))
-    }
-
-    #' Plot 2 circles
-    cx <- c(0, 1.1)
-    cy <- c(0, 0)
-    mx <- mean(cx)
-    my <- mean(cy)
-    symbols(cx, cy, circles = rep(1, 2), inches = FALSE, add = TRUE)
-
-    #' Put counts in the regions
-    text(
-      c(mx + 2 * (cx[1] - mx), mx + 2 * (cx[2] - mx)),
-      c(my + 2 * (cy[1] - my), my + 2 * (cy[2] - my)),
-      itab[as.character(c(1, 2))]
-    )
-    text(mx, my, itab["3"])
-
-    #' Label the circles
-
-    #' text(c(cx[1] -1, cx[2] + 1), c(0, 0),
-    #'     pos=c(2, 4), colnames(tab))
-
-    text(c((mx + 3 * (cx[1] - mx) + cx[1]) / 2, (mx + 3 * (cx[2] - mx) + cx[2]) / 2),
-      c((my + 3 * (cy[1] - my) + cy[1] - 1.8) / 2, (my + 3 * (cy[2] - my) + cy[2] - 1.8) / 2),
-      pos = c(2, 4), colnames(tab)
-    )
-  } else if (ncol(tab) == 3) {
-    #' Set up coordinates.  xlim and ylim must be same length or coordinate
-    #' system will not be isometric
-    plot(1, 1,
-      xlim = c(-1.5, 2.6), ylim = c(-1.5, 2.6), bty = "n", axes = FALSE,
-      type = "n", xlab = "", ylab = "", main = main
-    )
-
-    if (!is.na(zero <- itab[as.character(0)])) {
-      mtext(paste(zero, "not shown"), side = 1)
-    }
-
-    #' Plot 3 circles
-    cx <- c(0, 1.1, 0.55)
-    cy <- c(0, 0, 1.1 * sqrt(3) / 2)
-    mx <- mean(cx)
-    my <- mean(cy)
-    symbols(cx, cy, circles = rep(1, 3), inches = FALSE, add = TRUE)
-
-    #' Put counts in the regions
-    text(
-      c(mx + 2 * (cx[3] - mx), mx + 2 * (cx[1] - mx), mx + 2 * (cx[2] - mx)),
-      c(my + 2 * (cy[3] - my), my + 2 * (cy[1] - my), my + 2 * (cy[2] - my)),
-      itab[as.character(c(1, 2, 4))]
-    ) #' wll-04-02-2008: fix a bug
-    text(
-      c(
-        mx + (cx[1] + cx[3] - 2 * mx), mx + (cx[2] + cx[3] - 2 * mx),
-        mx + (cx[2] + cx[1] - 2 * mx)
-      ),
-      c(
-        my + (cy[1] + cy[3] - 2 * my), my + (cy[2] + cy[3] - 2 * my),
-        my + (cy[2] + cy[1] - 2 * my)
-      ),
-      itab[as.character(c(3, 5, 6))]
-    ) #' wll-04-02-2008: fix a bug
-    text(mx, my, itab["7"])
-
-    #' Label the circles
-    text(c(
-      mx + 2.6 * (cx[3] - mx), (mx + 3 * (cx[1] - mx) + cx[1]) / 2,
-      (mx + 3 * (cx[2] - mx) + cx[2]) / 2
-    ),
-    c(
-      my + 2.6 * (cy[3] - my), (my + 3 * (cy[1] - my) + cy[1] - 1.2) / 2,
-      (my + 3 * (cy[2] - my) + cy[2] - 1.2) / 2
-    ),
-    pos = c(3, 2, 4), colnames(tab)
-    )
-  } else {
-    stop("Can only Venn 2 or 3 categories")
-  }
-}
-
-#' ======================================================================
-incidence.table <- function(id, category, names = NULL, cutoff = 1,
-                            duplicates = FALSE) {
-  if (!duplicates) {
-    #' Count combinations and convert to TRUE/FALSE
-    tab <- table(as.character(id), category)
-    tab >= cutoff
-  } else {
-    #' Count combinations
-    tab <- table(as.character(id), category)
-
-    #' Set up matrix with one row per id
-    result <- matrix(FALSE, length(id), ncol(tab))
-
-    #' Set appropriate entries TRUE
-    for (i in 1:ncol(tab)) {
-      result[, i] <- tab[as.character(id), i] >= cutoff
-    }
-
-    #' Return nice looking matrix
-    rownames(result) <- as.character(names)
-    colnames(result) <- colnames(tab)
-    result
-  }
-}
-
 #' ========================================================================
 #' lwc-17-05-2011: Write list of data frame or matrix to Excel's XLS.
 list2xls <- function(x, filename = "tmp.xls", FreezeRow = 1,
@@ -1071,30 +736,48 @@ WriteXLS <- function(x, ExcelFileName = "R.xls", SheetNames = NULL,
     return(invisible(TRUE))
   }
 }
+
+#' =========================================================================
+#' NOTE: tic() and toc() are hacked with a bit of modification by David Enot
+#'       from package MATLAB
+tic <- function(gcFirst = FALSE) {
+  if (gcFirst == TRUE) {
+    gc(verbose = FALSE)
+  }
+  assign("savedTime", proc.time()[3], envir = .GlobalEnv)
+  invisible()
+}
+
+#' =========================================================================
+toc <- function(echo = TRUE) {
+  prevTime <- get("savedTime", envir = .GlobalEnv)
+  diffTimeSecs <- proc.time()[3] - prevTime
+  if (echo) {
+    cat(sprintf("elapsed time is %f seconds", diffTimeSecs), "\n")
+    return(invisible())
+  }
+  else {
+    return(diffTimeSecs)
+  }
+}
+
 #' ==================================================
 #' TOC on 25-11-2015
 #' ==================================================
 #' (1). cor.tab
 #' (2). sym2long
-#' (3). cor.long
-#' (13). batch.shift
-#' (14). rsd
-#' (15). rsd.1
-#' (16). arrange_ord
-#' (17). plot.mat
-#' (18). check_neg
-#' (19). panel.qqconf
-#' (20). normality.test
-#' (21). mv.pattern
-#' (23). LogReg
-#' (24). predict.LogReg
-#' (25). LogRegAnn
-#' (26). predict.LogRegAnn
-#' (27). pred.pls
-#' (28). test.perm
-#' (29). sub.samp
-#' (30). mah.dis
-#' (31). mah.dis.1
-#' (33). mah.dist.2
-#' (34). venn
-#' (35). incidence.table
+#' (3). batch.shift
+#' (4). rsd
+#' (5). plot.mat
+#' (7). panel.qqconf
+#' (8). normality.test
+#' (9). mv.pattern
+#' (10). LogReg
+#' (11). predict.LogReg
+#' (12). LogRegAnn
+#' (13). predict.LogRegAnn
+#' (14). pred.pls
+#' (15). test.perm
+#' (16). sub.samp
+#' (17). tic
+#' (18). toc

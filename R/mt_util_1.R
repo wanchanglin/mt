@@ -352,7 +352,8 @@ pcaplot <- function(x, y, scale = TRUE, pcs = 1:2, ...) {
 #'        If no com.grp and no.grp, the each individual group ellipse should
 #'        be plotted.
 panel.elli.1 <- function(x, y, subscripts, groups = NULL, conf.level = 0.975,
-                         ep = 0, com.grp = NULL, no.grp = NULL, ell.grp = NULL, ...) {
+                         ep = 0, com.grp = NULL, no.grp = NULL, 
+                         ell.grp = NULL, ...) {
 
   #' ------------------------------------------------------------------
   plot.elli <- function(x, y, ...) { #' plot ellipse
@@ -571,48 +572,6 @@ if (F) {
 }
 
 #' ========================================================================
-#' lwc-13-05-2013: Calculate error bar statistics
-#' lwc-08-01-2014: add some examples. should be provide some documents.
-#'  See examples of df.util in the mt manual.
-#' Arguments:
-#'  x   - an vector
-#'  bar - which bar need to be calculated.
-#' Usages:
-#'  vec.segment(iris[,1])
-#'  df.summ(iris, method=vec.segment, bar="SE")
-#'  (tmp <- dlply(iris, .(Species), mt:::df.summ, method=vec.segment))
-#'  do.call("rbind", tmp)
-#'  mat <- melt(iris)
-#'  ddply(mat, .(Species,variable), function(x,bar) {
-#' 	  vec.segment(x$value, bar=bar)
-#'  }, bar="SD")
-vec.segment <- function(x, bar = c("SD", "SE", "CI")) {
-  bar <- match.arg(bar)
-
-  centre <- mean(x, na.rm = T)
-
-  if (bar == "SD") {
-    stderr <- sd(x, na.rm = T) #' Standard derivation (SD)
-    lower <- centre - stderr
-    upper <- centre + stderr
-  } else if (bar == "SE") { #' Standard error(SE) of mean
-    stderr <- sd(x, na.rm = T) / sqrt(sum(!is.na(x)))
-    #' stderr <- sqrt(var(x, na.rm = T)/length(x[complete.cases(x)]))
-    lower <- centre - stderr
-    upper <- centre + stderr
-  } else if (bar == "CI") { #' Confidence interval (CI), here 95%.
-    conf <- t.test(x)$conf.int
-    lower <- conf[1]
-    upper <- conf[2]
-  } else {
-    stop("'method' invalid")
-  }
-
-  res <- c(lower = lower, centre = centre, upper = upper)
-  return(res)
-}
-
-#' ========================================================================
 #' lwc-24-08-2011: Summary function for data vector.
 #' lwc-26-08-2011: add error checking (All NAs)
 #' Usage:
@@ -753,28 +712,6 @@ mv.fill <- function(dat, method = "mean", ze_ne = FALSE) {
   dat <- as.data.frame(dat, stringsAsFactors = F)
   res <- sapply(dat, function(i) vec.func(i))
   return(res)
-}
-
-#' =========================================================================
-#' lwc-08-11-2007: Replace missing values with mean or dedian.
-#'  From impute of package e1071.
-mv.fill.1 <- function(x, method = c("mean", "median")) {
-  method <- match.arg(method)
-  if (method == "median") {
-    retval <- apply(x, 2, function(z) {
-      z[is.na(z)] <- median(z, na.rm = TRUE)
-      z
-    })
-  } else if (method == "mean") {
-    retval <- apply(x, 2, function(z) {
-      z[is.na(z)] <- mean(z, na.rm = TRUE)
-      z
-    })
-  } else {
-    stop("'method' invalid")
-  }
-  #' retval <- as.data.frame(retval)
-  retval
 }
 
 #' =======================================================================
@@ -1462,7 +1399,6 @@ panel.corrgram.cir <- function(x, y, z, subscripts, at = pretty(z),
 
 #' ========================================================================
 #' lwc-15-04-2010: pairwise combination of categorical data set
-#' Note: Old version of dat.sel became as dat.sel.1.
 dat.sel <- function(dat, cls, choices = NULL) {
   #' get the index of pairwise combination
   idx <- combn.pw(cls, choices = choices)
@@ -1532,164 +1468,6 @@ combn.pw <- function(cls, choices = NULL) {
 
   idx <- as.data.frame(idx) #' for easy manipulation.
   return(idx)
-}
-
-#' =========================================================================
-#' lwc-24-10-2008: A function to reshape the results of .dat.sel.
-
-#' lwc-note: 1.) This kind of data structure will be standardized in my
-#'               future programming.
-#'           2.) Well, It may be wanderful to do so, but in terms of
-#'               plooting with lattice, it may be difficult to extract some
-#'               combination for condition plotting.
-#'           3.) This function was replaced by new version.
-dat.sel.1 <- function(dat, cl, choices = NULL) {
-  dat.pair <- .dat.sel(dat, cl, choices = choices)
-  com <- apply(dat.pair$com, 1, paste, collapse = "~")
-
-  #' reshape dat.pair
-  dat.pair.1 <- lapply(com, function(x) {
-    dat.tmp <- dat.pair$dat[[x]]
-    cls.tmp <- dat.pair$cl[[x]]
-    list(dat = dat.tmp, cls = cls.tmp)
-  })
-  names(dat.pair.1) <- com
-  #' t(sapply(dat.pair.1, function(x) c(length(x$cls),dim(x$dat))))
-  return(dat.pair.1)
-}
-
-#' ====================================================================
-#' lwc-13-08-2006: Gnerates the pairwise data set based on the class label.
-#' History:
-#'   18-09-2006: Fix a bug.
-#'   31-05-2007: Major changes
-#'   01-12-2009: fix a bug when cl is two-class.
-#'   21-02-2010: Change name from dat.set to .dat.sel and treat as internal
-#'               function
-#' NOTE: Using drop=F to keep the format of matrix even the matrix has one
-#'       element.
-.dat.sel <- function(dat, cl, choices = NULL) {
-
-  #' lwc-29-10-2006: combnations is from package gtools.
-  #' $Id: mt_util_1.r,v 1.16 2009/07/27 10:23:41 wll Exp $
-  #' From email by Brian D Ripley <ripley@stats.ox.ac.uk> to r-help
-  #' dated Tue, 14 Dec 1999 11:14:04 +0000 (GMT) in response to
-  #' Alex Ahgarin <datamanagement@email.com>.  Original version was
-  #' named "subsets" and was Written by Bill Venables.
-  combinations <- function(n, r, v = 1:n, set = TRUE, repeats.allowed = FALSE) {
-    if (mode(n) != "numeric" || length(n) != 1
-    || n < 1 || (n %% 1) != 0) {
-      stop("bad value of n")
-    }
-    if (mode(r) != "numeric" || length(r) != 1
-    || r < 1 || (r %% 1) != 0) {
-      stop("bad value of r")
-    }
-    if (!is.atomic(v) || length(v) < n) {
-      stop("v is either non-atomic or too short")
-    }
-    if ((r > n) & repeats.allowed == FALSE) {
-      stop("r > n and repeats.allowed=FALSE")
-    }
-    if (set) {
-      v <- unique(sort(v))
-      if (length(v) < n) stop("too few different elements")
-    }
-    v0 <- vector(mode(v), 0)
-
-    #' Inner workhorse
-    if (repeats.allowed) {
-      sub <- function(n, r, v) {
-        if (r == 0) {
-          v0
-        } else
-        if (r == 1) {
-          matrix(v, n, 1)
-        } else
-        if (n == 1) {
-          matrix(v, 1, r)
-        } else {
-          rbind(cbind(v[1], Recall(n, r - 1, v)), Recall(n - 1, r, v[-1]))
-        }
-      }
-    } else {
-      sub <- function(n, r, v) {
-        if (r == 0) {
-          v0
-        } else
-        if (r == 1) {
-          matrix(v, n, 1)
-        } else
-        if (r == n) {
-          matrix(v, 1, n)
-        } else {
-          rbind(cbind(v[1], Recall(n - 1, r - 1, v[-1])), Recall(n - 1, r, v[-1]))
-        }
-      }
-    }
-
-    sub(n, r, v[1:n])
-  }
-
-  #' ---------------------------------------------------------------------
-  func <- function(choices) {
-    if (is.null(choices)) {
-      choices <- g
-    } else {
-      choices <- unique(choices)
-    }
-
-    i <- pmatch(choices, g)
-    if (any(is.na(i))) {
-      stop("'choices' should be one of ", paste(g, collapse = ", "))
-    }
-
-    #' Get the binary combinations based on the class labels (package GTOOLS)
-    if (length(choices) == 1) {
-      com <- combinations(length(g), 2, v = g)
-      idx <- sapply(1:nrow(com), function(x) {
-        if (match(choices, com[x, ], nomatch = 0) > 0) {
-          return(T)
-        } else {
-          (F)
-        }
-      })
-      com <- com[idx, , drop = F] #' lwc-01-12-2009: fix a bug
-    } else {
-      com <- combinations(length(choices), 2, v = choices)
-    }
-    return(com)
-  }
-
-  if (missing(dat) || missing(cl)) {
-    stop(" The data set and/or class label are missing!")
-  }
-  cl <- as.factor(cl)
-  g <- levels(cl)
-
-  if (is.list(choices)) {
-    com <- lapply(choices, function(x) func(x))
-    com <- do.call("rbind", com)
-    com <- unique(com)
-  } else {
-    com <- func(choices)
-  }
-
-  #' process the data set labels being selected
-  dat.sub <- list()
-  cl.sub <- list()
-  for (i in (1:nrow(com))) {
-    idx <- (cl == com[i, ][1]) | (cl == com[i, ][2])
-    cl.sub[[i]] <- cl[idx]
-    cl.sub[[i]] <- cl.sub[[i]][, drop = T] #' drop the levels
-    dat.sub[[i]] <- dat[idx, , drop = F]
-  }
-
-  #' get comparison names
-  com.names <- apply(com, 1, paste, collapse = "~")
-  names(dat.sub) <- names(cl.sub) <- com.names
-
-  return(list(dat = dat.sub, cl = cl.sub, com = com))
 }
 
 #' =======================================================================
@@ -2125,60 +1903,6 @@ cor.heat.1 <- function(mat, dend = c("both", "row", "column", "none"),
   )
 }
 
-#' =========================================================================
-#' lwc-19-04-2008: Plot heatmap with dendrogram for correlation matrix.
-#'   This function is the modification of the package made4' function
-#'   heatplot, which calls heatmap.2 in package gplots using a red-green
-#'   colour scheme by default. The agglomeration method for hclust is fixed
-#'   as 'complete'. The details for how to use this function refer to help
-#'   page of heatplot in package made4 and heatmap.2 in package gplots.
-#' lwc-30-09-2008: minor change
-#' lwc-23-02-2010: minor change to be consistent with cor.heat.1
-#'  Arguments:
-#'    data - matrix of correlation analysis
-#' NOTE: Some definition of dissimilarity:
-#'     * Dissimilarity = 1 - Correlation
-#'     * Dissimilarity = 1 - Abs(Correlation)
-#'     * Dissimilarity = Sqrt(1 - Correlation^2)
-cor.heat.2 <- function(mat, dend = c("both", "row", "column", "none"),
-                       lowcol = "green", highcol = "red",
-                       distfun = function(x) as.dist(1 - x), hclustfun = hclust,
-                       use = "pairwise.complete.obs",
-                       method = "pearson", ...) {
-  #' require("gplots", quietly = TRUE)       #' for heatmap.2
-  co <- cor(mat, use = use, method = method)
-
-  #' process the heat colors
-  cols <- function(low = lowcol, high = highcol, ncolors = 123) {
-    low <- col2rgb(low) / 255
-    if (is.character(high)) {
-      high <- col2rgb(high) / 255
-    }
-    col <- rgb(
-      seq(low[1], high[1], len = ncolors),
-      seq(low[2], high[2], len = ncolors),
-      seq(low[3], high[3], len = ncolors)
-    )
-    return(col)
-  }
-
-  #' process dendrogram
-  Rowv <- FALSE
-  Colv <- FALSE
-  dend <- match.arg(dend)
-  if (dend %in% "row") Rowv <- as.dendrogram(hclustfun(distfun(t(co))))
-  if (dend %in% "column") Colv <- as.dendrogram(hclustfun(distfun(co)))
-  if (dend %in% "both") {
-    Colv <- as.dendrogram(hclustfun(distfun(co)))
-    Rowv <- as.dendrogram(hclustfun(distfun(t(co))))
-  }
-
-  heatmap.2(co,
-    Colv = Colv, Rowv = Rowv, trace = "none", density.info = "none",
-    dendrogram = dend, col = cols(), ...
-  )
-}
-
 #' ==================================================================
 #' lwc-26-04-2008: save a list into a table file.
 #' NOTE: It is easy to save components of a list into some seperate files
@@ -2314,29 +2038,6 @@ class.ind <- function(cl) {
 }
 
 #' =========================================================================
-#' NOTE: tic() and toc() are hacked with a bit of modification by David Enot
-#'       from package MATLAB
-tic <- function(gcFirst = FALSE) {
-  if (gcFirst == TRUE) {
-    gc(verbose = FALSE)
-  }
-  assign("savedTime", proc.time()[3], envir = .GlobalEnv)
-  invisible()
-}
-
-toc <- function(echo = TRUE) {
-  prevTime <- get("savedTime", envir = .GlobalEnv)
-  diffTimeSecs <- proc.time()[3] - prevTime
-  if (echo) {
-    cat(sprintf("elapsed time is %f seconds", diffTimeSecs), "\n")
-    return(invisible())
-  }
-  else {
-    return(diffTimeSecs)
-  }
-}
-
-#' =========================================================================
 #' TOC on 24-11-2015:
 #' =========================================================================
 #' (1). grpplot
@@ -2349,13 +2050,11 @@ toc <- function(echo = TRUE) {
 #' (10). .foldchange
 #' (11). .foldchange2logratio
 #' (12). .logratio2foldchange
-#' (13). vec.segment
 #' (14). vec.summ.1
 #' (15). vec.summ
 #' (16). df.summ
 #' (17). mv.zene
 #' (21). mv.fill
-#' (23). mv.fill.1
 #' (24). mv.stats
 #' (26). hm.cols
 #' (27). pca.plot.wrap
@@ -2372,20 +2071,16 @@ toc <- function(echo = TRUE) {
 #' (39). panel.corrgram.ell
 #' (41). dat.sel
 #' (42). combn.pw
-#' (44). dat.sel.1
-#' (45). .dat.sel
 #' (50). panel.smooth.line
 #' (51). preproc
 #' (58). preproc.auto
 #' (60). preproc.sd
 #' (61). preproc.const
 #' (62). cor.cut
-#' (63). cor.long
 #' (64). cor.hcl
 #' (65). cor.heat
 #' (66). cor.heat.gram
 #' (67). cor.heat.1
-#' (68). cor.heat.2
 #' (70). save.tab
 #' (71). list2df
 #' (72). un.list
@@ -2393,5 +2088,3 @@ toc <- function(echo = TRUE) {
 #' (74). shrink.list.1
 #' (75). .marg
 #' (76). class.ind
-#' (77). tic
-#' (78). toc
