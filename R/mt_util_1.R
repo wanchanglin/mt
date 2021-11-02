@@ -43,7 +43,6 @@ pca.outlier <- function(x, center = TRUE, scale = TRUE,
     args <- list()
   }
 
-  #' -------------------------------------------------------------------
   #' calculate PCA
   pcs <- 1:2 #' only use PC1 and PC2
   pca <- prcomp(x, center = center, scale. = scale) #' strip off dot arguments
@@ -56,7 +55,6 @@ pca.outlier <- function(x, center = TRUE, scale = TRUE,
   names(x) <- dfn
   x <- x[, pcs]
 
-  #' -----------------------------------------------------------------------
   #' outlier detection by Mahalanobis distances
   cent <- colMeans(x)
   cova <- cov(x)
@@ -355,7 +353,6 @@ panel.elli.1 <- function(x, y, subscripts, groups = NULL, conf.level = 0.975,
                          ep = 0, com.grp = NULL, no.grp = NULL, 
                          ell.grp = NULL, ...) {
 
-  #' ------------------------------------------------------------------
   plot.elli <- function(x, y, ...) { #' plot ellipse
     Var <- var(cbind(x, y))
     Mean <- cbind(mean(x), mean(y))
@@ -552,19 +549,16 @@ if (F) {
   cbind(a, b, f)
 }
 
-#' ----------------------------------------------------------------------
 .foldchange <- function(num, denom) {
   ifelse(num >= denom, num / denom, -denom / num)
 }
 
-#' ----------------------------------------------------------------------
 .foldchange2logratio <- function(foldchange, base = 2) {
   retval <- ifelse(foldchange < 0, 1 / -foldchange, foldchange)
   retval <- log(retval, base)
   retval
 }
 
-#' ----------------------------------------------------------------------
 .logratio2foldchange <- function(logratio, base = 2) {
   retval <- base^ (logratio)
   retval <- ifelse(retval < 1, -1 / retval, retval)
@@ -787,6 +781,55 @@ mv.stats <- function(dat, grp = NULL, ...) {
   }
 
   ret
+}
+
+#' ========================================================================
+#' wll-05-12-2007: Calculate the pattern of missing values.
+#' Value:
+#'   A matrix with (nrow(x)+1, ncol(x)+1) dimension. Except the last row and
+#'   column, each row corresponds to a missing data pattern
+#'   (1=observed, 0=missing). The row names shows the number of pattern.
+#'   The last row contains the number of mising values
+#'   with respect to each column and the last column represent the counts of
+#'   each row.
+#' See Also:
+#'   md.pattern in package mice and prelim.norm in package norm.
+#' NOTE: 1.The motivaton of the function is that Ted Harding mentioned that
+#'       that prelim.norm can only encode NA-patterns in an R integer for up
+#'       to 31 columns. More than that, and it will not work properly or at
+#'       all. (http://article.gmane.org/gmane.comp.lang.r.general/55185).
+#'       Function md.pattern has also this problem since it modified from
+#'       prelim.norm. 2. The function is not sorted at current stage.
+#' Usage:
+#'   library(mice)
+#'   data(nhanes)
+#'   md.pattern(nhanes)     #' from mice
+#'   mv.pattern(nhanes)
+mv.pattern <- function(x) {
+  #' The fowwling function is taken from
+  #' http://article.gmane.org/gmane.comp.lang.r.general/16575
+  "%all.==%" <- function(a, b) apply(b, 2, function(x) apply(t(a) == x, 2, all))
+
+  if (!(is.matrix(x) | is.data.frame(x))) {
+    stop("Data should be a matrix or dataframe")
+  }
+
+  #' get the pattern of missing values
+  mat <- 1 * !is.na(x)
+  pattern <- unique(mat)
+  counts <- colSums(mat %all.==% t(unique(mat)))
+  rownames(pattern) <- counts
+
+  #' add some statistics
+  #' number of missing values with respect to column (variable)
+  nmis <- apply(1 * is.na(x), 2, sum)
+  #' number of missing values in the pattern
+  pmis <- ncol(pattern) - apply(pattern, 1, sum)
+
+  pattern <- rbind(pattern, c(nmis)) #' a trick to take off the row name
+  #' using c
+  pattern <- cbind(pattern, c(pmis, sum(nmis)))
+  pattern
 }
 
 #' =========================================================================
@@ -1417,7 +1460,6 @@ dat.sel <- function(dat, cls, choices = NULL) {
 #' lwc-13-04-2010: Index of pairwise combination for categorical vectors.
 combn.pw <- function(cls, choices = NULL) {
 
-  #' ---------------------------------------------------------------------
   .combn.pw <- function(choices, lev) {
     choices <- if (is.null(choices)) lev else unique(choices)
     pm <- pmatch(choices, lev)
@@ -1448,7 +1490,6 @@ combn.pw <- function(cls, choices = NULL) {
     return(com)
   }
 
-  #' ---------------------------------------------------------------------
   cls <- as.factor(cls)
   lev <- levels(cls)
   if (is.list(choices)) {
@@ -1494,7 +1535,6 @@ panel.smooth.line <- function(x, y, ...) {
 #'   something.
 preproc <- function(x, y = NULL, method = "log", add = 1) {
 
-  #' ------------------------------------------------------------
   #' TIC normalisation
   TICnorm <- function(x, y = NULL) {
     scale <- apply(x, 1, function(x) sum(x, na.rm = T))
@@ -1509,7 +1549,6 @@ preproc <- function(x, y = NULL, method = "log", add = 1) {
     x <- sweep(x, 1, scale, "/")
   }
 
-  #' ------------------------------------------------------------
   me <- function(x) mean(x, na.rm = T)
   se <- function(x) sd(x, na.rm = T)
   mx <- function(x) max(x, na.rm = T)
@@ -1844,7 +1883,6 @@ cor.heat.gram <- function(mat.1, mat.2, use = "pairwise.complete.obs",
   #' co.max  <- max(co.1[,3], na.rm=T)
   #' co.thre <- co.1[co.1[,3] >= 0.4,] #' lwc-09-03-2010: Very specific
 
-  #' ------------------------------------------------------------------
   #' lwc-23-06-2015: If co is a symetric matrix,
   if (F) {
     co.1 <- co
@@ -1855,9 +1893,7 @@ cor.heat.gram <- function(mat.1, mat.2, use = "pairwise.complete.obs",
     co.1 <- melt(co.1)
     co.1 <- co.1[complete.cases(co.1), ]
   }
-  #' ------------------------------------------------------------------
 
-  #' res <- list(cor.heat=ph, cor.gram=ph.1, cor.thre=co.thre, cor.max=co.max)
   res <- list(cor.heat = ph, cor.gram = ph.1, cor.short = co, cor.long = co.1)
 }
 
@@ -1990,53 +2026,6 @@ shrink.list.1 <- function(x) {
   x
 }
 
-#' ========================================================================
-#' lwc-30-06-2007: claculate the margin of a classifier based on the
-#' posterior
-#' NOTE: 1. This function hacked from package 'randomForest'. For more
-#'       description, see package 'randomForest'.
-#'       2. Internal function
-.marg <- function(prob, observed) {
-  if (missing(observed) || missing(prob)) stop("arguments miss")
-  if (length(observed) != nrow(prob)) stop("lengths differ")
-
-  if (any(prob > 1)) {
-    prob <- sweep(prob, 1, rowSums(prob), "/")
-  }
-  observed <- as.factor(observed)
-
-  mat <- data.frame(prob, observed)
-  names(mat) <- c(dimnames(prob)[[2]], "observed")
-  #' NOTE-lwc: Ater data.frame() operation, the colnames may be changed (if
-  #' the colnames are numbers). The above line is to restore the original
-  #' colnames.
-
-  nlev <- length(levels(observed))
-
-  ans <- apply(mat, 1, function(x) {
-    pos <- match(x[nlev + 1], names(x))
-    t1 <- as.numeric(x[pos])
-    t2 <- max(as.numeric(x[-c(pos, nlev + 1)]))
-    t1 - t2
-  })
-
-  names(ans) <- observed
-  ans
-}
-
-#' ========================================================================
-#' Generates Class Indicator Matrix from a Factor.
-#' A matrix which is zero except for the column corresponding to the class.
-#' Note: from package NNET
-class.ind <- function(cl) {
-  n <- length(cl)
-  cl <- as.factor(cl)
-  x <- matrix(0, n, length(levels(cl)))
-  x[(1:n) + n * (unclass(cl) - 1)] <- 1
-  dimnames(x) <- list(names(cl), levels(cl))
-  x
-}
-
 #' =========================================================================
 #' TOC on 24-11-2015:
 #' =========================================================================
@@ -2056,6 +2045,7 @@ class.ind <- function(cl) {
 #' (17). mv.zene
 #' (21). mv.fill
 #' (24). mv.stats
+#' (25). mv.pattern
 #' (26). hm.cols
 #' (27). pca.plot.wrap
 #' (28). mds.plot.wrap
@@ -2086,5 +2076,3 @@ class.ind <- function(cl) {
 #' (72). un.list
 #' (73). shrink.list
 #' (74). shrink.list.1
-#' (75). .marg
-#' (76). class.ind

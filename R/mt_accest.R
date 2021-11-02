@@ -787,6 +787,40 @@ classifier <- function(dat.tr, cl.tr, dat.te = NULL, cl.te = NULL, method,
   return(ret)
 }
 
+#' ========================================================================
+#' lwc-30-06-2007: claculate the margin of a classifier based on the
+#' posterior
+#' NOTE: 1. This function hacked from package 'randomForest'. For more
+#'       description, see package 'randomForest'.
+#'       2. Internal function
+.marg <- function(prob, observed) {
+  if (missing(observed) || missing(prob)) stop("arguments miss")
+  if (length(observed) != nrow(prob)) stop("lengths differ")
+
+  if (any(prob > 1)) {
+    prob <- sweep(prob, 1, rowSums(prob), "/")
+  }
+  observed <- as.factor(observed)
+
+  mat <- data.frame(prob, observed)
+  names(mat) <- c(dimnames(prob)[[2]], "observed")
+  #' NOTE-lwc: Ater data.frame() operation, the colnames may be changed (if
+  #' the colnames are numbers). The above line is to restore the original
+  #' colnames.
+
+  nlev <- length(levels(observed))
+
+  ans <- apply(mat, 1, function(x) {
+    pos <- match(x[nlev + 1], names(x))
+    t1 <- as.numeric(x[pos])
+    t2 <- max(as.numeric(x[-c(pos, nlev + 1)]))
+    t1 - t2
+  })
+
+  names(ans) <- observed
+  ans
+}
+
 #' =========================================================================
 #' lwc-16-08-2006: Calculate bootstrap, .632 bootstrap and .632 plus
 #' bootstrap error rate
@@ -1094,3 +1128,4 @@ cv.idx <- function(x, nreps, strat = FALSE) {
 #' (60). cv.idx
 #' (61).   ssubset
 #' (62).   kfoldcv
+#' (75). .marg

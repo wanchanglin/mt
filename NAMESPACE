@@ -3,23 +3,22 @@
 ### exported functions
 export(
 accest, binest, maccest, mbinest, valipars, trainind, classifier, boot.err, 
-dat.sel, preproc, pcalda, plslda, plsc,osc, osc.wold, 
-osc.sjoblom, osc.wise, predict.osc, mc.anova, mc.fried, mc.norm, 
-tune.plsc,tune.plslda,tune.pcalda,
+dat.sel, preproc, pcalda, plslda, plsc, osc, osc.wold, osc.sjoblom, osc.wise,
+predict.osc, mc.anova, mc.fried, mc.norm, tune.plsc, tune.plslda, tune.pcalda,
 
 fs.rf, fs.rfe, fs.snr, fs.welch, fs.wilcox, fs.anova, fs.auc, fs.kruskal, 
-fs.relief, fs.bw, get.fs.len, feat.freq, feat.rank.re, feat.mfs,
-frankvali, frank.err, fs.pls, fs.plsvip, fs.plsvip.1, fs.plsvip.2,
-fs.pca, grpplot, pcaplot, pca.outlier, pca.outlier.1,feat.mfs.stats,
+fs.relief, fs.bw, get.fs.len, feat.freq, feat.rank.re, feat.mfs, frankvali,
+frank.err, fs.pls, fs.plsvip, fs.plsvip.1, fs.plsvip.2, fs.pca, grpplot,
+pcaplot, pca.outlier, pca.outlier.1, feat.mfs.stats,
 
-panel.elli, panel.elli.1,panel.smooth.line, feat.agg, save.tab,list2df, 
-un.list,shrink.list, fs.rf.1, fs.cl, fs.cl.1,
-aam.cl,aam.mcl, cor.cut, cor.hcl, cor.heat, cor.heat.1,
-preproc.sd, preproc.const,feat.mfs.stab, combn.pw, cl.rate, cl.perf, cl.roc,
-cl.auc, corrgram.circle, corrgram.ellipse,pval.reject,pval.test, pca.comp,
-pca.plot, cor.heat.gram, pca.plot.wrap,lda.plot.wrap,lda.plot.wrap.1,
-pls.plot.wrap,hm.cols,mv.zene,mv.fill,mv.stats, df.summ, vec.summ, vec.summ.1,
-stats.vec, stats.mat, mdsplot,mds.plot.wrap, panel.outl
+panel.elli, panel.elli.1, panel.smooth.line, feat.agg, save.tab, list2df, 
+un.list,shrink.list, fs.rf.1, fs.cl, fs.cl.1, aam.cl,aam.mcl, cor.cut,
+cor.hcl, cor.heat, cor.heat.1, preproc.sd, preproc.const, feat.mfs.stab,
+combn.pw, cl.rate, cl.perf, cl.roc, cl.auc, corrgram.circle,
+corrgram.ellipse, pval.reject, pval.test, pca.comp, pca.plot, cor.heat.gram,
+pca.plot.wrap, lda.plot.wrap, lda.plot.wrap.1, pls.plot.wrap, hm.cols, 
+mv.zene, mv.fill, mv.stats, df.summ, vec.summ, vec.summ.1, stats.vec, 
+stats.mat, mdsplot, mds.plot.wrap, panel.outl
 
 )
 
