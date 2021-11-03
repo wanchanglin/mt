@@ -173,37 +173,37 @@ print.summary.plslda <- function(x, ...) {
 plslda <- function(x, ...) UseMethod("plslda")
 
 #' =========================================================================
-plslda.formula <-
-  function(formula, data = NULL, ..., subset, na.action = na.omit) {
-    call <- match.call()
-    if (!inherits(formula, "formula")) {
-      stop("method is only for formula objects")
-    }
-    m <- match.call(expand.dots = FALSE)
-    if (identical(class(eval.parent(m$data)), "matrix")) {
-      m$data <- as.data.frame(eval.parent(m$data))
-    }
-    m$... <- NULL
-    m[[1]] <- as.name("model.frame")
-    m$na.action <- na.action
-    m <- eval(m, parent.frame())
-    Terms <- attr(m, "terms")
-    attr(Terms, "intercept") <- 0
-    x <- model.matrix(Terms, m)
-    y <- model.extract(m, "response")
-    attr(x, "na.action") <- attr(y, "na.action") <- attr(m, "na.action")
+plslda.formula <- function(formula, data = NULL, ..., subset, 
+                           na.action = na.omit) {
+	call <- match.call()
+	if (!inherits(formula, "formula")) {
+		stop("method is only for formula objects")
+	}
+	m <- match.call(expand.dots = FALSE)
+	if (identical(class(eval.parent(m$data)), "matrix")) {
+		m$data <- as.data.frame(eval.parent(m$data))
+	}
+	m$... <- NULL
+	m[[1]] <- as.name("model.frame")
+	m$na.action <- na.action
+	m <- eval(m, parent.frame())
+	Terms <- attr(m, "terms")
+	attr(Terms, "intercept") <- 0
+	x <- model.matrix(Terms, m)
+	y <- model.extract(m, "response")
+	attr(x, "na.action") <- attr(y, "na.action") <- attr(m, "na.action")
 
-    ret <- plslda.default(x, y, ..., na.action = na.action)
+	ret <- plslda.default(x, y, ..., na.action = na.action)
 
-    ret$call <- call
-    ret$call[[1]] <- as.name("plslda")
-    ret$terms <- Terms
-    if (!is.null(attr(m, "na.action"))) {
-      ret$na.action <- attr(m, "na.action")
-    }
-    class(ret) <- c("plslda.formula", class(ret))
-    return(ret)
-  }
+	ret$call <- call
+	ret$call[[1]] <- as.name("plslda")
+	ret$terms <- Terms
+	if (!is.null(attr(m, "na.action"))) {
+		ret$na.action <- attr(m, "na.action")
+	}
+	class(ret) <- c("plslda.formula", class(ret))
+	return(ret)
+}
 
 #' ========================================================================
 #' wll-13-12-2007: plot method for plsc using lattice.
@@ -307,19 +307,13 @@ plot.plslda.1 <- function(x, panel = panel.plslda, cex = 0.7, dimen,
   invisible(NULL)
 }
 
-#' =========================================================================
-#' list of functions
-#' =========================================================================
-#' tune.plslda
-#' plslda.default
-#'   class.ind
-#' predict.plslda
-#' print.plslda
-#' summary.plslda
-#' print.summary.plslda
-#' plslda
-#' plot.plslda
-#'   lc.names
-#' plot.plslda.1
-#'   panel.plslda
-#'   lc.names
+#'  1) tune.plslda
+#'  2) plslda.default
+#'  3) predict.plslda
+#'  4) print.plslda
+#'  5) summary.plslda
+#'  6) print.summary.plslda
+#'  7) plslda
+#'  8) plslda.formula
+#'  9) plot.plslda
+#' 10) plot.plslda.1

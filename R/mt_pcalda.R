@@ -368,53 +368,47 @@ plot.pcalda.1 <- function(x, panel = panel.pcalda, cex = 0.7, dimen,
 pcalda <- function(x, ...) UseMethod("pcalda")
 
 #' =========================================================================
-pcalda.formula <-
-  function(formula, data = NULL, ..., subset, na.action = na.omit) {
-    call <- match.call()
-    if (!inherits(formula, "formula")) {
-      stop("method is only for formula objects")
-    }
-    m <- match.call(expand.dots = FALSE)
-    if (identical(class(eval.parent(m$data)), "matrix")) {
-      m$data <- as.data.frame(eval.parent(m$data))
-    }
-    m$... <- NULL
-    m[[1]] <- as.name("model.frame")
-    m$na.action <- na.action
-    m <- eval(m, parent.frame())
-    Terms <- attr(m, "terms")
-    attr(Terms, "intercept") <- 0
-    x <- model.matrix(Terms, m)
-    y <- model.extract(m, "response")
-    attr(x, "na.action") <- attr(y, "na.action") <- attr(m, "na.action")
+pcalda.formula <- function(formula, data = NULL, ..., subset, 
+                           na.action = na.omit) {
+	call <- match.call()
+	if (!inherits(formula, "formula")) {
+		stop("method is only for formula objects")
+	}
+	m <- match.call(expand.dots = FALSE)
+	if (identical(class(eval.parent(m$data)), "matrix")) {
+		m$data <- as.data.frame(eval.parent(m$data))
+	}
+	m$... <- NULL
+	m[[1]] <- as.name("model.frame")
+	m$na.action <- na.action
+	m <- eval(m, parent.frame())
+	Terms <- attr(m, "terms")
+	attr(Terms, "intercept") <- 0
+	x <- model.matrix(Terms, m)
+	y <- model.extract(m, "response")
+	attr(x, "na.action") <- attr(y, "na.action") <- attr(m, "na.action")
 
-    ret <- pcalda.default(x, y, ..., na.action = na.action)
+	ret <- pcalda.default(x, y, ..., na.action = na.action)
 
-    ret$call <- call
-    ret$call[[1]] <- as.name("pcalda")
-    ret$terms <- Terms
-    if (!is.null(attr(m, "na.action"))) {
-      ret$na.action <- attr(m, "na.action")
-    }
-    class(ret) <- c("pcalda.formula", class(ret))
-    return(ret)
-  }
+	ret$call <- call
+	ret$call[[1]] <- as.name("pcalda")
+	ret$terms <- Terms
+	if (!is.null(attr(m, "na.action"))) {
+		ret$na.action <- attr(m, "na.action")
+	}
+	class(ret) <- c("pcalda.formula", class(ret))
+	return(ret)
+}
 
-#' =========================================================================
-#' list of functions 
-#' =========================================================================
-#' tune.pcalda
-#' tune.pcalda.1
-#'   func
-#' tune.pcalda.2
-#' pcalda.default
-#' predict.pcalda
-#' print.pcalda
-#' summary.pcalda
-#' print.summary.pcalda
-#' plot.pcalda
-#'   ld.names
-#' plot.pcalda.1
-#'   panel.pcalda
-#'   ld.names
-#' pcalda
+#'  1) tune.pcalda
+#'  2) tune.pcalda.1
+#'  3) tune.pcalda.2
+#'  4) pcalda.default
+#'  5) predict.pcalda
+#'  6) print.pcalda
+#'  7) summary.pcalda
+#'  8) print.summary.pcalda
+#'  9) plot.pcalda
+#' 10) plot.pcalda.1
+#' 11) pcalda
+#' 12) pcalda.formula

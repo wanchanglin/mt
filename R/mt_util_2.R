@@ -525,20 +525,17 @@ pred.pls <- function(object, newdata, ncomp) {
   return(pred)
 }
 
-#' ==================================================
-#' TOC on 25-11-2015
-#' ==================================================
-#' (1). class.ind
-#' (2). batch.shift
-#' (3). rsd
-#' (4). tic
-#' (5). toc
-#' (6). list2xls
-#' (7). WriteXLS
-#' (8). sub.samp
-#' (9). panel.qqconf
-#' (10). LogReg
-#' (11). predict.LogReg
-#' (12). LogRegAnn
-#' (13). predict.LogRegAnn
-#' (14). pred.pls
+#'  1) class.ind
+#'  2) batch.shift
+#'  3) rsd
+#'  4) tic
+#'  5) toc
+#'  6) list2xls
+#'  7) WriteXLS
+#'  8) sub.samp
+#'  9) panel.qqconf
+#' 10) LogReg
+#' 11) predict.LogReg
+#' 12) LogRegAnn
+#' 13) predict.LogRegAnn
+#' 14) pred.pls

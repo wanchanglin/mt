@@ -662,23 +662,12 @@ mv.zene <- function(dat) {
 #' ========================================================================
 #' lwc-23-04-2010: Fill the zero/NA values by the mean of vector.
 #' lwc-15-06-2011: minor changes.
-#' lwc-21-06-2011: add method of "low" provided by David Wedge
 #' lwc-22-06-2011: Replace ifelse(x < .Machine$double.eps, m, x) with
 #'   ifelse(x < .Machine$double.eps, NA, x) and shange its line position.
 #' Usage
 #'   data(abr1)
 #'   dat <- abr1$pos[,1970:1980]
-#'   mt:::df.summ(dat)
 #'   dat.1 <- mv.fill(dat,method="mean",ze_ne = TRUE)
-#'   mt:::df.summ(dat.1)
-#' User-defined methods:
-#' random <- function(x,...)
-#'   sample(x[!is.na(x)], sum(is.na(x)), replace=TRUE)
-#' low <- function(x, ...) {
-#'   max(mean(x,...) - 3 * sd(x,...), min(x, ...)/2)
-#' }
-#' mv.fill(dat, method="random", ze_ne=TRUE)
-#' mv.fill(dat, method="low", ze_ne=TRUE)
 mv.fill <- function(dat, method = "mean", ze_ne = FALSE) {
   method <-
     if (is.function(method)) {
@@ -2026,53 +2015,56 @@ shrink.list.1 <- function(x) {
   x
 }
 
-#' =========================================================================
-#' TOC on 24-11-2015:
-#' =========================================================================
-#' (1). grpplot
-#' (2). pcaplot
-#' (3). panel.elli.1
-#' (5). panel.elli
-#' (7). stats.mat
-#' (8). stats.vec
-#' (9). .pval
-#' (10). .foldchange
-#' (11). .foldchange2logratio
-#' (12). .logratio2foldchange
-#' (14). vec.summ.1
-#' (15). vec.summ
-#' (16). df.summ
-#' (17). mv.zene
-#' (21). mv.fill
-#' (24). mv.stats
-#' (25). mv.pattern
-#' (26). hm.cols
-#' (27). pca.plot.wrap
-#' (28). mds.plot.wrap
-#' (29). lda.plot.wrap
-#' (30). lda.plot.wrap.1
-#' (31). pls.plot.wrap
-#' (32). plot.wrap.split
-#' (33). mdsplot
-#' (34). pca.plot
-#' (36). pca.comp
-#' (37). pval.reject
-#' (38). pval.test
-#' (39). panel.corrgram.ell
-#' (41). dat.sel
-#' (42). combn.pw
-#' (50). panel.smooth.line
-#' (51). preproc
-#' (58). preproc.auto
-#' (60). preproc.sd
-#' (61). preproc.const
-#' (62). cor.cut
-#' (64). cor.hcl
-#' (65). cor.heat
-#' (66). cor.heat.gram
-#' (67). cor.heat.1
-#' (70). save.tab
-#' (71). list2df
-#' (72). un.list
-#' (73). shrink.list
-#' (74). shrink.list.1
+#'  1) pca.outlier
+#'  2) pca.outlier.1
+#'  3) grpplot
+#'  4) .grpplot
+#'  5) pcaplot
+#'  6) panel.elli.1
+#'  7) panel.elli
+#'  8) panel.outl
+#'  9) stats.mat
+#' 10) stats.vec
+#' 11) .pval
+#' 12) .foldchange
+#' 13) .foldchange2logratio
+#' 14) .logratio2foldchange
+#' 15) vec.summ.1
+#' 16) vec.summ
+#' 17) df.summ
+#' 18) mv.zene
+#' 19) mv.fill
+#' 20) mv.stats
+#' 21) mv.pattern
+#' 22) hm.cols
+#' 23) pca.plot.wrap
+#' 24) mds.plot.wrap
+#' 25) lda.plot.wrap
+#' 26) lda.plot.wrap.1
+#' 27) pls.plot.wrap
+#' 28) plot.wrap.split
+#' 29) mdsplot
+#' 30) pca.plot
+#' 31) pca.comp
+#' 32) pval.reject
+#' 33) pval.test
+#' 34) corrgram.ellipse
+#' 35) corrgram.circle
+#' 36) panel.corrgram.ell
+#' 37) panel.corrgram.cir
+#' 38) dat.sel
+#' 39) combn.pw
+#' 40) panel.smooth.line
+#' 41) preproc
+#' 42) preproc.sd
+#' 43) preproc.const
+#' 44) cor.cut
+#' 45) cor.hcl
+#' 46) cor.heat
+#' 47) cor.heat.gram
+#' 48) cor.heat.1
+#' 49) save.tab
+#' 50) list2df
+#' 51) un.list
+#' 52) shrink.list
+#' 53) shrink.list.1

@@ -1091,41 +1091,27 @@ cv.idx <- function(x, nreps, strat = FALSE) {
   return(train.ind)
 }
 
-#' =========================================================================
-#' list of functions
-#' =========================================================================
-#' accest.default
-#'     func
-#'     foo
-#'     foo
-#'       func
-#'       func
-#' print.accest
-#' summary.accest
-#' print.summary.accest
-#' plot.accest
-#' accest
-#' accest.formula
-#' binest
-#' aam.cl
-#' aam.mcl
-#' (28). cl.rate
-#' (29). cl.perf
-#' (30).   tf
-#' (31). cl.auc
-#' (32). auc
-#' (33). cl.roc
-#' (34).   roc_rule
-#' (51). classifier
-#' (52).     knn.wrap
-#' (53).     pred.func
-#' (54). boot.err
-#' (55). valipars
-#' (56). trainind
-#' (57).   idx.func
-#' (58). boot.idx
-#' (59). rand.idx
-#' (60). cv.idx
-#' (61).   ssubset
-#' (62).   kfoldcv
-#' (75). .marg
+#'  1) accest.default
+#'  2) print.accest
+#'  3) summary.accest
+#'  4) print.summary.accest
+#'  5) plot.accest
+#'  6) accest
+#'  7) accest.formula
+#'  8) binest
+#'  9) aam.mcl
+#' 10) aam.cl
+#' 11) cl.rate
+#' 12) cl.perf
+#' 13) cl.auc
+#' 14) auc
+#' 15) cl.roc
+#' 16) cl.roc.1
+#' 17) classifier
+#' 18) .marg
+#' 19) boot.err
+#' 20) valipars
+#' 21) trainind
+#' 22) boot.idx
+#' 23) rand.idx
+#' 24) cv.idx

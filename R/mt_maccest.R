@@ -379,18 +379,15 @@ mc.norm <- function(x, ...) {
   return(s.htest)
 }
 
-#' ========================================================================
-#' list of functions
-#' ========================================================================
-#' maccest.default
-#' print.maccest
-#' summary.maccest
-#' print.summary.maccest
-#' boxplot.maccest
-#' plot.maccest
-#' maccest
-#' maccest.formula
-#' mbinest
-#' mc.fried
-#' mc.anova
-#' mc.norm
+#'  1) maccest.default
+#'  2) print.maccest
+#'  3) summary.maccest
+#'  4) print.summary.maccest
+#'  5) boxplot.maccest
+#'  6) plot.maccest
+#'  7) maccest
+#'  8) maccest.formula
+#'  9) mbinest
+#' 10) mc.fried
+#' 11) mc.anova
+#' 12) mc.norm
