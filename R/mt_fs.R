@@ -1498,7 +1498,7 @@ get.fs.len <- function(p, fs.len = c("power2")) {
 #'  tmp     <- mt:::rank2order(fs.rank.list[,1])
 #'  fs.order.list <- sapply(1:ncol(fs.rank.list),
 #'                          function(x) mt:::rank2order(fs.rank.list[,x]))
-#' Note: No R doc available.
+#' Internal function.
 rank2order <- function(fs.rank) {
   fs.order <- order(fs.rank)
   tmp <- names(fs.rank[fs.order])
@@ -1509,7 +1509,7 @@ rank2order <- function(fs.rank) {
 
 #' =======================================================================
 #' wll-12-03-2007: convert feature order to feature rank
-#' Note that no R doc available.
+#' Internal function.
 order2rank <- function(fs.order) {
   fs.rank <- order(fs.order)
   names(fs.rank) <- fs.order[fs.rank]
