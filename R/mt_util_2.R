@@ -132,7 +132,6 @@ WriteXLS <- function(x, ExcelFileName = "R.xls", SheetNames = NULL,
 
   Encoding <- match.arg(Encoding)
 
-  #' -------------------------------------------------------------------------
   #'  Check to see if SheetNames is specified and if so: check for
   #'  duplications they are same length as the number of dataframes CHECK
   #'  TO see if any SheetNames are >31 chars, which is the Excel Limit
@@ -205,7 +204,6 @@ WriteXLS <- function(x, ExcelFileName = "R.xls", SheetNames = NULL,
 
   dir.create(Tmp.Dir, recursive = TRUE)
 
-  #' ---------------------------------------------------------------------
   #'  Write Comma Delimited CSV files
   for (i in seq(along = DF.LIST)) {
     if (verbose) {
@@ -272,7 +270,7 @@ WriteXLS <- function(x, ExcelFileName = "R.xls", SheetNames = NULL,
   }
 }
 
-#' ===================================================================
+#' =======================================================================
 #' lwc-02-02-2007: randomly select k samples from each factor/class
 #' Arguments:
 #'   y - a factor indicating class info

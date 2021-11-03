@@ -1,4 +1,3 @@
-#' wll-24-11-2015: Use emacs to beautify this script
 
 #' ========================================================================
 #' lwc-29-03-2013: PCA outlier plot by lattice
@@ -150,7 +149,8 @@ pca.outlier.1 <- function(x, center = TRUE, scale = TRUE, conf.level = 0.975,
     #' display names
     txt <- names(dis[outlier])
     if (is.null(txt)) txt <- outlier
-    text(x[outlier, 1], x[outlier, 2] + xrange / 50, txt, col = "blue", cex = cex)
+    text(x[outlier, 1], x[outlier, 2] + xrange / 50, txt, col = "blue",
+         cex = cex)
   }
 
   ret <- list(
@@ -218,7 +218,7 @@ grpplot <- function(x, y, plot = "pairs", ...) {
   return(grpplot)
 }
 
-#' =========================================================================
+#' =======================================================================
 #' lwc-13-12-2007: Scatter plot by group
 #' lwc-17-12-2007: deal with 1 column problem. This idea is from
 #' MASS:::ldahist
@@ -340,7 +340,7 @@ pcaplot <- function(x, y, scale = TRUE, pcs = 1:2, ...) {
   p
 }
 
-#' =========================================================================
+#' =======================================================================
 #' lwc-15-07-2015: ellipse panel function which support individual and
 #'  combined group plotting. It is the extension of panel.elli.
 #' Usage: Under ep=2, there are three options to plot ellipse.
@@ -423,7 +423,7 @@ panel.elli <- function(x, y, groups = NULL, conf.level = 0.975, ...) {
   }
 }
 
-#' =========================================================================
+#' =======================================================================
 #' lwc-02-04-2013: Panel function for plotting outliers with ellipse in
 #' lattice
 #' To-Do: How to keep colour of text as consistent with groups?
@@ -453,7 +453,7 @@ panel.outl <- function(x, y, subscripts, groups = NULL,
   }
 }
 
-#' =========================================================================
+#' =======================================================================
 #' lwc-30-07-2013: group stats of column of a matrix/data frame including
 #'  fold changes, auc and p-values.
 #' lwc-08-01-2014: tidy up and minor changes.
@@ -474,7 +474,7 @@ stats.mat <- function(x, y, method = "mean", test.method = "wilcox.test",
   return(res)
 }
 
-#' =========================================================================
+#' =======================================================================
 #' lwc-30-07-2013: group stats for vector
 #' lwc-09-01-2014: lack of error handling, such as limits of 'method' and
 #' two groups.
@@ -525,7 +525,7 @@ stats.vec <- function(x, y, method = "mean", test.method = "wilcox.test",
   return(res)
 }
 
-#' ==========================================================
+#' =======================================================================
 #' lwc-30-07-2013: wrapper functions for p-values from test
 .pval <- function(x, y, test.method = "oneway.test", ...) {
   test.method <- if (is.function(test.method)) {
@@ -611,7 +611,7 @@ vec.summ <- function(x) {
   return(res)
 }
 
-#' ======================================================================
+#' =======================================================================
 #' lwc-03-03-2010: Summary function for data frame/matrix by column.
 #' lwc-08-06-2011: drop off colwise
 #' lwc-24-08-2011: Summary function for data matrix (wrapper function of
@@ -795,9 +795,8 @@ mv.stats <- function(dat, grp = NULL, ...) {
 #'   md.pattern(nhanes)     #' from mice
 #'   mv.pattern(nhanes)
 mv.pattern <- function(x) {
-  #' The fowwling function is taken from
-  #' http://article.gmane.org/gmane.comp.lang.r.general/16575
-  "%all.==%" <- function(a, b) apply(b, 2, function(x) apply(t(a) == x, 2, all))
+  "%all.==%" <- 
+    function(a, b) apply(b, 2, function(x) apply(t(a) == x, 2, all))
 
   if (!(is.matrix(x) | is.data.frame(x))) {
     stop("Data should be a matrix or dataframe")
@@ -1209,7 +1208,7 @@ mdsplot <- function(x, y, method = "euclidean", dimen = c(1, 2), ep = 0, ...) {
   p
 }
 
-#' =========================================================================
+#' ========================================================================
 #' lwc-29-05-2008: Another version of PCA plot with proportion indication.
 #'   Use text indicate different groups.
 #' lwc-13-09-2010: major changes and add ellipse plot
@@ -1251,7 +1250,7 @@ pca.plot <- function(x, y, scale = TRUE, abbrev = FALSE, ep.plot = FALSE, ...) {
   invisible(NULL)
 }
 
-#' =========================================================================
+#' ========================================================================
 #' wll-29-03-2008: Compute the PCA scores and propotion of variance
 #' TO-DO: 1.) check validility of argument pcs.
 pca.comp <- function(x, scale = FALSE, pcs = 1:2, ...) {
@@ -1289,7 +1288,7 @@ pval.reject <- function(adjp, alpha) {
   return(tmp)
 }
 
-#' =========================================================================
+#' ========================================================================
 #' lwc-20-01-2009: Calculate the p-values for columns of data matix
 #'   with respect to group information. Support multiple categorical data.
 #' lwc-16-06-2010: Provide argument method. Support user defined test method
@@ -1321,7 +1320,7 @@ pval.test <- function(x, y, method = "oneway.test", ...) {
   return(pval)
 }
 
-#' =========================================================================
+#' ========================================================================
 #' lwc-23-03-2010: corrgram with ellipse
 #' lwc-27-04-2012: put scales in argument list
 #' Arguments:
@@ -1357,7 +1356,7 @@ corrgram.ellipse <- function(co, label = FALSE,
   return(ph)
 }
 
-#' =========================================================================
+#' ========================================================================
 #' lwc-23-03-2010: corrgram with circle/pie
 #' lwc-27-04-2012: put scales in argument list
 #' Arguments:
@@ -1379,7 +1378,7 @@ corrgram.circle <- function(co,
   return(ph)
 }
 
-#' =========================================================================
+#' ========================================================================
 #' lwc-23-03-2010: Panel function for ellipse corrgram.
 #' From Lattice book chapter 13. Internal function.
 panel.corrgram.ell <- function(x, y, z, subscripts, at, level = 0.9,
@@ -1500,7 +1499,7 @@ combn.pw <- function(cls, choices = NULL) {
   return(idx)
 }
 
-#' =======================================================================
+#' ========================================================================
 #' lwc-28-07-2009: panel function for plotting regression line with red
 #' color.
 #' lwc-29-03-2010: add dots arguments for panel.xyplot.
@@ -1515,7 +1514,7 @@ panel.smooth.line <- function(x, y, ...) {
   }
 }
 
-#' ===============================================================
+#' ========================================================================
 #' lwc-04-12-2006: Pre-process Data Set
 #' lwc-27-03-2007: support mutiple methods
 #' lwc-27-06-2007: 'rescaler' function in package 'reshape' provides a R
@@ -1666,7 +1665,8 @@ cor.cut <- function(mat, cutoff = 0.75, abs.f = FALSE,
     #' tow-columns correlation
     fs1 <- rownames(co)[idx[, 1]]
     fs2 <- colnames(co)[idx[, 2]]
-    res <- data.frame(com1 = fs1, com2 = fs2, cor = co[idx], stringsAsFactors = FALSE)
+    res <- data.frame(com1 = fs1, com2 = fs2, cor = co[idx],
+                      stringsAsFactors = FALSE)
     #' lwc-07-06-2011: add stringsAsFactors
   } else {
     res <- NA
@@ -1736,7 +1736,7 @@ cor.hcl <- function(mat, cutoff = 0.75, use = "pairwise.complete.obs",
   return(res)
 }
 
-#' ==========================================================================
+#' ========================================================================
 #' lwc-18-02-2010: Correlation heatmap using lattice
 #' lwc-17-03-2010: add dendrogram.
 cor.heat <- function(mat, use = "pairwise.complete.obs", method = "pearson",
@@ -1886,7 +1886,7 @@ cor.heat.gram <- function(mat.1, mat.2, use = "pairwise.complete.obs",
   res <- list(cor.heat = ph, cor.gram = ph.1, cor.short = co, cor.long = co.1)
 }
 
-#' =========================================================================
+#' ========================================================================
 #' lwc-30-09-2008: Plot heatmap with dendrogram for correlation matrix. This
 #'   function will call heatmap.2 in package gplots.
 #'  Arguments:
@@ -1928,7 +1928,7 @@ cor.heat.1 <- function(mat, dend = c("both", "row", "column", "none"),
   )
 }
 
-#' ==================================================================
+#' =======================================================================
 #' lwc-26-04-2008: save a list into a table file.
 #' NOTE: It is easy to save components of a list into some seperate files
 #'   by function mt:::list2xls.
@@ -1954,7 +1954,7 @@ save.tab <- function(x, filename = "temp.csv", firstline = "\n") {
   invisible()
 }
 
-#' =========================================================================
+#' =======================================================================
 #' lwc-13-12-2008: Convert a list with componets of vector to a data frame
 #'  for writing into an Excel file. Shorter vector will be filled with NA.
 #' lwc-28-01-2016: There are two internal functions in package 'plyr':
@@ -1968,7 +1968,7 @@ list2df <- function(x) {
   return(df)
 }
 
-#' =======================================================================
+#' ========================================================================
 #' lwc-26-04-2008: my version of unlist, which collapse the higher-depths
 #' list to 1-depth list. This function uses recursive programing skill to
 #' tackle any depths of list.

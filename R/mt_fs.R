@@ -1,9 +1,8 @@
 #' Feature Selection or ranking
 #' wll-19-05-2008: Take off most noquote and re-arrange fs.order appeared in
 #' the first of the output list.
-#' wll-05-12-2015: Review some code segment
 
-#' ===================================================================
+#' =======================================================================
 #' Feature frequency and stability of feature ranking.
 #' History:
 #'   01-02-07: commence
@@ -90,7 +89,8 @@ feat.cons <- function(freq, disp = TRUE) {
 #'   method    - a set of feature selections methods
 #'   pars      - validation control parameters.
 #'   is.resam  - Boolean indicator of re-sampling.
-feat.mfs <- function(x, y, method, pars = valipars(), is.resam = TRUE, ...) {
+feat.mfs <- function(x, y, method, pars = valipars(), is.resam = TRUE,
+                     ...) {
   res <- lapply(method, function(m) {
     cat("\nFeature Selector = :", m, "\n")
     flush.console()
@@ -124,7 +124,7 @@ feat.mfs <- function(x, y, method, pars = valipars(), is.resam = TRUE, ...) {
   return(feat.res)
 }
 
-#' ===================================================================
+#' ======================================================================
 #' lwc-25-02-2010: Wrapper function for the summary of 'feat.mfs'.
 #' Note: I have taken this code segment out of 'feat.mfs' in order to
 #'       increase the flexibility if intending to change 'rank.cutoff' or
@@ -152,7 +152,7 @@ feat.mfs.stab <- function(fs.res, rank.cutoff = 20, freq.cutoff = 0.5) {
   return(fs)
 }
 
-#' ===================================================================
+#' =======================================================================
 #' lwc-03-09-2010: Plot the stats values of multiple feature selection.
 #' lwc-06-09-2010: add fs.tab
 #' wll-05-12-2015: should use this function in data analysis
@@ -210,7 +210,7 @@ feat.mfs.stats <- function(fs.stats, cumu.plot = FALSE, main = "Stats Plot",
   return(res)
 }
 
-#' =========================================================================
+#' =======================================================================
 #' wll-06-11-2008: Use Borda count to get the final feature order
 #' Note: Previous name is fs.agg
 feat.agg <- function(fs.rank.list) {
@@ -223,10 +223,11 @@ feat.agg <- function(fs.rank.list) {
   return(list(fs.order = fs.order, fs.rank = fs.rank))
 }
 
-#' ========================================================================
+#' ======================================================================
 #' wll-20-03-2007: resampling-based on feature ranking/selection
 #' wll-23-07-2008: some change in loops handling
-feat.rank.re <- function(x, y, method, pars = valipars(), tr.idx = NULL, ...) {
+feat.rank.re <- function(x, y, method, pars = valipars(), tr.idx = NULL,
+                         ...) {
   #' validity checking
   if (missing(x) || missing(y)) {
     stop("data set or class are missing")
@@ -280,9 +281,13 @@ feat.rank.re <- function(x, y, method, pars = valipars(), tr.idx = NULL, ...) {
   cat("\n")
   names(res.all) <- paste("Iter", 1:pars$niter, sep = "_")
 
-  rank.list <- lapply(res.all, function(x) as.data.frame(sapply(x, function(y) y$fs.rank)))
-  order.list <- lapply(res.all, function(x) as.data.frame(sapply(x, function(y) y$fs.order)))
-  stats.list <- lapply(res.all, function(x) as.data.frame(sapply(x, function(y) y$stats)))
+  rank.list <- 
+    lapply(res.all, function(x) as.data.frame(sapply(x, function(y) y$fs.rank)))
+
+  order.list <- 
+    lapply(res.all, function(x) as.data.frame(sapply(x, function(y) y$fs.order)))
+  stats.list <- 
+    lapply(res.all, function(x) as.data.frame(sapply(x, function(y) y$stats)))
   rank.list <- do.call("cbind", rank.list)
   order.list <- do.call("cbind", order.list)
   stats.list <- do.call("cbind", stats.list)
@@ -295,7 +300,8 @@ feat.rank.re <- function(x, y, method, pars = valipars(), tr.idx = NULL, ...) {
   fs.rank <- order(fs.order, decreasing = F) #' feature rank score.
   names(fs.rank) <- rownames(rank.list)
   temp <- names(fs.rank[fs.order])
-  if (!is.null(temp)) fs.order <- noquote(temp) #' lwc-16-02-2010: Should we remove noquote?
+  if (!is.null(temp)) 
+    fs.order <- noquote(temp) #' lwc-16-02-2010: Should we remove noquote?
 
   res <- list(
     method = method,
@@ -311,7 +317,7 @@ feat.rank.re <- function(x, y, method, pars = valipars(), tr.idx = NULL, ...) {
   return(res)
 }
 
-#' =========================================================================
+#' =======================================================================
 #' wll-31-10-2007: feature selection using VIP of PLS.
 #' NOTE: This function supports multiple response, Y (i.e. dummy matrix for
 #' discriminat). The Mahalanobis distance of VIP is computed as the values
@@ -371,7 +377,7 @@ fs.plsvip <- function(x, y, ncomp = 10, ...) {
   return(res)
 }
 
-#' =========================================================================
+#' =======================================================================
 #' wll-31-10-2007: feature selection using VIP of PLS.
 #' NOTE: This function supports multiple response, Y (i.e. dummy matrix for
 #'       discriminat). The final VIP is the means of absolute value of VIP.
@@ -421,7 +427,7 @@ fs.plsvip.1 <- function(x, y, ncomp = 10, ...) {
   return(res)
 }
 
-#' =========================================================================
+#' =======================================================================
 #' wll-29-10-2007: feature selection using VIP of PLS.
 #' NOTE: To calculate VIP, two conditions needs to satisfy:
 #'       1.) PLS algorithm is NIPLS;
@@ -505,7 +511,7 @@ fs.pls <- function(x, y, pls = "simpls", ncomp = 10, ...) {
   return(res)
 }
 
-#' ==============================================================
+#' ======================================================================
 #' wll-30-10-2007: feature selection using loadings of PCA.
 #' lwc-22-09-2011: a bug fixed.
 #' NOTE: 1. To check the eignenvalue, use screeplot().
@@ -799,13 +805,10 @@ fs.auc <- function(x, y, ...) {
     mean(tmp[y == 0])
   })
 
-  #' ---------------------------------------------------------------------
   #' library(limma)
   #' auc  <- sapply(as.data.frame(x),function(z) auROC(y,z))
-  #' ---------------------------------------------------------------------
   #' library(verification)
   #' auc  <- sapply(as.data.frame(x),function(z) roc.area(y,z)$A)
-  #' ---------------------------------------------------------------------
   #' library(ROCR)
   #' auc  <- sapply(as.data.frame(x),function(z)
   #'           as.numeric(performance(prediction(z,y),measure="auc")@y.values))
@@ -1084,7 +1087,6 @@ frankvali.default <- function(dat, cl, cl.method = "svm",
   err.all <- list()
   fs.list <- list()
 
-  #' --------------------------------------------------------------------
   for (i in 1:pars$niter) {
     train.ind <- tr.idx[[i]]
     res <- list()
@@ -1112,7 +1114,6 @@ frankvali.default <- function(dat, cl, cl.method = "svm",
     #' colnames(err.all[[i]]) <- paste("Len_", len, sep="")
   } #' End of i
 
-  #' --------------------------------------------------------------------
   names(err.all) <- paste("Iter_", seq(1, pars$niter), sep = "")
   names(fs.list) <- paste("Iter_", seq(1, pars$niter), sep = "")
 
@@ -1202,7 +1203,7 @@ frankvali.formula <- function(formula, data = NULL, ..., subset,
   return(ret)
 }
 
-#' ==================================================================
+#' =======================================================================
 #' lwc-13-11-2006: boxplot the error rate on each iteration or computation.
 boxplot.frankvali <- function(x, ...) {
   col <- "lightgray"
@@ -1235,7 +1236,8 @@ print.frankvali <- function(x, digits = 3, ...) {
   cat("\nFeature numbers:\t", x$fs.len)
   cat("\nAverage error:\t\t", round(x$err.avg, digits))
 
-  cat("\nFeature order (top 10):\t", x$fs.order[1:min(10, length(x$fs.order))]) #' best to worst
+  cat("\nFeature order (top 10):\t", 
+      x$fs.order[1:min(10, length(x$fs.order))]) #' best to worst
   cat("\n")
   invisible(x)
 }
@@ -1273,7 +1275,7 @@ frank.err <- function(dat.tr, cl.tr, dat.te, cl.te, cl.method = "svm",
     stop(" training and test data missing")
   }
 
-  #' ------ feature ranking -----------
+  #' feature ranking
   if (is.null(fs.order)) {
     tmp <- do.call(fs.method, c(list(x = dat.tr, y = cl.tr), list(...)))
     fs.order <- tmp$fs.order
@@ -1288,14 +1290,15 @@ frank.err <- function(dat.tr, cl.tr, dat.te, cl.te, cl.method = "svm",
   len <- get.fs.len(p, fs.len = fs.len)
   nlen <- length(len)
 
-  #' ----------- error estimation --------------
+  #' error estimation
   error <- numeric(length = nlen)
   names(error) <- len
   #' names(error) <- paste("Len_", len, sep="")
   for (i in 1:nlen) {
     #' feature selection
     sel <- fs.order[1:len[i]]
-    error[i] <- classifier(dat.tr[, sel, drop = F], cl.tr, dat.te[, sel, drop = F], cl.te,
+    error[i] <- classifier(dat.tr[, sel, drop = F], cl.tr, 
+                           dat.te[, sel, drop = F], cl.te,
       method = cl.method, ...
     )$err
   }
@@ -1377,7 +1380,8 @@ if (F) {
   #' multi-classes
   fs <- fs.rf(x, y)
   ord <- fs$fs.order[1:50]
-  res <- fs.cl.2(x, y, fs.order = ord, cl.method = "svm", pars = pars, agg_f = TRUE)
+  res <- fs.cl.2(x, y, fs.order = ord, cl.method = "svm", pars = pars,
+                 agg_f = TRUE)
   perf.aam(res)
 
   #' two-classes
@@ -1395,13 +1399,15 @@ fs.cl.2 <- function(dat, cl, fs.order = colnames(dat), cl.method = "svm",
   if (agg_f) {
     res <- lapply(1:len, function(i) {
       id <- fs.order[1:i] #' aggregation of features
-      res <- accest(dat[, id, drop = F], cl, method = cl.method, pars = pars, ...)
+      res <- accest(dat[, id, drop = F], cl, method = cl.method,
+                    pars = pars, ...)
       #' res <- aam.cl(dat[,id, drop=F],cl, method=cl.method, pars=pars,...)
     })
   } else {
     res <- lapply(1:len, function(i) {
       id <- fs.order[i] #' individual feature
-      res <- accest(dat[, id, drop = F], cl, method = cl.method, pars = pars, ...)
+      res <- accest(dat[, id, drop = F], cl, method = cl.method,
+                    pars = pars, ...)
       #' res <- aam.cl(dat[,id, drop=F],cl, method=cl.method, pars=pars,...)
     })
   }
@@ -1468,7 +1474,7 @@ get.fs.len <- function(p, fs.len = c("power2")) {
   return(x)
 }
 
-#' =====================================================
+#' ======================================================================
 #' lwc-02-02-2007: convert feature rank to feature order
 #' NOTE: The vector of fs.rank should have variable names.
 #' Usages:
@@ -1486,7 +1492,7 @@ rank2order <- function(fs.rank) {
   return(fs.order)
 }
 
-#' =========================================================================
+#' =======================================================================
 #' wll-12-03-2007: convert feature order to feature rank
 #' Note that no R doc available.
 order2rank <- function(fs.order) {

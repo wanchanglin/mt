@@ -19,14 +19,15 @@ tune.plsc <- function(x, y, pls = "simpls", ncomp = 10, tune.pars, ...) {
   list(ncomp = which.max(res), acc.tune = res)
 }
 
-#' =========================================================================
+#' ========================================================================
 #' PLS for classification
 #' History:
 #'   wll-01-10-2007: commence
 #'   lwc-21-05-2012: use wrapper function of "mvr".
 #'   lwc-21-05-2012: It should not be difficcult to get R2 for "accest" with
 #'                   methods of plsc and plslda.
-plsc.default <- function(x, y, pls = "simpls", ncomp = 10, tune = FALSE, ...) {
+plsc.default <- function(x, y, pls = "simpls", ncomp = 10, tune = FALSE,
+                         ...) {
   #' arguments validility checking
   if (missing(x) || missing(y)) {
     stop("data set or class are missing")
@@ -129,7 +130,9 @@ predict.plsc <- function(object, newdata, ...) {
   }
 
   #' rotated data (projection)
-  x <- scale(newdata, center = object$pls.out$Xmeans, scale = FALSE) %*% object$pls.out$projection
+  x <- 
+    scale(newdata, center = object$pls.out$Xmeans, scale = FALSE) %*% 
+    object$pls.out$projection
 
   #' Predict with models containing ncomp components.
   ncomp <- object$ncomp
@@ -202,7 +205,8 @@ print.summary.plsc <- function(x, ...) {
 plsc <- function(x, ...) UseMethod("plsc")
 
 #' =========================================================================
-plsc.formula <- function(formula, data = NULL, ..., subset, na.action = na.omit) {
+plsc.formula <- function(formula, data = NULL, ..., subset,
+                         na.action = na.omit) {
 	call <- match.call()
 	if (!inherits(formula, "formula")) {
 		stop("method is only for formula objects")
@@ -237,7 +241,6 @@ plsc.formula <- function(formula, data = NULL, ..., subset, na.action = na.omit)
 #' wll-13-12-2007: plot method for plsc using lattice.
 plot.plsc <- function(x, dimen, ...) {
 
-  #' -------------------------------------------------------------------
   lc.names <- function(object, comps) {
     labs <- paste("LC", 1:length(object$Xvar), sep = "")
     if (missing(comps)) {
@@ -276,7 +279,6 @@ plot.plsc <- function(x, dimen, ...) {
 
 #' =========================================================================
 #' wll-22-05-2007: plot method for plsc. It plot PLS latent components.
-#' =========================================================================
 plot.plsc.1 <- function(x, panel = panel.plsc, cex = 0.7, dimen,
                         abbrev = FALSE, ...) {
 

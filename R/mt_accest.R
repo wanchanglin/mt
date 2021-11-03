@@ -1,5 +1,5 @@
 
-#' ==========================================================================
+#' ========================================================================
 #' Calculate classification accuracy.
 #' History:
 #'   31-07-06: Commence
@@ -45,7 +45,6 @@ accest.default <- function(dat, cl, method,
   #'        df <- na.action(data.frame(y, x))
   #' in svm.default's '#' subsetting and na-handling for matrices' segment.
 
-  #' -----------------------------------------------------------------------
   #' wll-14-12-2007: either a function or a character string naming the
   #' function to be pred.func.
   if (is.function(method)) {
@@ -87,13 +86,12 @@ accest.default <- function(dat, cl, method,
         method = method, pred.func = pred.func
       )
     }
-    names(res) <- paste("reps_", seq(1, pars$nreps), sep = "") #' lwc-11-05-2012:
+    names(res) <- paste("reps_", seq(1, pars$nreps), sep = "")
     res.all[[i]] <- res
   }
   cat("\n")
   names(res.all) <- paste("Iter_", seq(1, pars$niter), sep = "")
 
-  #' ---------------------------------------------------------------
   #' calculate error rate
   err.all <- lapply(res.all, function(x) {
     func <- function(x) sapply(x, function(y) y$err)
@@ -103,7 +101,6 @@ accest.default <- function(dat, cl, method,
   err.iter <- rowMeans(err.all) #' apply(err.all,1,mean)
   err <- mean(err.iter)
 
-  #' ---------------------------------------------------------------
   #' calculate mean of margin
   if (!is.null(res.all[[1]][[1]]$margin)) {
     mar.all <- lapply(res.all, function(x) {
@@ -119,7 +116,6 @@ accest.default <- function(dat, cl, method,
     mar <- NULL
   }
 
-  #' ---------------------------------------------------------------
   #' calculate AUC
   if (!is.null(res.all[[1]][[1]]$auc) && pars$sampling != "loocv") {
     auc.all <- lapply(res.all, function(x) {
@@ -135,24 +131,23 @@ accest.default <- function(dat, cl, method,
     auc <- NULL
   }
 
-  #' ---------------------------------------------------------------
   #' calculate accurary rate
   acc.all <- 1 - err.all
   acc.iter <- 1 - err.iter
   acc <- 1 - err
   #' if (pars$niter > 1) acc.std  <- sd(acc.iter) else  acc.std <- NULL
 
-  #' ---------------------------------------------------------------
   #' process bootstrap acc
   if (pars$sampling == "boot") {
-    resub <- classifier(dat, cl, dat.te = NULL, cl.te = NULL, method = method, ...)
+    resub <- classifier(dat, cl, dat.te = NULL, cl.te = NULL,
+                        method = method, ...)
     err.boot <- lapply(err.iter, function(x) boot.err(x, resub))
     #' reshape
     err.boot <- t(sapply(err.boot, function(x) do.call("c", x)))
     acc.boot <- 1 - err.boot
   }
 
-  #' ---------------- overall confusion matrix ----------------------
+  #' overall confusion matrix
   #' lwc-01-06-2007: Do not use sapply here because sometimes get non-equal
   #' fold.
   all.cl <- lapply(res.all, function(x) {
@@ -197,7 +192,6 @@ accest.default <- function(dat, cl, method,
     res.all = res.all #' lwc-10-05-2012: keep all results.
   )
   if (pars$sampling == "boot") {
-    #' ret$err.boot <- err.boot
     ret$acc.boot <- acc.boot
   }
 
@@ -248,19 +242,21 @@ plot.accest <- function(x, main = NULL, xlab = NULL, ylab = NULL, ...) {
   }
 
   if (is.null(main)) {
-    main <- paste("Performance of `", x$method, "'", sep = " ", "(", x$sampling, ")")
+    main <- paste("Performance of `", x$method, "'", sep = " ", "(", 
+                  x$sampling, ")")
   }
 
   if (is.null(xlab)) xlab <- "Index of niter"
   if (is.null(ylab)) ylab <- "Accuracies"
 
-  plot(x$acc.iter, type = "b", main = main, xlab = xlab, ylab = ylab, col = "blue", ...)
+  plot(x$acc.iter, type = "b", main = main, xlab = xlab, ylab = ylab, 
+       col = "blue", ...)
 }
 
-#' =========================================================================
+#' ========================================================================
 accest <- function(dat, ...) UseMethod("accest")
 
-#' =========================================================================
+#' ========================================================================
 accest.formula <- function(formula, data = NULL, ..., subset,
                            na.action = na.omit) {
   call <- match.call()
@@ -294,7 +290,7 @@ accest.formula <- function(formula, data = NULL, ..., subset,
   return(ret)
 }
 
-#' ========================================================================
+#' =======================================================================
 #' Estimates the accuracy of pairwise comparison.
 #' History:
 #'   10-10-2006: Create
@@ -332,7 +328,7 @@ binest <- function(dat, cl, choices = NULL, method, pars = valipars(), ...) {
   return(ret)
 }
 
-#' =========================================================================
+#' =======================================================================
 #' wll-29-04-2008: Wrapper function for re-sampling based classification
 #' with multiple classifiers
 aam.mcl <- function(x, y, method, pars = valipars(), ...) {
@@ -345,11 +341,10 @@ aam.mcl <- function(x, y, method, pars = valipars(), ...) {
   res <- do.call(rbind, res)
 }
 
-#' ===================================================================
+#' ========================================================================
 #' wll-29-04-2008: Calculate acc, auc and mar by calling accest
 aam.cl <- function(x, y, method, pars = valipars(), ...) {
   val <- accest(x, y, method = method, pars = pars, ...)
-  #' val <- accest(x, y, clmeth=method, pars=pars,...)
   acc <- val$acc
   auc <- ifelse(!is.null(val$auc), val$auc, NA)
   mar <- ifelse(!is.null(val$mar), val$mar, NA)
@@ -357,7 +352,7 @@ aam.cl <- function(x, y, method, pars = valipars(), ...) {
   return(round(res, digits = 3))
 }
 
-#' ================================================================
+#' ========================================================================
 #' lwc-05-07-2006: Calculate classification rate.
 #' lwc-16-09-2006: Arguments checking.
 #' lwc-30-10-2006: Convert arguments as vectors
@@ -391,7 +386,7 @@ cl.rate <- function(obs, pre) {
   return(res)
 }
 
-#' =========================================================================
+#' =======================================================================
 #' lwc-28-04-2010: Classification performance.
 #' lwc-19-05-2012: add kappa, con.mat and positive in the returned list.
 #' Note: Also see cl.auc and cl.roc for ROC assessment.
@@ -456,8 +451,8 @@ cl.perf <- function(obs, pre, pos = levels(as.factor(obs))[2]) {
   sens <- tpr #' Sensitivity or recall
 
   perf <- list(
-    acc = acc, tpr = tpr, fpr = fpr, sens = sens, spec = spec, con.mat = con,
-    kappa = kappa, positive = pos
+    acc = acc, tpr = tpr, fpr = fpr, sens = sens, spec = spec,i
+    con.mat = con, kappa = kappa, positive = pos
   )
   return(perf)
 }
@@ -584,7 +579,8 @@ cl.roc <- function(stat, label, pos = levels(as.factor(label))[2],
       main = main, xlab = xlab, ylab = ylab, ...
     )
     points(perf$fpr, perf$tpr, col = "red", type = "b", pch = 19)
-    abline(h = seq(0, 1, by = .1), v = seq(0, 1, by = .1), lty = 3, lwd = 0.5, col = "grey")
+    abline(h = seq(0, 1, by = .1), v = seq(0, 1, by = .1), lty = 3,
+           lwd = 0.5, col = "grey")
     abline(0, 1)
   }
 
@@ -640,14 +636,15 @@ cl.roc.1 <- function(stat, label, pos = levels(as.factor(label))[2],
       main = main, xlab = xlab, ylab = ylab, ...
     )
     points(perf$fpr, perf$tpr, col = "red", type = "b", pch = 19)
-    abline(h = seq(0, 1, by = .1), v = seq(0, 1, by = .1), lty = 3, lwd = 0.5, col = "grey")
+    abline(h = seq(0, 1, by = .1), v = seq(0, 1, by = .1), lty = 3,
+           lwd = 0.5, col = "grey")
     abline(0, 1)
   }
 
   return(list(perf = perf, auc = auc, positive = pos))
 }
 
-#' ===============================================================
+#' =======================================================================
 #' lwc-01-12-06: Wrapper function for single classifier
 #' History:
 #'  15-09-06: check predict's output
@@ -667,7 +664,6 @@ cl.roc.1 <- function(stat, label, pos = levels(as.factor(label))[2],
 classifier <- function(dat.tr, cl.tr, dat.te = NULL, cl.te = NULL, method,
                        pred.func = predict, ...) {
 
-  #' -----------------------------------------------------------------------
   #' lwc-14-12-2007: either a function or a character string naming the
   #' function to be pred.func.
   if (is.function(method)) {
@@ -682,9 +678,7 @@ classifier <- function(dat.tr, cl.tr, dat.te = NULL, cl.te = NULL, method,
       eval(pred.func)
     }
 
-  #' -----------------------------------------------------
-  #' 05-10-2007: re-write this wrapper to avoid multiple actual arguments in
-  #'             pass k.
+  #' 05-10-2007: re-write this wrapper to avoid multiple arguments
   if (method == "knn") {
     method <- c("knn.wrap")
     knn.wrap <- function(train, cl, ...) list(train = train, cl = cl, ...)
@@ -699,7 +693,7 @@ classifier <- function(dat.tr, cl.tr, dat.te = NULL, cl.te = NULL, method,
     cl.te <- cl.tr
   }
 
-  #' -------------- especially for SVM ---------------------
+  #' Especially for SVM
   idx <- which(apply(dat.tr, 2, sd) > .Machine$double.eps)
   dat.tr <- dat.tr[, idx, drop = F]
   dat.te <- dat.te[, idx, drop = F]
@@ -766,7 +760,8 @@ classifier <- function(dat.tr, cl.tr, dat.te = NULL, cl.te = NULL, method,
   if (!is.null(prob.te)) {
     margin <- mt:::.marg(prob.te, cl.te)
     names(margin) <- NULL #' lwc-19-05-2012:
-    if (length(levels(cl.te)) == 2 && length(cl.te) > 1) { #' claculate AUC if two-class problem
+    if (length(levels(cl.te)) == 2 && length(cl.te) > 1) { 
+      #' claculate AUC if two-class problem
       cl.tmp <- cl.te
       levels(cl.tmp) <- c(0, 1)
       stat <- prob.te[, 2]
@@ -780,10 +775,8 @@ classifier <- function(dat.tr, cl.tr, dat.te = NULL, cl.te = NULL, method,
     auc <- NULL
   }
 
-  ret <- list(
-    err = err, cl = cl.te, pred = pred.te, posterior = prob.te, acc = 1 - err,
-    margin = margin, auc = auc
-  )
+  ret <- list(err = err, cl = cl.te, pred = pred.te, posterior = prob.te,
+              acc = 1 - err, margin = margin, auc = auc)
   return(ret)
 }
 
@@ -837,7 +830,8 @@ boot.err <- function(err, resub) {
   #' .632 bootstrap error
   err.b632 <- 0.368 * err.ae + 0.632 * err
 
-  gamma <- sum(outer(cl, pred, function(x, y) ifelse(x == y, 0, 1))) / (length(cl)^2)
+  gamma <- 
+    sum(outer(cl, pred, function(x, y) ifelse(x == y, 0, 1))) / (length(cl)^2)
   r <- (err - err.ae) / (gamma - err.ae)
   r <- ifelse(err > err.ae & gamma > err.ae, r, 0)
   #' lwc-16-08-2006: if r still falls outside of [0,1], truncate it to 0.
@@ -847,7 +841,8 @@ boot.err <- function(err, resub) {
   #' weight <- .632/(1-.368*r)
   #' err.b632p <- (1-weight)*err.ae + weight*err
 
-  err.b632p <- err.b632 + (errprime - err.ae) * (0.368 * 0.632 * r) / (1 - 0.368 * r)
+  err.b632p <- 
+    err.b632 + (errprime - err.ae) * (0.368 * 0.632 * r) / (1 - 0.368 * r)
 
   ret <- list(ae = err.ae, boot = err, b632 = err.b632, b632p = err.b632p)
 
@@ -870,16 +865,18 @@ valipars <- function(sampling = "cv", niter = 10, nreps = 10,
   if (sampling == "loocv") {
     res <- list(sampling = sampling, niter = 1)
   } else if (sampling == "rand") {
-    res <- list(sampling = sampling, niter = niter, nreps = nreps, strat = strat, div = div)
+    res <- list(sampling = sampling, niter = niter, nreps = nreps,
+                strat = strat, div = div)
   } else {
-    res <- list(sampling = sampling, niter = niter, nreps = nreps, strat = strat)
+    res <- list(sampling = sampling, niter = niter, nreps = nreps,
+                strat = strat)
   }
 
   class(res) <- "valipars"
   return(res)
 }
 
-#' ===================================================================
+#' =======================================================================
 #' Generate index for training or feature ranking
 #'   lwc-27-10-2006: commence
 #'   lwc-29-10-2006: empty class checking
@@ -893,7 +890,6 @@ trainind <- function(cl, pars = valipars()) {
 
   cl <- factor(cl) #' lwc-17-09-2007: drop the factor levels
 
-  #' ----------------------------------------------------------------------
   idx.func <- function(cl, pars = valipars()) {
     n <- length(cl)
 
@@ -910,14 +906,16 @@ trainind <- function(cl, pars = valipars()) {
             train.ind <- cv.idx(cl, pars$nreps, strat = pars$strat)
           },
           "rand" = {
-            train.ind <- rand.idx(cl, pars$nreps, strat = pars$strat, div = pars$div)
+            train.ind <- rand.idx(cl, pars$nreps, strat = pars$strat,
+                                  div = pars$div)
           },
           "boot" = {
             train.ind <- boot.idx(cl, pars$nreps, strat = pars$strat)
           }
         )
         for (i in 1:length(train.ind)) {
-          if (any(table(cl[train.ind[[i]]]) < 2) || any(table(cl[-train.ind[[i]]]) < 1)) {
+          if (any(table(cl[train.ind[[i]]]) < 2) || 
+              any(table(cl[-train.ind[[i]]]) < 1)) {
             emp_f <- !emp_f
             break
           }
@@ -943,7 +941,8 @@ boot.idx <- function(x, nreps, strat = FALSE) {
 
   if (strat) {
     x <- factor(x) #' drops the levels that do not occur
-    idx <- sample(1:n, n, replace = F) #' shuffl the original x, #' idx  <- c(1:n)
+    idx <- sample(1:n, n, replace = F) 
+    #' shuffl the original x, #' idx  <- c(1:n)
     x <- x[idx]
 
     v <- length(levels(x))
@@ -964,13 +963,14 @@ boot.idx <- function(x, nreps, strat = FALSE) {
   return(train.ind)
 }
 
-#' ==========================================================================
+#' ========================================================================
 rand.idx <- function(x, nreps, strat = FALSE, div = 2 / 3) {
   n <- length(x)
 
   if (strat) {
     x <- factor(x) #' drops the levels that do not occur
-    idx <- sample(1:n, n, replace = F) #' shuffl the original x, #' idx  <- c(1:n)
+    idx <- sample(1:n, n, replace = F) 
+    #' shuffl the original x, #' idx  <- c(1:n)
     x <- x[idx]
 
     v <- length(levels(x))
@@ -988,19 +988,21 @@ rand.idx <- function(x, nreps, strat = FALSE, div = 2 / 3) {
         do.call("c", tmp)
       })
     #' shuffl the results
-    train.ind <- lapply(train.ind, function(x) sample(x, length(x), replace = F))
+    train.ind <- 
+      lapply(train.ind, function(x) sample(x, length(x), replace = F))
   } else {
-    train.ind <- lapply(1:nreps, function(x) sample(1:n, trunc(n * div), replace = F))
+    train.ind <- 
+      lapply(1:nreps, function(x) sample(1:n, trunc(n * div), replace = F))
   }
 
   return(train.ind)
 }
 
-#' =========================================================================
+#' ========================================================================
 cv.idx <- function(x, nreps, strat = FALSE) {
 
-  #' ---------------- from package ipred ----------------------------
   #' One change has been made to get different results for each calling.
+  #' from package ipred
   ssubset <- function(y, k, strat = TRUE) {
     #' if (!is.factor(y)) stop("y is not of class factor") #' lwc-14-04-2007
     if (!is.factor(y)) y <- as.factor(y)
@@ -1009,11 +1011,10 @@ cv.idx <- function(x, nreps, strat = FALSE) {
     nlevel <- table(y)
     nindx <- list()
 
-    #' ------- Changed by Wanchang Lin, 29-10-2006 -------
+    #' lwc-29-10-2006: changed
     indx <- sample(1:N, N, replace = F)
     y <- y[indx]
     #'  indx <- 1:N
-    #' ---------------------------------------------------
     outindx <- list()
     if (strat) {
       for (j in 1:length(nlevel)) {
@@ -1054,10 +1055,9 @@ cv.idx <- function(x, nreps, strat = FALSE) {
     return(outindx)
   }
 
-  #' ----------------- from package ipred ---------------------
+  #' from package ipred
   kfoldcv <- function(k, N, nlevel = NULL) {
-    if (is.null(nlevel)) {
-      # no stratification
+    if (is.null(nlevel)) { # no stratification
       if (k > N) {
         return(c(rep(1, N), rep(0, k - N)))
       }
@@ -1069,8 +1069,7 @@ cv.idx <- function(x, nreps, strat = FALSE) {
         return(c(rep(ce, round((N / k - fl) * k)), rep(fl, round((1 - (N / k -
           fl)) * k))))
       }
-    } else {
-      # stratification
+    } else { # stratification
       # if (!is.integer(nlevel)) stop("nlevel is not a vector if integers")
       kmat <- matrix(0, ncol = k, nrow = length(nlevel))
       for (i in 1:length(nlevel)) {
@@ -1079,7 +1078,6 @@ cv.idx <- function(x, nreps, strat = FALSE) {
       return(kmat)
     }
   }
-  #' ----------------------------------------------------------
 
   n <- length(x)
   #' get index of test

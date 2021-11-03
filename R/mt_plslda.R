@@ -1,5 +1,5 @@
 
-#' =========================================================================
+#' ========================================================================
 #' wll-02-10-2007: tune the best number of components
 tune.plslda <- function(x, y, pls = "simpls", ncomp = 10, tune.pars, ...) {
   if (missing(tune.pars)) {
@@ -19,14 +19,15 @@ tune.plslda <- function(x, y, pls = "simpls", ncomp = 10, tune.pars, ...) {
   list(ncomp = which.max(res), acc.tune = res)
 }
 
-#' =========================================================================
+#' ========================================================================
 #' PLS+LDA for classification
 #' History:
 #'   wll-21-05-2007: commence
 #'   lwc-21-05-2012: use wrapper function of "mvr".
 #'   lwc-21-05-2012: It should not be difficcult to get R2 for "accest" with
 #'                   methods of plsc and plslda.
-plslda.default <- function(x, y, pls = "simpls", ncomp = 10, tune = FALSE, ...) {
+plslda.default <- function(x, y, pls = "simpls", ncomp = 10, tune = FALSE,
+                           ...) {
 
   #' Generates Class Indicator Matrix from a Factor.
   #' A matrix which is zero except for the column corresponding to the class.
@@ -73,7 +74,8 @@ plslda.default <- function(x, y, pls = "simpls", ncomp = 10, tune = FALSE, ...) 
   }
 
   #' Use PLS for dimension reduction
-  #' pls.out <- do.call(pls.fit, c(list(X=x, Y=class.ind(y), ncomp=ncomp), list(...)))
+  #' pls.out <- do.call(pls.fit, c(list(X=x, Y=class.ind(y), ncomp=ncomp),
+  #'                    list(...)))
 
   #' lwc-21-05-2012: use wrapper function of "mvr".
   pls.out <- plsr(class.ind(y) ~ x, method = pls, ncomp = ncomp, ...)
@@ -82,7 +84,8 @@ plslda.default <- function(x, y, pls = "simpls", ncomp = 10, tune = FALSE, ...) 
   x.lv <- unclass(pls.out$scores)
 
   #' Transform test data using weight matrix (projection)(Xt = X*W)
-  #' Ztest <- scale(Xtest,center=pls.out$Xmeans,scale=FALSE)%*%pls.out$projection
+  #' Ztest <- scale(Xtest,center=pls.out$Xmeans,scale=FALSE) %*% 
+  #'          pls.out$projection
 
   lda.out <- lda(x.lv, y)
   pred <- predict(lda.out, x.lv)
@@ -92,10 +95,9 @@ plslda.default <- function(x, y, pls = "simpls", ncomp = 10, tune = FALSE, ...) 
   lc <- unclass(pls.out$scores) #' latent components
   colnames(lc) <- paste("LC", 1:ncol(lc), sep = "")
 
-  res <- list(
-    x = lc, cl = y, pred = pred, posterior = pred$posterior, conf = conf, acc = acc,
-    ncomp = ncomp, pls.method = pls, pls.out = pls.out, lda.out = lda.out
-  )
+  res <- list(x = lc, cl = y, pred = pred, posterior = pred$posterior,
+              conf = conf, acc = acc, ncomp = ncomp, pls.method = pls,
+              pls.out = pls.out, lda.out = lda.out)
 
   if (tune) res$acc.tune <- val$acc.tune
   res$call <- match.call()
@@ -104,21 +106,24 @@ plslda.default <- function(x, y, pls = "simpls", ncomp = 10, tune = FALSE, ...) 
   return(res)
 }
 
-#' =========================================================================
+#' ========================================================================
 predict.plslda <- function(object, newdata, ...) {
   if (!inherits(object, "plslda")) stop("object not of class \"plslda\"")
   if (missing(newdata)) {
-    return(list(class = object$pred, posterior = object$posterior, x = unclass(object$pls.out$scores)))
+    return(list(class = object$pred, posterior = object$posterior,
+                x = unclass(object$pls.out$scores)))
   }
   if (is.null(dim(newdata))) {
     dim(newdata) <- c(1, length(newdata))
   } #' a row vector
 
   newdata <- as.matrix(newdata)
-  if (ncol(newdata) != length(object$pls.out$Xmeans)) stop("wrong number of variables")
+  if (ncol(newdata) != length(object$pls.out$Xmeans))
+    stop("wrong number of variables")
 
   #' rotated data (projection)
-  x <- scale(newdata, center = object$pls.out$Xmeans, scale = FALSE) %*% object$pls.out$projection
+  x <- scale(newdata, center = object$pls.out$Xmeans, scale = FALSE) %*% 
+    object$pls.out$projection
 
   pred <- predict(object$lda.out, x)
 
@@ -134,7 +139,8 @@ print.plslda <- function(x, ...) {
     oscorespls = "orthogonal scores",
     stop("Unknown fit method.")
   )
-  cat("Partial least squares classification, fitted with the", alg, "algorithm.")
+  cat("Partial least squares classification, fitted with the", alg,
+      "algorithm.")
   #' cat("\nCall:\n", deparse(x$call), "\n")
   cat("\nCall:\n")
   dput(x$call)

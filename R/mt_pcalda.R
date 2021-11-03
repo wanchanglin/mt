@@ -21,7 +21,8 @@ tune.pcalda <- function(x, y, ncomp = NULL, tune.pars, ...) {
   res <- sapply(1:ncomp, function(i) {
     cat(" ", i, sep = "")
     flush.console()
-    accest(x, y, pars = tune.pars, method = "pcalda", ncomp = i, tune = F, ...)$acc
+    accest(x, y, pars = tune.pars, method = "pcalda", ncomp = i, 
+           tune = F, ...)$acc
   })
   cat("\n")
 
@@ -55,7 +56,8 @@ tune.pcalda.1 <- function(x, y, ncomp = NULL, tune.pars, ...) {
   func <- function(i) {
     cat(" ", i, sep = "")
     flush.console()
-    accest(dat = x, cl = y, pars = tune.pars, method = "pcalda", ncomp = i, tune = F, ...)$acc
+    accest(dat = x, cl = y, pars = tune.pars, method = "pcalda", ncomp = i, 
+           tune = F, ...)$acc
   }
   res <- sapply(ncomp, FUN = func)
   names(res) <- ncomp
@@ -92,7 +94,8 @@ tune.pcalda.2 <- function(x, y, ncomp = NULL, center = TRUE, scale. = FALSE,
   res <- sapply(1:ncomp, function(i) {
     cat(" ", i, sep = "")
     flush.console()
-    acc <- accest(pca.out$x[, 1:i, drop = F], y, pars = tune.pars, method = "lda")$acc
+    acc <- accest(pca.out$x[, 1:i, drop = F], y, pars = tune.pars,
+                  method = "lda")$acc
   })
   cat("\n")
 
@@ -127,13 +130,12 @@ pcalda.default <- function(x, y, center = TRUE, scale. = FALSE, ncomp = NULL,
 
   n <- nrow(x)
   g <- length(levels(y))
-  #' -----------------------------------------------------------------------
+
   #' The singularity problem of the within-class scatter matrix is overcome
   #' if number of retained PCs varies at least g to at most n-g. Here g and
   #' n is the number of classes and training data, respectively.
-  #' -----------------------------------------------------------------------
   #' if(is.null(ncomp)) ncomp <- max(g,n - g)
-  #' -----------------------------------------------------------------------
+
   #' NOTE-wll: Too good for training, which means overfits the training data.
 
   #' if(is.null(ncomp)) ncomp <- max(g,round(n/2))
@@ -171,12 +173,12 @@ pcalda.default <- function(x, y, center = TRUE, scale. = FALSE, ncomp = NULL,
   conf <- table(y, pred$class)
   acc <- round(sum(diag(conf)) * 100 / n, 2)
 
-  x <- scale(x.tmp, center = colMeans(lda.out$means), scale = FALSE) %*% lda.out$scaling
+  x <- scale(x.tmp, center = colMeans(lda.out$means), scale = FALSE) %*%
+    lda.out$scaling
 
-  res <- list(
-    x = x, cl = y, pred = pred$class, posterior = pred$posterior, conf = conf,
-    acc = acc, ncomp = ncomp, pca.out = pca.out, lda.out = lda.out
-  )
+  res <- list(x = x, cl = y, pred = pred$class, posterior = pred$posterior,
+              conf = conf, acc = acc, ncomp = ncomp, pca.out = pca.out,
+              lda.out = lda.out)
 
   if (tune) res$acc.tune <- val$acc.tune
   res$call <- match.call()
@@ -258,7 +260,6 @@ print.summary.pcalda <- function(x, ...) {
 #' wll-15-01-2008: add svd listed in the plot.
 plot.pcalda <- function(x, dimen, ...) {
 
-  #' -------------------------------------------------------------------
   ld.names <- function(object, comps) {
     labs <- paste("LD", 1:length(object$means), sep = "")
     if (missing(comps)) {
