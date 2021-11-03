@@ -1,4 +1,3 @@
-
 #' =======================================================================
 #' Orthogonal signal correction (OSC) for data pre-processing
 #' History:
@@ -132,36 +131,36 @@ print.summary.osc <- function(x, ...) {
 osc <- function(x, ...) UseMethod("osc")
 
 #' =======================================================================
-osc.formula <- function(formula, data = NULL, ..., subset, 
+osc.formula <- function(formula, data = NULL, ..., subset,
                         na.action = na.omit) {
-	call <- match.call()
-	if (!inherits(formula, "formula")) {
-		stop("method is only for formula objects")
-	}
-	m <- match.call(expand.dots = FALSE)
-	if (identical(class(eval.parent(m$data)), "matrix")) {
-		m$data <- as.data.frame(eval.parent(m$data))
-	}
-	m$... <- NULL
-	m[[1]] <- as.name("model.frame")
-	m$na.action <- na.action
-	m <- eval(m, parent.frame())
-	Terms <- attr(m, "terms")
-	attr(Terms, "intercept") <- 0
-	x <- model.matrix(Terms, m)
-	y <- model.extract(m, "response")
-	attr(x, "na.action") <- attr(y, "na.action") <- attr(m, "na.action")
+  call <- match.call()
+  if (!inherits(formula, "formula")) {
+    stop("method is only for formula objects")
+  }
+  m <- match.call(expand.dots = FALSE)
+  if (identical(class(eval.parent(m$data)), "matrix")) {
+    m$data <- as.data.frame(eval.parent(m$data))
+  }
+  m$... <- NULL
+  m[[1]] <- as.name("model.frame")
+  m$na.action <- na.action
+  m <- eval(m, parent.frame())
+  Terms <- attr(m, "terms")
+  attr(Terms, "intercept") <- 0
+  x <- model.matrix(Terms, m)
+  y <- model.extract(m, "response")
+  attr(x, "na.action") <- attr(y, "na.action") <- attr(m, "na.action")
 
-	ret <- osc.default(x, y, ..., na.action = na.action)
+  ret <- osc.default(x, y, ..., na.action = na.action)
 
-	ret$call <- call
-	ret$call[[1]] <- as.name("osc")
-	ret$terms <- Terms
-	if (!is.null(attr(m, "na.action"))) {
-		ret$na.action <- attr(m, "na.action")
-	}
-	class(ret) <- c("osc.formula", class(ret))
-	return(ret)
+  ret$call <- call
+  ret$call[[1]] <- as.name("osc")
+  ret$terms <- Terms
+  if (!is.null(attr(m, "na.action"))) {
+    ret$na.action <- attr(m, "na.action")
+  }
+  class(ret) <- c("osc.formula", class(ret))
+  return(ret)
 }
 
 #' ========================================================================
@@ -228,7 +227,6 @@ osc.wold <- function(x, y, center = TRUE, osc.ncomp = 4, pls.ncomp = 10,
 #'                 performance of OSC.
 osc.sjoblom <- function(x, y, center = TRUE, osc.ncomp = 4, pls.ncomp = 10,
                         tol = 1e-3, iter = 20, ...) {
-
   if (center) x <- sweep(x, 2, colMeans(x), "-") #' column-wise center
   x.ori <- x
   y <- class.ind(y) #' convert class labels to numeric values
@@ -290,8 +288,10 @@ osc.sjoblom <- function(x, y, center = TRUE, osc.ncomp = 4, pls.ncomp = 10,
   angle <- t(angle) %*% t(norm)
   angle <- mean(acos(angle) * 180 / pi)
 
-  res <- list(x = x, R2 = R2, angle = angle, w = nw, p = np, t = nt,
-              center = center)
+  res <- list(
+    x = x, R2 = R2, angle = angle, w = nw, p = np, t = nt,
+    center = center
+  )
 
   return(res)
 }
@@ -364,8 +364,10 @@ osc.wise <- function(x, y, center = TRUE, osc.ncomp = 4, pls.ncomp = 10,
   angle <- t(angle) %*% t(norm)
   angle <- mean(acos(angle) * 180 / pi)
 
-  res <- list(x = x, R2 = R2, angle = angle, w = nw, p = np, t = nt,
-              center = center)
+  res <- list(
+    x = x, R2 = R2, angle = angle, w = nw, p = np, t = nt,
+    center = center
+  )
 
   return(res)
 }

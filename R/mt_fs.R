@@ -281,12 +281,12 @@ feat.rank.re <- function(x, y, method, pars = valipars(), tr.idx = NULL,
   cat("\n")
   names(res.all) <- paste("Iter", 1:pars$niter, sep = "_")
 
-  rank.list <- 
+  rank.list <-
     lapply(res.all, function(x) as.data.frame(sapply(x, function(y) y$fs.rank)))
 
-  order.list <- 
+  order.list <-
     lapply(res.all, function(x) as.data.frame(sapply(x, function(y) y$fs.order)))
-  stats.list <- 
+  stats.list <-
     lapply(res.all, function(x) as.data.frame(sapply(x, function(y) y$stats)))
   rank.list <- do.call("cbind", rank.list)
   order.list <- do.call("cbind", order.list)
@@ -300,8 +300,9 @@ feat.rank.re <- function(x, y, method, pars = valipars(), tr.idx = NULL,
   fs.rank <- order(fs.order, decreasing = F) #' feature rank score.
   names(fs.rank) <- rownames(rank.list)
   temp <- names(fs.rank[fs.order])
-  if (!is.null(temp)) 
-    fs.order <- noquote(temp) #' lwc-16-02-2010: Should we remove noquote?
+  if (!is.null(temp)) {
+    fs.order <- noquote(temp)
+  } #' lwc-16-02-2010: Should we remove noquote?
 
   res <- list(
     method = method,
@@ -612,7 +613,7 @@ fs.bw <- function(x, y, ...) {
 #' RELIEF, European Conference on Machine Learning, Ed. Francesco Bergadano
 #' and Luc De Raedt, 1994, 171-182, Springer
 #' 4.) MARKO ROBNIK-SIKONJA and IGOR KONONENKO, Theoretical and Empirical
-#' Analysis of ReliefF and RReliefF, Machine Learning, 53, 23�C69, 2003
+#' Analysis of ReliefF and RReliefF, Machine Learning, 53, 23<U+FFFD>C69, 2003
 fs.relief <- function(x, y, m = NULL, k = 10, ...) {
 
   #' Find the nearest neighbors from a matrix
@@ -925,8 +926,10 @@ fs.welch <- function(x, y, ...) {
   nam <- names(stats[fs.order])
   if (!is.null(nam)) fs.order <- nam #'  fs.order <- noquote(nam)
 
-  res <- list(fs.order = fs.order, fs.rank = fs.rank, stats = abs(stats),
-              pval = pval)
+  res <- list(
+    fs.order = fs.order, fs.rank = fs.rank, stats = abs(stats),
+    pval = pval
+  )
   return(res)
 }
 
@@ -951,8 +954,10 @@ fs.welch.1 <- function(x, y, ...) {
   nam <- names(pval[fs.order])
   if (!is.null(nam)) fs.order <- nam
 
-  res <- list(fs.order = fs.order, fs.rank = fs.rank, pval = pval,
-              stats = stats)
+  res <- list(
+    fs.order = fs.order, fs.rank = fs.rank, pval = pval,
+    stats = stats
+  )
   return(res)
 }
 
@@ -1000,8 +1005,10 @@ fs.anova <- function(x, y, ...) {
   nam <- names(stats[fs.order])
   if (!is.null(nam)) fs.order <- nam
 
-  res <- list(fs.order = fs.order, fs.rank = fs.rank, stats = abs(stats),
-              pval = pval)
+  res <- list(
+    fs.order = fs.order, fs.rank = fs.rank, stats = abs(stats),
+    pval = pval
+  )
   return(res)
 }
 
@@ -1236,8 +1243,10 @@ print.frankvali <- function(x, digits = 3, ...) {
   cat("\nFeature numbers:\t", x$fs.len)
   cat("\nAverage error:\t\t", round(x$err.avg, digits))
 
-  cat("\nFeature order (top 10):\t", 
-      x$fs.order[1:min(10, length(x$fs.order))]) #' best to worst
+  cat(
+    "\nFeature order (top 10):\t",
+    x$fs.order[1:min(10, length(x$fs.order))]
+  ) #' best to worst
   cat("\n")
   invisible(x)
 }
@@ -1297,8 +1306,8 @@ frank.err <- function(dat.tr, cl.tr, dat.te, cl.te, cl.method = "svm",
   for (i in 1:nlen) {
     #' feature selection
     sel <- fs.order[1:len[i]]
-    error[i] <- classifier(dat.tr[, sel, drop = F], cl.tr, 
-                           dat.te[, sel, drop = F], cl.te,
+    error[i] <- classifier(dat.tr[, sel, drop = F], cl.tr,
+      dat.te[, sel, drop = F], cl.te,
       method = cl.method, ...
     )$err
   }
@@ -1380,8 +1389,10 @@ if (F) {
   #' multi-classes
   fs <- fs.rf(x, y)
   ord <- fs$fs.order[1:50]
-  res <- fs.cl.2(x, y, fs.order = ord, cl.method = "svm", pars = pars,
-                 agg_f = TRUE)
+  res <- fs.cl.2(x, y,
+    fs.order = ord, cl.method = "svm", pars = pars,
+    agg_f = TRUE
+  )
   perf.aam(res)
 
   #' two-classes
@@ -1399,15 +1410,19 @@ fs.cl.2 <- function(dat, cl, fs.order = colnames(dat), cl.method = "svm",
   if (agg_f) {
     res <- lapply(1:len, function(i) {
       id <- fs.order[1:i] #' aggregation of features
-      res <- accest(dat[, id, drop = F], cl, method = cl.method,
-                    pars = pars, ...)
+      res <- accest(dat[, id, drop = F], cl,
+        method = cl.method,
+        pars = pars, ...
+      )
       #' res <- aam.cl(dat[,id, drop=F],cl, method=cl.method, pars=pars,...)
     })
   } else {
     res <- lapply(1:len, function(i) {
       id <- fs.order[i] #' individual feature
-      res <- accest(dat[, id, drop = F], cl, method = cl.method,
-                    pars = pars, ...)
+      res <- accest(dat[, id, drop = F], cl,
+        method = cl.method,
+        pars = pars, ...
+      )
       #' res <- aam.cl(dat[,id, drop=F],cl, method=cl.method, pars=pars,...)
     })
   }
@@ -1464,7 +1479,7 @@ get.fs.len <- function(p, fs.len = c("power2")) {
       }
     } else {
       n <- ceiling(log2(p))
-      x <- 2^ (n:0)
+      x <- 2^(n:0)
       x[1] <- p
     }
   }

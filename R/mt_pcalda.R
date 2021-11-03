@@ -1,4 +1,3 @@
-
 #' =========================================================================
 #' wll-02-10-2007: tune the best number of components
 tune.pcalda <- function(x, y, ncomp = NULL, tune.pars, ...) {
@@ -21,8 +20,10 @@ tune.pcalda <- function(x, y, ncomp = NULL, tune.pars, ...) {
   res <- sapply(1:ncomp, function(i) {
     cat(" ", i, sep = "")
     flush.console()
-    accest(x, y, pars = tune.pars, method = "pcalda", ncomp = i, 
-           tune = F, ...)$acc
+    accest(x, y,
+      pars = tune.pars, method = "pcalda", ncomp = i,
+      tune = F, ...
+    )$acc
   })
   cat("\n")
 
@@ -56,8 +57,10 @@ tune.pcalda.1 <- function(x, y, ncomp = NULL, tune.pars, ...) {
   func <- function(i) {
     cat(" ", i, sep = "")
     flush.console()
-    accest(dat = x, cl = y, pars = tune.pars, method = "pcalda", ncomp = i, 
-           tune = F, ...)$acc
+    accest(
+      dat = x, cl = y, pars = tune.pars, method = "pcalda", ncomp = i,
+      tune = F, ...
+    )$acc
   }
   res <- sapply(ncomp, FUN = func)
   names(res) <- ncomp
@@ -94,8 +97,10 @@ tune.pcalda.2 <- function(x, y, ncomp = NULL, center = TRUE, scale. = FALSE,
   res <- sapply(1:ncomp, function(i) {
     cat(" ", i, sep = "")
     flush.console()
-    acc <- accest(pca.out$x[, 1:i, drop = F], y, pars = tune.pars,
-                  method = "lda")$acc
+    acc <- accest(pca.out$x[, 1:i, drop = F], y,
+      pars = tune.pars,
+      method = "lda"
+    )$acc
   })
   cat("\n")
 
@@ -176,9 +181,11 @@ pcalda.default <- function(x, y, center = TRUE, scale. = FALSE, ncomp = NULL,
   x <- scale(x.tmp, center = colMeans(lda.out$means), scale = FALSE) %*%
     lda.out$scaling
 
-  res <- list(x = x, cl = y, pred = pred$class, posterior = pred$posterior,
-              conf = conf, acc = acc, ncomp = ncomp, pca.out = pca.out,
-              lda.out = lda.out)
+  res <- list(
+    x = x, cl = y, pred = pred$class, posterior = pred$posterior,
+    conf = conf, acc = acc, ncomp = ncomp, pca.out = pca.out,
+    lda.out = lda.out
+  )
 
   if (tune) res$acc.tune <- val$acc.tune
   res$call <- match.call()
@@ -259,7 +266,6 @@ print.summary.pcalda <- function(x, ...) {
 #'   Their squares are the canonical F-statistics.
 #' wll-15-01-2008: add svd listed in the plot.
 plot.pcalda <- function(x, dimen, ...) {
-
   ld.names <- function(object, comps) {
     labs <- paste("LD", 1:length(object$means), sep = "")
     if (missing(comps)) {
@@ -306,99 +312,98 @@ plot.pcalda <- function(x, dimen, ...) {
 #' lwc-22-06-2007: plot method for pcalda. It plot LDA scores.
 plot.pcalda.1 <- function(x, panel = panel.pcalda, cex = 0.7, dimen,
                           abbrev = FALSE, ...) {
-
-    panel.pcalda <- function(x, y, ...) {
-      text(x, y, as.character(g.nlda), cex = tcex, col = unclass(g), ...)
-    }
-
-    ld.names <- function(object, comps) {
-      labs <- paste("LD", 1:length(object$means), sep = "")
-      if (missing(comps)) {
-        comps <- seq(along = labs)
-      } else {
-        labs <- labs[comps]
-      }
-      svd <- object$svd
-      svd <- 100 * svd^2 / sum(svd^2)
-      evar <- svd[comps]
-
-      labs <- paste(labs, " (", format(evar, digits = 2, trim = TRUE),
-        " %)",
-        sep = ""
-      )
-      return(labs)
-    }
-
-    xval <- x$x
-    g <- x$cl
-
-    if (abbrev) levels(g) <- abbreviate(levels(g), abbrev)
-    assign("g.nlda", g)
-    assign("tcex", cex)
-
-    if (missing(dimen)) {
-      dimen <- seq(along = colnames(xval))
-    } else {
-      #' check validaty
-      if (!all(dimen %in% c(1:ncol(xval)))) {
-        stop("dimen is not valid")
-      }
-    }
-
-    xval <- xval[, dimen, drop = FALSE]
-    varlab <- ld.names(x$lda.out, dimen)
-    nDimen <- length(dimen)
-
-    if (nDimen <= 2) {
-      if (nDimen == 1) { #' One component
-        MASS:::ldahist(xval[, 1], g, ...)
-        #' MASS:::ldahist(xval, g, xlab=varlab,...)
-      } else { #' Second component versus first
-        xlab <- varlab[1]
-        ylab <- varlab[2]
-        eqscplot(xval, xlab = xlab, ylab = ylab, type = "n", ...)
-        panel(xval[, 1], xval[, 2], ...)
-      }
-    } else { #' Pairwise scatterplots of several components
-      pairs(xval, labels = varlab, panel = panel, ...)
-    }
-    invisible(NULL)
+  panel.pcalda <- function(x, y, ...) {
+    text(x, y, as.character(g.nlda), cex = tcex, col = unclass(g), ...)
   }
+
+  ld.names <- function(object, comps) {
+    labs <- paste("LD", 1:length(object$means), sep = "")
+    if (missing(comps)) {
+      comps <- seq(along = labs)
+    } else {
+      labs <- labs[comps]
+    }
+    svd <- object$svd
+    svd <- 100 * svd^2 / sum(svd^2)
+    evar <- svd[comps]
+
+    labs <- paste(labs, " (", format(evar, digits = 2, trim = TRUE),
+      " %)",
+      sep = ""
+    )
+    return(labs)
+  }
+
+  xval <- x$x
+  g <- x$cl
+
+  if (abbrev) levels(g) <- abbreviate(levels(g), abbrev)
+  assign("g.nlda", g)
+  assign("tcex", cex)
+
+  if (missing(dimen)) {
+    dimen <- seq(along = colnames(xval))
+  } else {
+    #' check validaty
+    if (!all(dimen %in% c(1:ncol(xval)))) {
+      stop("dimen is not valid")
+    }
+  }
+
+  xval <- xval[, dimen, drop = FALSE]
+  varlab <- ld.names(x$lda.out, dimen)
+  nDimen <- length(dimen)
+
+  if (nDimen <= 2) {
+    if (nDimen == 1) { #' One component
+      MASS:::ldahist(xval[, 1], g, ...)
+      #' MASS:::ldahist(xval, g, xlab=varlab,...)
+    } else { #' Second component versus first
+      xlab <- varlab[1]
+      ylab <- varlab[2]
+      eqscplot(xval, xlab = xlab, ylab = ylab, type = "n", ...)
+      panel(xval[, 1], xval[, 2], ...)
+    }
+  } else { #' Pairwise scatterplots of several components
+    pairs(xval, labels = varlab, panel = panel, ...)
+  }
+  invisible(NULL)
+}
 
 #' =========================================================================
 pcalda <- function(x, ...) UseMethod("pcalda")
 
 #' =========================================================================
-pcalda.formula <- function(formula, data = NULL, ..., subset, 
+pcalda.formula <- function(formula, data = NULL, ..., subset,
                            na.action = na.omit) {
-	call <- match.call()
-	if (!inherits(formula, "formula")) {
-		stop("method is only for formula objects")
-	}
-	m <- match.call(expand.dots = FALSE)
-	if (identical(class(eval.parent(m$data)), "matrix")) {
-		m$data <- as.data.frame(eval.parent(m$data))
-	}
-	m$... <- NULL
-	m[[1]] <- as.name("model.frame")
-	m$na.action <- na.action
-	m <- eval(m, parent.frame())
-	Terms <- attr(m, "terms")
-	attr(Terms, "intercept") <- 0
-	x <- model.matrix(Terms, m)
-	y <- model.extract(m, "response")
-	attr(x, "na.action") <- attr(y, "na.action") <- attr(m, "na.action")
+  call <- match.call()
+  if (!inherits(formula, "formula")) {
+    stop("method is only for formula objects")
+  }
+  m <- match.call(expand.dots = FALSE)
+  if (identical(class(eval.parent(m$data)), "matrix")) {
+    m$data <- as.data.frame(eval.parent(m$data))
+  }
+  m$... <- NULL
+  m[[1]] <- as.name("model.frame")
+  m$na.action <- na.action
+  m <- eval(m, parent.frame())
+  Terms <- attr(m, "terms")
+  attr(Terms, "intercept") <- 0
+  x <- model.matrix(Terms, m)
+  y <- model.extract(m, "response")
+  attr(x, "na.action") <- attr(y, "na.action") <- attr(m, "na.action")
 
-	ret <- pcalda.default(x, y, ..., na.action = na.action)
+  ret <- pcalda.default(x, y, ..., na.action = na.action)
 
-	ret$call <- call
-	ret$call[[1]] <- as.name("pcalda")
-	ret$terms <- Terms
-	if (!is.null(attr(m, "na.action"))) {
-		ret$na.action <- attr(m, "na.action")
-	}
-	class(ret) <- c("pcalda.formula", class(ret))
-	return(ret)
+  ret$call <- call
+  ret$call[[1]] <- as.name("pcalda")
+  ret$terms <- Terms
+  if (!is.null(attr(m, "na.action"))) {
+    ret$na.action <- attr(m, "na.action")
+  }
+  class(ret) <- c("pcalda.formula", class(ret))
+  return(ret)
 }
 
 #'  1) tune.pcalda

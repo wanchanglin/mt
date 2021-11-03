@@ -1,7 +1,7 @@
 #' lwc-07-09-2010, Tue: Functions not documented
 
 #' ========================================================================
-#' Generates Class Indicator Matrix from a Factor. 
+#' Generates Class Indicator Matrix from a Factor.
 #' A matrix which is zero except for the column corresponding to the class.
 #' Internal function.  From package NNET
 class.ind <- function(cl) {
@@ -62,8 +62,7 @@ toc <- function(echo = TRUE) {
   if (echo) {
     cat(sprintf("elapsed time is %f seconds", diffTimeSecs), "\n")
     return(invisible())
-  }
-  else {
+  } else {
     return(diffTimeSecs)
   }
 }
@@ -86,8 +85,8 @@ list2xls <- function(x, filename = "tmp.xls", FreezeRow = 1,
 
 #' ========================================================================
 #' lwc-06-04-2011: write data frames to an Excel file using Perl
-#' Internal function. 
-#' Slight modification of WriteXLS.R (2.1.0, 2010-09-18) 
+#' Internal function.
+#' Slight modification of WriteXLS.R (2.1.0, 2010-09-18)
 WriteXLS <- function(x, ExcelFileName = "R.xls", SheetNames = NULL,
                      perl = "perl", verbose = FALSE,
                      Encoding = c("UTF-8", "latin1"), row.names = FALSE,

@@ -1,4 +1,3 @@
-
 #' =========================================================================
 #' wll-02-10-2007: tune the best number of components
 tune.plsc <- function(x, y, pls = "simpls", ncomp = 10, tune.pars, ...) {
@@ -130,8 +129,8 @@ predict.plsc <- function(object, newdata, ...) {
   }
 
   #' rotated data (projection)
-  x <- 
-    scale(newdata, center = object$pls.out$Xmeans, scale = FALSE) %*% 
+  x <-
+    scale(newdata, center = object$pls.out$Xmeans, scale = FALSE) %*%
     object$pls.out$projection
 
   #' Predict with models containing ncomp components.
@@ -207,40 +206,39 @@ plsc <- function(x, ...) UseMethod("plsc")
 #' =========================================================================
 plsc.formula <- function(formula, data = NULL, ..., subset,
                          na.action = na.omit) {
-	call <- match.call()
-	if (!inherits(formula, "formula")) {
-		stop("method is only for formula objects")
-	}
-	m <- match.call(expand.dots = FALSE)
-	if (identical(class(eval.parent(m$data)), "matrix")) {
-		m$data <- as.data.frame(eval.parent(m$data))
-	}
-	m$... <- NULL
-	m[[1]] <- as.name("model.frame")
-	m$na.action <- na.action
-	m <- eval(m, parent.frame())
-	Terms <- attr(m, "terms")
-	attr(Terms, "intercept") <- 0
-	x <- model.matrix(Terms, m)
-	y <- model.extract(m, "response")
-	attr(x, "na.action") <- attr(y, "na.action") <- attr(m, "na.action")
+  call <- match.call()
+  if (!inherits(formula, "formula")) {
+    stop("method is only for formula objects")
+  }
+  m <- match.call(expand.dots = FALSE)
+  if (identical(class(eval.parent(m$data)), "matrix")) {
+    m$data <- as.data.frame(eval.parent(m$data))
+  }
+  m$... <- NULL
+  m[[1]] <- as.name("model.frame")
+  m$na.action <- na.action
+  m <- eval(m, parent.frame())
+  Terms <- attr(m, "terms")
+  attr(Terms, "intercept") <- 0
+  x <- model.matrix(Terms, m)
+  y <- model.extract(m, "response")
+  attr(x, "na.action") <- attr(y, "na.action") <- attr(m, "na.action")
 
-	ret <- plsc.default(x, y, ..., na.action = na.action)
+  ret <- plsc.default(x, y, ..., na.action = na.action)
 
-	ret$call <- call
-	ret$call[[1]] <- as.name("plsc")
-	ret$terms <- Terms
-	if (!is.null(attr(m, "na.action"))) {
-		ret$na.action <- attr(m, "na.action")
-	}
-	class(ret) <- c("plsc.formula", class(ret))
-	return(ret)
+  ret$call <- call
+  ret$call[[1]] <- as.name("plsc")
+  ret$terms <- Terms
+  if (!is.null(attr(m, "na.action"))) {
+    ret$na.action <- attr(m, "na.action")
+  }
+  class(ret) <- c("plsc.formula", class(ret))
+  return(ret)
 }
 
 #' ========================================================================
 #' wll-13-12-2007: plot method for plsc using lattice.
 plot.plsc <- function(x, dimen, ...) {
-
   lc.names <- function(object, comps) {
     labs <- paste("LC", 1:length(object$Xvar), sep = "")
     if (missing(comps)) {
@@ -281,7 +279,6 @@ plot.plsc <- function(x, dimen, ...) {
 #' wll-22-05-2007: plot method for plsc. It plot PLS latent components.
 plot.plsc.1 <- function(x, panel = panel.plsc, cex = 0.7, dimen,
                         abbrev = FALSE, ...) {
-
   panel.plsc <- function(x, y, ...) {
     text(x, y, as.character(g.nlda), cex = tcex, col = unclass(g), ...)
   }

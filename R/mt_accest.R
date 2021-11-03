@@ -1,4 +1,3 @@
-
 #' ========================================================================
 #' Calculate classification accuracy.
 #' History:
@@ -139,8 +138,10 @@ accest.default <- function(dat, cl, method,
 
   #' process bootstrap acc
   if (pars$sampling == "boot") {
-    resub <- classifier(dat, cl, dat.te = NULL, cl.te = NULL,
-                        method = method, ...)
+    resub <- classifier(dat, cl,
+      dat.te = NULL, cl.te = NULL,
+      method = method, ...
+    )
     err.boot <- lapply(err.iter, function(x) boot.err(x, resub))
     #' reshape
     err.boot <- t(sapply(err.boot, function(x) do.call("c", x)))
@@ -242,15 +243,19 @@ plot.accest <- function(x, main = NULL, xlab = NULL, ylab = NULL, ...) {
   }
 
   if (is.null(main)) {
-    main <- paste("Performance of `", x$method, "'", sep = " ", "(", 
-                  x$sampling, ")")
+    main <- paste("Performance of `", x$method, "'",
+      sep = " ", "(",
+      x$sampling, ")"
+    )
   }
 
   if (is.null(xlab)) xlab <- "Index of niter"
   if (is.null(ylab)) ylab <- "Accuracies"
 
-  plot(x$acc.iter, type = "b", main = main, xlab = xlab, ylab = ylab, 
-       col = "blue", ...)
+  plot(x$acc.iter,
+    type = "b", main = main, xlab = xlab, ylab = ylab,
+    col = "blue", ...
+  )
 }
 
 #' ========================================================================
@@ -451,7 +456,7 @@ cl.perf <- function(obs, pre, pos = levels(as.factor(obs))[2]) {
   sens <- tpr #' Sensitivity or recall
 
   perf <- list(
-    acc = acc, tpr = tpr, fpr = fpr, sens = sens, spec = spec,i
+    acc = acc, tpr = tpr, fpr = fpr, sens = sens, spec = spec,
     con.mat = con, kappa = kappa, positive = pos
   )
   return(perf)
@@ -579,8 +584,10 @@ cl.roc <- function(stat, label, pos = levels(as.factor(label))[2],
       main = main, xlab = xlab, ylab = ylab, ...
     )
     points(perf$fpr, perf$tpr, col = "red", type = "b", pch = 19)
-    abline(h = seq(0, 1, by = .1), v = seq(0, 1, by = .1), lty = 3,
-           lwd = 0.5, col = "grey")
+    abline(
+      h = seq(0, 1, by = .1), v = seq(0, 1, by = .1), lty = 3,
+      lwd = 0.5, col = "grey"
+    )
     abline(0, 1)
   }
 
@@ -636,8 +643,10 @@ cl.roc.1 <- function(stat, label, pos = levels(as.factor(label))[2],
       main = main, xlab = xlab, ylab = ylab, ...
     )
     points(perf$fpr, perf$tpr, col = "red", type = "b", pch = 19)
-    abline(h = seq(0, 1, by = .1), v = seq(0, 1, by = .1), lty = 3,
-           lwd = 0.5, col = "grey")
+    abline(
+      h = seq(0, 1, by = .1), v = seq(0, 1, by = .1), lty = 3,
+      lwd = 0.5, col = "grey"
+    )
     abline(0, 1)
   }
 
@@ -760,7 +769,7 @@ classifier <- function(dat.tr, cl.tr, dat.te = NULL, cl.te = NULL, method,
   if (!is.null(prob.te)) {
     margin <- mt:::.marg(prob.te, cl.te)
     names(margin) <- NULL #' lwc-19-05-2012:
-    if (length(levels(cl.te)) == 2 && length(cl.te) > 1) { 
+    if (length(levels(cl.te)) == 2 && length(cl.te) > 1) {
       #' claculate AUC if two-class problem
       cl.tmp <- cl.te
       levels(cl.tmp) <- c(0, 1)
@@ -775,8 +784,10 @@ classifier <- function(dat.tr, cl.tr, dat.te = NULL, cl.te = NULL, method,
     auc <- NULL
   }
 
-  ret <- list(err = err, cl = cl.te, pred = pred.te, posterior = prob.te,
-              acc = 1 - err, margin = margin, auc = auc)
+  ret <- list(
+    err = err, cl = cl.te, pred = pred.te, posterior = prob.te,
+    acc = 1 - err, margin = margin, auc = auc
+  )
   return(ret)
 }
 
@@ -830,7 +841,7 @@ boot.err <- function(err, resub) {
   #' .632 bootstrap error
   err.b632 <- 0.368 * err.ae + 0.632 * err
 
-  gamma <- 
+  gamma <-
     sum(outer(cl, pred, function(x, y) ifelse(x == y, 0, 1))) / (length(cl)^2)
   r <- (err - err.ae) / (gamma - err.ae)
   r <- ifelse(err > err.ae & gamma > err.ae, r, 0)
@@ -841,7 +852,7 @@ boot.err <- function(err, resub) {
   #' weight <- .632/(1-.368*r)
   #' err.b632p <- (1-weight)*err.ae + weight*err
 
-  err.b632p <- 
+  err.b632p <-
     err.b632 + (errprime - err.ae) * (0.368 * 0.632 * r) / (1 - 0.368 * r)
 
   ret <- list(ae = err.ae, boot = err, b632 = err.b632, b632p = err.b632p)
@@ -865,11 +876,15 @@ valipars <- function(sampling = "cv", niter = 10, nreps = 10,
   if (sampling == "loocv") {
     res <- list(sampling = sampling, niter = 1)
   } else if (sampling == "rand") {
-    res <- list(sampling = sampling, niter = niter, nreps = nreps,
-                strat = strat, div = div)
+    res <- list(
+      sampling = sampling, niter = niter, nreps = nreps,
+      strat = strat, div = div
+    )
   } else {
-    res <- list(sampling = sampling, niter = niter, nreps = nreps,
-                strat = strat)
+    res <- list(
+      sampling = sampling, niter = niter, nreps = nreps,
+      strat = strat
+    )
   }
 
   class(res) <- "valipars"
@@ -906,16 +921,18 @@ trainind <- function(cl, pars = valipars()) {
             train.ind <- cv.idx(cl, pars$nreps, strat = pars$strat)
           },
           "rand" = {
-            train.ind <- rand.idx(cl, pars$nreps, strat = pars$strat,
-                                  div = pars$div)
+            train.ind <- rand.idx(cl, pars$nreps,
+              strat = pars$strat,
+              div = pars$div
+            )
           },
           "boot" = {
             train.ind <- boot.idx(cl, pars$nreps, strat = pars$strat)
           }
         )
         for (i in 1:length(train.ind)) {
-          if (any(table(cl[train.ind[[i]]]) < 2) || 
-              any(table(cl[-train.ind[[i]]]) < 1)) {
+          if (any(table(cl[train.ind[[i]]]) < 2) ||
+            any(table(cl[-train.ind[[i]]]) < 1)) {
             emp_f <- !emp_f
             break
           }
@@ -941,7 +958,7 @@ boot.idx <- function(x, nreps, strat = FALSE) {
 
   if (strat) {
     x <- factor(x) #' drops the levels that do not occur
-    idx <- sample(1:n, n, replace = F) 
+    idx <- sample(1:n, n, replace = F)
     #' shuffl the original x, #' idx  <- c(1:n)
     x <- x[idx]
 
@@ -969,7 +986,7 @@ rand.idx <- function(x, nreps, strat = FALSE, div = 2 / 3) {
 
   if (strat) {
     x <- factor(x) #' drops the levels that do not occur
-    idx <- sample(1:n, n, replace = F) 
+    idx <- sample(1:n, n, replace = F)
     #' shuffl the original x, #' idx  <- c(1:n)
     x <- x[idx]
 
@@ -988,10 +1005,10 @@ rand.idx <- function(x, nreps, strat = FALSE, div = 2 / 3) {
         do.call("c", tmp)
       })
     #' shuffl the results
-    train.ind <- 
+    train.ind <-
       lapply(train.ind, function(x) sample(x, length(x), replace = F))
   } else {
-    train.ind <- 
+    train.ind <-
       lapply(1:nreps, function(x) sample(1:n, trunc(n * div), replace = F))
   }
 

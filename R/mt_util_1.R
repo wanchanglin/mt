@@ -1,4 +1,3 @@
-
 #' ========================================================================
 #' lwc-29-03-2013: PCA outlier plot by lattice
 #' wll-29-11-2015: Examples of 'panel.elli' and 'panel.outl' give more
@@ -149,8 +148,10 @@ pca.outlier.1 <- function(x, center = TRUE, scale = TRUE, conf.level = 0.975,
     #' display names
     txt <- names(dis[outlier])
     if (is.null(txt)) txt <- outlier
-    text(x[outlier, 1], x[outlier, 2] + xrange / 50, txt, col = "blue",
-         cex = cex)
+    text(x[outlier, 1], x[outlier, 2] + xrange / 50, txt,
+      col = "blue",
+      cex = cex
+    )
   }
 
   ret <- list(
@@ -350,9 +351,8 @@ pcaplot <- function(x, y, scale = TRUE, pcs = 1:2, ...) {
 #'        If no com.grp and no.grp, the each individual group ellipse should
 #'        be plotted.
 panel.elli.1 <- function(x, y, subscripts, groups = NULL, conf.level = 0.975,
-                         ep = 0, com.grp = NULL, no.grp = NULL, 
+                         ep = 0, com.grp = NULL, no.grp = NULL,
                          ell.grp = NULL, ...) {
-
   plot.elli <- function(x, y, ...) { #' plot ellipse
     Var <- var(cbind(x, y))
     Mean <- cbind(mean(x), mean(y))
@@ -560,7 +560,7 @@ if (F) {
 }
 
 .logratio2foldchange <- function(logratio, base = 2) {
-  retval <- base^ (logratio)
+  retval <- base^(logratio)
   retval <- ifelse(retval < 1, -1 / retval, retval)
   retval
 }
@@ -795,7 +795,7 @@ mv.stats <- function(dat, grp = NULL, ...) {
 #'   md.pattern(nhanes)     #' from mice
 #'   mv.pattern(nhanes)
 mv.pattern <- function(x) {
-  "%all.==%" <- 
+  "%all.==%" <-
     function(a, b) apply(b, 2, function(x) apply(t(a) == x, 2, all))
 
   if (!(is.matrix(x) | is.data.frame(x))) {
@@ -1447,7 +1447,6 @@ dat.sel <- function(dat, cls, choices = NULL) {
 #' ========================================================================
 #' lwc-13-04-2010: Index of pairwise combination for categorical vectors.
 combn.pw <- function(cls, choices = NULL) {
-
   .combn.pw <- function(choices, lev) {
     choices <- if (is.null(choices)) lev else unique(choices)
     pm <- pmatch(choices, lev)
@@ -1665,8 +1664,10 @@ cor.cut <- function(mat, cutoff = 0.75, abs.f = FALSE,
     #' tow-columns correlation
     fs1 <- rownames(co)[idx[, 1]]
     fs2 <- colnames(co)[idx[, 2]]
-    res <- data.frame(com1 = fs1, com2 = fs2, cor = co[idx],
-                      stringsAsFactors = FALSE)
+    res <- data.frame(
+      com1 = fs1, com2 = fs2, cor = co[idx],
+      stringsAsFactors = FALSE
+    )
     #' lwc-07-06-2011: add stringsAsFactors
   } else {
     res <- NA
@@ -1833,7 +1834,6 @@ cor.heat.gram <- function(mat.1, mat.2, use = "pairwise.complete.obs",
         panel.fill(col = "black")
         panel.levelplot(...)
       },
-
       colorkey = list(space = "bottom"),
       #' colorkey = list(space = "bottom", labels=list(cex=cex)),
       legend =

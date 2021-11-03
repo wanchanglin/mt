@@ -1,4 +1,3 @@
-
 #' =========================================================================
 #' mult-Classifier accuracy estimation with results of accuracy and
 #' significant test using ANOVA plus TukeyHSD test.
@@ -54,7 +53,7 @@ maccest.default <- function(dat, cl, method = "svm", pars = valipars(),
   acc <- sapply(res, function(x) x$acc)
   acc.iter <- sapply(res, function(x) x$acc.iter)
   #' acc.std  <- sapply(res, function(x) x$acc.std)
-  acc.std <- 
+  acc.std <-
     sapply(res, function(x) ifelse(!is.null(x$acc.std), x$acc.std, NA))
   conf <- lapply(res, function(x) x$conf)
 
@@ -167,8 +166,10 @@ boxplot.maccest <- function(x, ...) {
 
   main <- "Classifier Accurary"
 
-  boxplot(data.frame(x$acc.iter), main = main, col = col, xlab = xlab,
-          ylab = ylab, ylim = ylim)
+  boxplot(data.frame(x$acc.iter),
+    main = main, col = col, xlab = xlab,
+    ylab = ylab, ylim = ylim
+  )
 }
 
 #' =======================================================================
@@ -189,7 +190,8 @@ plot.maccest <- function(x, main = NULL, xlab = NULL, ylab = NULL, ...) {
 
   if (is.null(main)) {
     main <- paste("Performance of classfier (Sampling: ", x$sampling, " )",
-                  sep = "")
+      sep = ""
+    )
   }
 
   if (is.null(xlab)) xlab <- "Classifier"
@@ -253,7 +255,7 @@ maccest.formula <- function(formula, data = NULL, ..., subset,
 #'   03-07-07: add auc and margin
 #' NOTE: It is difficult to provide user-defined data partioning before
 #'       data extracting for pairwise comparison.
-mbinest <- function(dat, cl, choices = NULL, method, 
+mbinest <- function(dat, cl, choices = NULL, method,
                     pars = valipars(), ...) {
   dat.bin <- .dat.sel(dat, cl, choices = choices)
 
@@ -268,8 +270,10 @@ mbinest <- function(dat, cl, choices = NULL, method,
   res <- lapply(names(dat.bin$cl), function(x) {
     cat("\nRun = :", x, "\n")
     flush.console() #' for Windows
-    maccest(dat.bin$dat[[x]], dat.bin$cl[[x]], method = method,
-            pars = pars, ...)
+    maccest(dat.bin$dat[[x]], dat.bin$cl[[x]],
+      method = method,
+      pars = pars, ...
+    )
   })
 
   acc <- t(sapply(res, function(x) x$acc))
@@ -280,9 +284,11 @@ mbinest <- function(dat, cl, choices = NULL, method,
   com <- apply(dat.bin$com, 1, paste, collapse = "-")
   names(res) <- rownames(acc) <- rownames(auc) <- rownames(mar) <- com
 
-  ret <- list(all = res, com = dat.bin$com, acc = acc, auc = auc,
-              mar = mar, method = method, niter = pars$niter,
-              sampling = pars$sampling)
+  ret <- list(
+    all = res, com = dat.bin$com, acc = acc, auc = auc,
+    mar = mar, method = method, niter = pars$niter,
+    sampling = pars$sampling
+  )
   if (pars$sampling != "loocv") ret$nreps <- pars$nreps
   return(ret)
 }
@@ -313,8 +319,10 @@ mc.fried <- function(x, p.adjust.method = p.adjust.methods, ...) {
   tmp <- outer(dname[[1]], dname[[2]], paste, sep = "-")
   names(mc.pval) <- tmp[lower.tri(tmp, T)]
 
-  ret <- list(fried = f.htest, wilcox = w.htest, gl.pval = gl.pval,
-              mc.pval = mc.pval)
+  ret <- list(
+    fried = f.htest, wilcox = w.htest, gl.pval = gl.pval,
+    mc.pval = mc.pval
+  )
   ret
 }
 
@@ -337,8 +345,10 @@ mc.anova <- function(x, ...) {
   mc.pval <- t.htest$algo[, 4]
   #' plot(t.htest)
 
-  ret <- list(anova = aov.tab, tukey = t.htest, gl.pval = gl.pval,
-              mc.pval = mc.pval)
+  ret <- list(
+    anova = aov.tab, tukey = t.htest, gl.pval = gl.pval,
+    mc.pval = mc.pval
+  )
   ret
 }
 

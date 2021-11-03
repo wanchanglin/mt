@@ -1,4 +1,3 @@
-
 #' ========================================================================
 #' wll-02-10-2007: tune the best number of components
 tune.plslda <- function(x, y, pls = "simpls", ncomp = 10, tune.pars, ...) {
@@ -84,7 +83,7 @@ plslda.default <- function(x, y, pls = "simpls", ncomp = 10, tune = FALSE,
   x.lv <- unclass(pls.out$scores)
 
   #' Transform test data using weight matrix (projection)(Xt = X*W)
-  #' Ztest <- scale(Xtest,center=pls.out$Xmeans,scale=FALSE) %*% 
+  #' Ztest <- scale(Xtest,center=pls.out$Xmeans,scale=FALSE) %*%
   #'          pls.out$projection
 
   lda.out <- lda(x.lv, y)
@@ -95,9 +94,11 @@ plslda.default <- function(x, y, pls = "simpls", ncomp = 10, tune = FALSE,
   lc <- unclass(pls.out$scores) #' latent components
   colnames(lc) <- paste("LC", 1:ncol(lc), sep = "")
 
-  res <- list(x = lc, cl = y, pred = pred, posterior = pred$posterior,
-              conf = conf, acc = acc, ncomp = ncomp, pls.method = pls,
-              pls.out = pls.out, lda.out = lda.out)
+  res <- list(
+    x = lc, cl = y, pred = pred, posterior = pred$posterior,
+    conf = conf, acc = acc, ncomp = ncomp, pls.method = pls,
+    pls.out = pls.out, lda.out = lda.out
+  )
 
   if (tune) res$acc.tune <- val$acc.tune
   res$call <- match.call()
@@ -110,19 +111,22 @@ plslda.default <- function(x, y, pls = "simpls", ncomp = 10, tune = FALSE,
 predict.plslda <- function(object, newdata, ...) {
   if (!inherits(object, "plslda")) stop("object not of class \"plslda\"")
   if (missing(newdata)) {
-    return(list(class = object$pred, posterior = object$posterior,
-                x = unclass(object$pls.out$scores)))
+    return(list(
+      class = object$pred, posterior = object$posterior,
+      x = unclass(object$pls.out$scores)
+    ))
   }
   if (is.null(dim(newdata))) {
     dim(newdata) <- c(1, length(newdata))
   } #' a row vector
 
   newdata <- as.matrix(newdata)
-  if (ncol(newdata) != length(object$pls.out$Xmeans))
+  if (ncol(newdata) != length(object$pls.out$Xmeans)) {
     stop("wrong number of variables")
+  }
 
   #' rotated data (projection)
-  x <- scale(newdata, center = object$pls.out$Xmeans, scale = FALSE) %*% 
+  x <- scale(newdata, center = object$pls.out$Xmeans, scale = FALSE) %*%
     object$pls.out$projection
 
   pred <- predict(object$lda.out, x)
@@ -139,8 +143,10 @@ print.plslda <- function(x, ...) {
     oscorespls = "orthogonal scores",
     stop("Unknown fit method.")
   )
-  cat("Partial least squares classification, fitted with the", alg,
-      "algorithm.")
+  cat(
+    "Partial least squares classification, fitted with the", alg,
+    "algorithm."
+  )
   #' cat("\nCall:\n", deparse(x$call), "\n")
   cat("\nCall:\n")
   dput(x$call)
@@ -179,42 +185,41 @@ print.summary.plslda <- function(x, ...) {
 plslda <- function(x, ...) UseMethod("plslda")
 
 #' =========================================================================
-plslda.formula <- function(formula, data = NULL, ..., subset, 
+plslda.formula <- function(formula, data = NULL, ..., subset,
                            na.action = na.omit) {
-	call <- match.call()
-	if (!inherits(formula, "formula")) {
-		stop("method is only for formula objects")
-	}
-	m <- match.call(expand.dots = FALSE)
-	if (identical(class(eval.parent(m$data)), "matrix")) {
-		m$data <- as.data.frame(eval.parent(m$data))
-	}
-	m$... <- NULL
-	m[[1]] <- as.name("model.frame")
-	m$na.action <- na.action
-	m <- eval(m, parent.frame())
-	Terms <- attr(m, "terms")
-	attr(Terms, "intercept") <- 0
-	x <- model.matrix(Terms, m)
-	y <- model.extract(m, "response")
-	attr(x, "na.action") <- attr(y, "na.action") <- attr(m, "na.action")
+  call <- match.call()
+  if (!inherits(formula, "formula")) {
+    stop("method is only for formula objects")
+  }
+  m <- match.call(expand.dots = FALSE)
+  if (identical(class(eval.parent(m$data)), "matrix")) {
+    m$data <- as.data.frame(eval.parent(m$data))
+  }
+  m$... <- NULL
+  m[[1]] <- as.name("model.frame")
+  m$na.action <- na.action
+  m <- eval(m, parent.frame())
+  Terms <- attr(m, "terms")
+  attr(Terms, "intercept") <- 0
+  x <- model.matrix(Terms, m)
+  y <- model.extract(m, "response")
+  attr(x, "na.action") <- attr(y, "na.action") <- attr(m, "na.action")
 
-	ret <- plslda.default(x, y, ..., na.action = na.action)
+  ret <- plslda.default(x, y, ..., na.action = na.action)
 
-	ret$call <- call
-	ret$call[[1]] <- as.name("plslda")
-	ret$terms <- Terms
-	if (!is.null(attr(m, "na.action"))) {
-		ret$na.action <- attr(m, "na.action")
-	}
-	class(ret) <- c("plslda.formula", class(ret))
-	return(ret)
+  ret$call <- call
+  ret$call[[1]] <- as.name("plslda")
+  ret$terms <- Terms
+  if (!is.null(attr(m, "na.action"))) {
+    ret$na.action <- attr(m, "na.action")
+  }
+  class(ret) <- c("plslda.formula", class(ret))
+  return(ret)
 }
 
 #' ========================================================================
 #' wll-13-12-2007: plot method for plsc using lattice.
 plot.plslda <- function(x, dimen, ...) {
-
   lc.names <- function(object, comps) {
     labs <- paste("LC", 1:length(object$Xvar), sep = "")
     if (missing(comps)) {
@@ -255,7 +260,6 @@ plot.plslda <- function(x, dimen, ...) {
 #' lwc-22-05-2007: plot method for plslda. It plot PLS latent components.
 plot.plslda.1 <- function(x, panel = panel.plslda, cex = 0.7, dimen,
                           abbrev = FALSE, ...) {
-
   panel.plslda <- function(x, y, ...) {
     text(x, y, as.character(g.nlda), cex = tcex, col = unclass(g), ...)
   }
