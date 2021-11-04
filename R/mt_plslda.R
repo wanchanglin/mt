@@ -23,7 +23,7 @@ tune.plslda <- function(x, y, pls = "simpls", ncomp = 10, tune.pars, ...) {
 #' History:
 #'   wll-21-05-2007: commence
 #'   lwc-21-05-2012: use wrapper function of "mvr".
-#'   lwc-21-05-2012: It should not be difficcult to get R2 for "accest" with
+#'   lwc-21-05-2012: It should not be difficult to get R2 for "accest" with
 #'                   methods of plsc and plslda.
 plslda.default <- function(x, y, pls = "simpls", ncomp = 10, tune = FALSE,
                            ...) {
@@ -40,7 +40,7 @@ plslda.default <- function(x, y, pls = "simpls", ncomp = 10, tune = FALSE,
     x
   }
 
-  #' arguments validility checking
+  #' arguments validity checking
   if (missing(x) || missing(y)) {
     stop("data set or class are missing")
   }

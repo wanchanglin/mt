@@ -5,7 +5,7 @@
 #'   wll-12-06-2007: minor changes
 osc.default <- function(x, y, method = "wold", center = TRUE, osc.ncomp = 4,
                         pls.ncomp = 10, tol = 1e-3, iter = 20, ...) {
-  #' arguments validility checking
+  #' arguments validity checking
   if (missing(x) || missing(y)) {
     stop("data set or class are missing")
   }
@@ -19,7 +19,7 @@ osc.default <- function(x, y, method = "wold", center = TRUE, osc.ncomp = 4,
 
   method <- match.arg(method, c("wold", "sjoblom", "wise"))
 
-  #' initilisation
+  #' initialisation
   x <- as.matrix(x)
   y <- as.factor(y)
   n <- nrow(x)
@@ -216,7 +216,8 @@ osc.wold <- function(x, y, center = TRUE, osc.ncomp = 4, pls.ncomp = 10,
   angle <- t(angle) %*% t(norm)
   angle <- mean(acos(angle) * 180 / pi)
 
-  res <- list(x = x, R2 = R2, angle = angle, w = nw, p = np, t = nt, center = center)
+  res <- list(x = x, R2 = R2, angle = angle, w = nw, p = np, t = nt,
+              center = center)
   return(res)
 }
 

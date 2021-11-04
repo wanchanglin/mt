@@ -25,7 +25,7 @@ feat.freq <- function(x, rank.cutoff = 50, freq.cutoff = 0.5) {
   x <- x[1:rank.cutoff, , drop = F]
   tmp <- table(x)
   tmp <- sort(tmp, decreasing = T) / ncol(x)
-  fre <- as.vector(tmp) #' strip off a charachter 'x'
+  fre <- as.vector(tmp) #' strip off a character 'x'
   names(fre) <- names(tmp)
   #' overlap.rate <- sum(fre==1)/rank.cutoff
 
@@ -44,8 +44,8 @@ feat.freq <- function(x, rank.cutoff = 50, freq.cutoff = 0.5) {
 #' lwc-16-02-2007: Calculate the consensus of feature selection by different
 #' methods
 #' Arguments:
-#'  freq - a list consiting of feature frequency more than a threshold
-#' Note: No R doc available. Called by feat.mfs or diredtly used by putting
+#'  freq - a list consisting of feature frequency more than a threshold
+#' Note: No R doc available. Called by feat.mfs or directly used by putting
 #'       mt::: in front of it.
 feat.cons <- function(freq, disp = TRUE) {
   #' lwc-18-02-2007: If only to retrieve the names, the following code line
@@ -865,7 +865,7 @@ fs.rf <- function(x, y, ...) {
 fs.rf.1 <- function(x, y, fs.len = "power2", ...) {
   y <- as.factor(y)
   p <- ncol(x)
-  fs.order <- seq(1, p) #' initilisation
+  fs.order <- seq(1, p) #' initialisation
 
   #' get feature lengths
   len <- get.fs.len(p, fs.len = fs.len)
@@ -981,7 +981,8 @@ fs.wilcox <- function(x, y, ...) {
   nam <- names(stats[fs.order])
   if (!is.null(nam)) fs.order <- nam
 
-  res <- list(fs.order = fs.order, fs.rank = fs.rank, stats = abs(stats), pval = pval)
+  res <- list(fs.order = fs.order, fs.rank = fs.rank, stats = abs(stats),
+              pval = pval)
   return(res)
 }
 

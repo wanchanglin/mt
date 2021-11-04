@@ -1,7 +1,7 @@
 #' ========================================================================
 #' lwc-29-03-2013: PCA outlier plot by lattice
 #' wll-29-11-2015: Examples of 'panel.elli' and 'panel.outl' give more
-#' generl inofrmation about ellipses and outliers. If you *only* want to
+#' general information about ellipses and outliers. If you *only* want to
 #' plot outliers based on PCA in a general way, for example outliers in
 #' different groups or in conditional panel, you can write an wrapper
 #' function combining with 'pca.comp', 'panel.elli' and 'panel.oult'. The
@@ -9,7 +9,7 @@
 pca.outlier <- function(x, center = TRUE, scale = TRUE,
                         conf.level = 0.975, ...) {
 
-  #' lwc-29-03-2013: Lattice panel for plotting outliers with ellips
+  #' lwc-29-03-2013: Lattice panel for plotting outliers with ellipse
   #' lwc-03-04-2013: To avoid error: formal argument "***" matched by
   #' multiple actual arguments, use: ..., type,col, lty, lwd.
   #' wll-29-11-2015: More general panel function for outlier 'panel.outl'
@@ -25,7 +25,7 @@ pca.outlier <- function(x, center = TRUE, scale = TRUE,
     panel.abline(h = 0, v = 0, col = c("gray"), lty = 2)
     #' overall ellipse line
     panel.points(elli[, 1], elli[, 2], type = "l", col = "red", lwd = 2, ...)
-    #' labeling outliers
+    #' labelling outliers
     if (any(id)) {
       ltext(x[id], y[id], labs[id], ...)
       #' cex = dots$cex, adj = dots$adj)
@@ -97,7 +97,7 @@ pca.outlier <- function(x, center = TRUE, scale = TRUE,
 #' lwc-01-09-2010: Add group info. Take code segment from FIEmspro's grpplot.
 #' Note:
 #'  1.) Modified from outl.det in my another package FIEmspro.
-#'  2.) Another latice version
+#'  2.) Another lattice version
 #' To-Do:
 #'  1.) Display group text inside the ellipse
 pca.outlier.1 <- function(x, center = TRUE, scale = TRUE, conf.level = 0.975,
@@ -193,7 +193,7 @@ grpplot <- function(x, y, plot = "pairs", ...) {
   x.1$ind <- factor(x.1$ind, levels = unique.default(x.1$ind))
   #' lwc-21-11-2007: Original ind of stack is a sorted-level factor. Lattice
   #'   will use this factor level to arrange panel order. To be consist with
-  #'   feature rank descent order, the fator levels are ordered by the
+  #'   feature rank descent order, the factor levels are ordered by the
   #'   feature rank from to to bottom. Therefore, no sort used inside factor
   #'   function.
   x.1$.y <- rep(y, ncol(x))
@@ -225,20 +225,20 @@ grpplot <- function(x, y, plot = "pairs", ...) {
 #' MASS:::ldahist
 #' lwc-09-01-2008: argument of default of auto.key.
 #' lwc-12-01-2008-note:
-#'   Colors in supervose.symbol re-cycle after 7 by default. I did not
+#'   Colours in supervose.symbol re-cycle after 7 by default. I did not
 #'   change the default number inside the function by: par.settings =
 #'   list(superpose.symbol=list(pch=1:nlevels(y), col=1:nlevels(y))),
-#'   For convient, user can change the color scheme outside .grpplot, such as
+#'   For convenient, user can change the color scheme outside .grpplot, such as
 #'       superpose.symbol <- trellis.par.get("superpose.symbol")
 #'       superpose.symbol$col <- rainbow(16)
 #'       trellis.par.set("superpose.symbol",superpose.symbol)
-#'  Then call .grpplot.  A list of colors names is produced by colors().
+#'  Then call .grpplot.  A list of colours names is produced by colors().
 #' lwc-17-01-2008: pch range from 1 to 25. So I recycle the symbols if number
 #'     of symbol exceed the limits.
 #' TO-DO: 1.) Check validity of arguments
 #'        2.) Better way to process ep(Currently, ep will be 0,1 and 2).
 #'        3.) panel.xyplot doesn't know anything about xlab, ylab, etc., and
-#'           you can specify cex as part of the top level call. (calimed by
+#'           you can specify cex as part of the top level call. (claimed by
 #'           Deepayan Sarkar, author of package lattice). So
 #'           trellis.par.get(), trellis.par.set() or par.settings will be
 #'           help for global or local parameters setting.
@@ -264,7 +264,8 @@ grpplot <- function(x, y, plot = "pairs", ...) {
         auto.key = auto.key,
         par.settings = par.settings,
 
-        #' par.settings = list(superpose.symbol=list(pch=rep(1:25, len = nlevels(y)))),
+        #' par.settings =
+        #'   list(superpose.symbol=list(pch = rep(1:25, len = nlevels(y)))),
 
         scales = list(cex = 0.8), #' for axis font
         panel = function(x, y, ...) {
@@ -279,9 +280,12 @@ grpplot <- function(x, y, plot = "pairs", ...) {
         groups = y, as.table = T, xlab = "",
         auto.key = auto.key,
         par.settings = par.settings,
-        #' par.settings = list(superpose.symbol=list(pch=rep(1:25, len = nlevels(y))),
-        #'                    axis.text=list(cex=0.7)),
-        #' varname.cex = 1.0, cex=0.6, #' pscales = 0,    #' lwc-27-07-2009: comment here.
+
+        #' par.settings =
+        #'   list(superpose.symbol=list(pch = rep(1:25, len = nlevels(y))),
+        #'        axis.text=list(cex=0.7)),
+
+        #' varname.cex = 1.0, cex=0.6, #' pscales = 0,
         panel = function(x, y, ...) {
           panel.xyplot(x, y, ...)
           panel.elli.1(x, y, ...)
@@ -289,7 +293,8 @@ grpplot <- function(x, y, plot = "pairs", ...) {
         }, ...
       )
   } else {
-    p <- stripplot(x[, 1] ~ y, groups = y, as.table = T, ylab = colnames(x)[1], ...)
+    p <- stripplot(x[, 1] ~ y, groups = y, as.table = T,
+                   ylab = colnames(x)[1], ...)
     #' p <- stripplot(x ~ y, groups=y, as.table=T, ylab= "", ...)
     #' p <- densityplot(~ x, groups = y, as.table=T,
     #'                  auto.key = auto.key,
@@ -317,7 +322,7 @@ grpplot <- function(x, y, plot = "pairs", ...) {
 #' ========================================================================
 #' lwc-12-13-2007: plot PCA using lattice package
 #' lwc-15-07-2015: remove 'ep'
-#' TO-DO: 1). check validlity of PCs used for plotting.
+#' TO-DO: 1). check validity of PCs used for plotting.
 #' Usage:
 #'   data(iris)
 #'   x <- iris[,1:4]
@@ -347,7 +352,7 @@ pcaplot <- function(x, y, scale = TRUE, pcs = 1:2, ...) {
 #' Usage: Under ep=2, there are three options to plot ellipse.
 #'        com.grp: control which combination of groups to be plotted.
 #'        no.grp:  control which individual group not to be plotted. Note
-#'                 it will be overided by com.grp.
+#'                 it will be overridden by com.grp.
 #'        If no com.grp and no.grp, the each individual group ellipse should
 #'        be plotted.
 panel.elli.1 <- function(x, y, subscripts, groups = NULL, conf.level = 0.975,
@@ -378,7 +383,7 @@ panel.elli.1 <- function(x, y, subscripts, groups = NULL, conf.level = 0.975,
     ddply(tmp, .(grp), function(x) {
       plot.elli(x$x, x$y, ..., type = "l", lty = 2, col = "cyan")
     })
-  } else if (ep == 1) { #' overline ellipse
+  } else if (ep == 1) { #' over-line ellipse
     plot.elli(x, y, type = "l", col = "red", ...) #' lwd=2
     #' ellipse based on groups, individual or combination.
   } else if (ep == 2) { #' plot group ellipse
@@ -483,7 +488,7 @@ stats.mat <- function(x, y, method = "mean", test.method = "wilcox.test",
 #' wll-01-12-2015: add an argument for fold-change. fc is only for positive
 #'   values of 'x'. If not, the results are useless.
 #' wll-26-01-2016: drop off change direction so the results are numeric, not
-#'   the character. Note that the fold change indicates the chaning
+#'   the character. Note that the fold change indicates the changing
 #'   direction.
 stats.vec <- function(x, y, method = "mean", test.method = "wilcox.test",
                       fc = TRUE, ...) {
@@ -663,7 +668,7 @@ mv.zene <- function(dat) {
 #' lwc-23-04-2010: Fill the zero/NA values by the mean of vector.
 #' lwc-15-06-2011: minor changes.
 #' lwc-22-06-2011: Replace ifelse(x < .Machine$double.eps, m, x) with
-#'   ifelse(x < .Machine$double.eps, NA, x) and shange its line position.
+#'   ifelse(x < .Machine$double.eps, NA, x) and change its line position.
 #' Usage
 #'   data(abr1)
 #'   dat <- abr1$pos[,1970:1980]
@@ -778,12 +783,12 @@ mv.stats <- function(dat, grp = NULL, ...) {
 #'   A matrix with (nrow(x)+1, ncol(x)+1) dimension. Except the last row and
 #'   column, each row corresponds to a missing data pattern
 #'   (1=observed, 0=missing). The row names shows the number of pattern.
-#'   The last row contains the number of mising values
+#'   The last row contains the number of missing values
 #'   with respect to each column and the last column represent the counts of
 #'   each row.
 #' See Also:
 #'   md.pattern in package mice and prelim.norm in package norm.
-#' NOTE: 1.The motivaton of the function is that Ted Harding mentioned that
+#' NOTE: 1.The motivation of the function is that Ted Harding mentioned that
 #'       that prelim.norm can only encode NA-patterns in an R integer for up
 #'       to 31 columns. More than that, and it will not work properly or at
 #'       all. (http://article.gmane.org/gmane.comp.lang.r.general/55185).
@@ -799,7 +804,7 @@ mv.pattern <- function(x) {
     function(a, b) apply(b, 2, function(x) apply(t(a) == x, 2, all))
 
   if (!(is.matrix(x) | is.data.frame(x))) {
-    stop("Data should be a matrix or dataframe")
+    stop("Data should be a matrix or data frame")
   }
 
   #' get the pattern of missing values
@@ -896,13 +901,12 @@ pca.plot.wrap <- function(data.list, title = "plotting", ...) {
 
 #' =========================================================================
 #' wll-01-06-2015: Wrapper function for plotting MDS. Only the first two
-#'   dimentions are  plotted.
+#'   dimensions are  plotted.
 mds.plot.wrap <- function(data.list, method = "euclidean",
                           title = "plotting", ...) {
   if (is.null(names(data.list))) {
-    names(data.list) <- paste(deparse(substitute(data.list)), 1:length(data.list),
-      sep = ":"
-    )
+    names(data.list) <- paste(deparse(substitute(data.list)),
+                              1:length(data.list), sep = ":")
   }
   dn <- names(data.list)
 
@@ -915,7 +919,7 @@ mds.plot.wrap <- function(data.list, method = "euclidean",
 
   mds <- lapply(dn, function(x) {
     dis <- dist(data.list[[x]]$dat, method = METHODS[meth])
-    mds <- cmdscale(dis) #' only consider 2 dimention
+    mds <- cmdscale(dis) #' only consider 2 dimension
     mds <- as.data.frame(mds)
     names(mds) <- c("Coord_1", "Coord_2")
     mds <- cbind(mds, cls = data.list[[x]]$cls, type = x)
@@ -941,7 +945,7 @@ mds.plot.wrap <- function(data.list, method = "euclidean",
 
 #' =========================================================================
 #' wll-23-10-2008: Wrapper function for plotting PCALDA
-#' lwc-11-02-2010: replace nlda with pcalda and chnages correspondingly, e.g.
+#' lwc-11-02-2010: replace nlda with pcalda and change correspondingly, e.g.
 #'                 DF to LD.
 #' lwc-19-10-2010: handle with 2-class and more than 3-class problem. For
 #'                 2-class, DF2 is a dummy variable, identical to LD1 for
@@ -954,9 +958,8 @@ mds.plot.wrap <- function(data.list, method = "euclidean",
 #'   title     - A part of title string for plotting
 lda.plot.wrap <- function(data.list, title = "plotting", ...) {
   if (is.null(names(data.list))) {
-    names(data.list) <- paste(deparse(substitute(data.list)), 1:length(data.list),
-      sep = ":"
-    )
+    names(data.list) <- paste(deparse(substitute(data.list)),
+                              1:length(data.list), sep = ":")
   }
   dn <- names(data.list)
   lda <- lapply(dn, function(x) { #' x=dn[1]
@@ -1012,9 +1015,8 @@ lda.plot.wrap <- function(data.list, title = "plotting", ...) {
 #' Note: Will plot 2-class problem differently with stripplot.
 lda.plot.wrap.1 <- function(data.list, title = "plotting", ...) {
   if (is.null(names(data.list))) {
-    names(data.list) <- paste(deparse(substitute(data.list)), 1:length(data.list),
-      sep = ":"
-    )
+    names(data.list) <- paste(deparse(substitute(data.list)),
+                              1:length(data.list), sep = ":")
   }
   dn <- names(data.list)
   lda <- lapply(dn, function(x) {
@@ -1138,14 +1140,13 @@ pls.plot.wrap <- function(data.list, title = "plotting", ...) {
 #' wll-01-10-2009: Misc function for splitting PCA/LDA/PLS plot.
 #' Note:  1.) To deal with data.frame and matrix in the same way, should use
 #'           a.) colnames instead of names;
-#'           b.) index extrived should be tmp[,x] insead of tmp[x] or
-#'           tmp[[x]].
+#'           b.) index should be tmp[,x] instead of tmp[x] or tmp[[x]].
 #'           c.) keep [,,drop=F].
 #' TO-DO: 1.) How to extract strip text?
-#'        2.) How to keep the legend being consistent with sug-figure's
-#'            symbol /colour? It means how to remove the irrelevent
-#'            synmbol/colours in legend to keep consistent with
-#'            sug-figure's.
+#'        2.) How to keep the legend being consistent with sub-figure's
+#'            symbol /colour? It means how to remove the irrelevant
+#'            symbol/colours in legend to keep consistent with
+#'            sub-figure's.
 #' Note: Internal function.
 #' Usage:
 #'  data(iris)
@@ -1193,10 +1194,10 @@ mdsplot <- function(x, y, method = "euclidean", dimen = c(1, 2), ep = 0, ...) {
 
   dis <- dist(x, method = METHODS[meth])
 
-  #' mds <- cmdscale(dis)      #' only consider 2 dimention
+  #' mds <- cmdscale(dis)      #' only consider 2 dimension
   #' mds <- as.data.frame(mds)
   mds <- cmdscale(dis, k = 2, eig = TRUE) #' Classical MDS
-  #' mds <- isoMDS(dis, k=2)                  #' Nonmetric MDS
+  #' mds <- isoMDS(dis, k=2)                  #' Non-metric MDS
   mds <- as.data.frame(mds$points)
   names(mds) <- c("Coordinate 1", "Coordinate 2")
 
@@ -1251,8 +1252,8 @@ pca.plot <- function(x, y, scale = TRUE, abbrev = FALSE, ep.plot = FALSE, ...) {
 }
 
 #' ========================================================================
-#' wll-29-03-2008: Compute the PCA scores and propotion of variance
-#' TO-DO: 1.) check validility of argument pcs.
+#' wll-29-03-2008: Compute the PCA scores and proportion of variance
+#' TO-DO: 1.) check validity of argument pcs.
 pca.comp <- function(x, scale = FALSE, pcs = 1:2, ...) {
   pca <- prcomp(x, scale. = scale, ...)
   vars <- pca$sdev^2 #' i.e. eigenvalues/variance
@@ -1275,8 +1276,8 @@ pca.comp <- function(x, scale = FALSE, pcs = 1:2, ...) {
 #'                 testing procedures based on Type I error rates.
 #' WLL-21-07-2014: Add na.rm = TRUE in sum.
 #' Arguments:
-#'   adjp  - a matrix-like p-values of simutanouesly testing
-#'   alpha - a vector of cutoff of p-values or Type I error rate.
+#'   adjp  - a matrix-like p-values of simultaneously testing
+#'   alpha - a vector of cut-off of p-values or Type I error rate.
 #' Note: See mt.reject in package multest.
 pval.reject <- function(adjp, alpha) {
   adjp <- as.data.frame(adjp)
@@ -1325,7 +1326,7 @@ pval.test <- function(x, y, method = "oneway.test", ...) {
 #' lwc-27-04-2012: put scales in argument list
 #' Arguments:
 #'  co    - Correlation matrices
-#'  lable - Logical value indicating wether the corellation coefficient (x
+#'  lable - Logical value indicating whether the correlation coefficient (x
 #'          100) should be displayed.
 #'  \references{
 #'    Michael Friendly (2002).
@@ -1361,7 +1362,7 @@ corrgram.ellipse <- function(co, label = FALSE,
 #' lwc-27-04-2012: put scales in argument list
 #' Arguments:
 #'  co    - Correlation matrices
-#'  lable - Logical value indicating wether the corellation coefficient (x
+#'  lable - Logical value indicating whether the correlation coefficient (x
 #'  100) should be displayed.
 corrgram.circle <- function(co,
                             col.regions =
@@ -1433,7 +1434,7 @@ panel.corrgram.cir <- function(x, y, z, subscripts, at = pretty(z),
 dat.sel <- function(dat, cls, choices = NULL) {
   #' get the index of pairwise combination
   idx <- combn.pw(cls, choices = choices)
-  #' constructe data set consisting of data matrix and its class info
+  #' construct data set consisting of data matrix and its class info
   dat.pair <-
     lapply(idx, function(x) {
       cls.pw <- factor(cls[x]) #' force drop factor levels
@@ -1460,7 +1461,7 @@ combn.pw <- function(cls, choices = NULL) {
         lev.1 <- setdiff(lev, choices)
         com <- cbind(choices, lev.1)
         dimnames(com) <- NULL
-      } else { #' Keep compatable with dat.sel.1
+      } else { #' Keep comparable with dat.sel.1
         com <- t(combn(lev, 2))
         idx <- sapply(1:nrow(com), function(x) {
           if (match(choices, com[x, ], nomatch = 0) > 0) {
@@ -1515,7 +1516,7 @@ panel.smooth.line <- function(x, y, ...) {
 
 #' ========================================================================
 #' lwc-04-12-2006: Pre-process Data Set
-#' lwc-27-03-2007: support mutiple methods
+#' lwc-27-03-2007: support multiple methods
 #' lwc-27-06-2007: 'rescaler' function in package 'reshape' provides a R
 #'   standard to deal with vector, matrix and data.frame using S3 method.
 #'   Also another version of range method. Need to check source code to hack
@@ -1679,7 +1680,7 @@ cor.cut <- function(mat, cutoff = 0.75, abs.f = FALSE,
 #' lwc-16-04-2008: Hierarchical cluster analysis based on correlation
 #' analysis.
 #' lwc-19-05-2008: Fix a tiny bug
-#' lwc-21-05-2008: Check extrem situation
+#' lwc-21-05-2008: Check extreme situation
 #' lwc-14-10-2009: Change name from my.fs.cor to fs.cor.bas
 #' lwc-17-02-2010: change name from fs.cor.bas to cor.hcl.
 #' lwc-18-02-2010: add use and method for function cor
@@ -1687,7 +1688,7 @@ cor.cut <- function(mat, cutoff = 0.75, abs.f = FALSE,
 #' for hclust.
 #' Arguments:
 #'   mat       - A matrix-like data set
-#'   cutoff    - A vector of cutoff (should be in incresing-order)
+#'   cutoff    - A vector of cutoff (should be in increasing-order)
 #'   fig.f     - A logical value for plotting clustering
 #' Returns:
 #'   A list including all clustering information.
@@ -1872,7 +1873,7 @@ cor.heat.gram <- function(mat.1, mat.2, use = "pairwise.complete.obs",
   #' co.max  <- max(co.1[,3], na.rm=T)
   #' co.thre <- co.1[co.1[,3] >= 0.4,] #' lwc-09-03-2010: Very specific
 
-  #' lwc-23-06-2015: If co is a symetric matrix,
+  #' lwc-23-06-2015: If co is a symmetric matrix,
   if (F) {
     co.1 <- co
     co.1[upper.tri(co.1)] <- NA
@@ -1965,7 +1966,7 @@ list2df <- function(x) {
 
 #' ========================================================================
 #' lwc-26-04-2008: my version of unlist, which collapse the higher-depths
-#' list to 1-depth list. This function uses recursive programing skill to
+#' list to 1-depth list. This function uses recursive programming skill to
 #' tackle any depths of list.
 un.list <- function(x, y = "") {
   res <- list()
@@ -2009,7 +2010,7 @@ class.ind <- function(cl) {
 #' =========================================================================
 #' tic() and toc() functions.
 #' Internal function.
-#' Modifed from package MATLAB by David Enot
+#' Modified from package MATLAB by David Enot
 tic <- function(gcFirst = FALSE) {
   if (gcFirst == TRUE) {
     gc(verbose = FALSE)

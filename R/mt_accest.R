@@ -381,7 +381,7 @@ cl.rate <- function(obs, pre) {
 
   acc <- sum(observed == predicted) / length(observed)
 
-  #' NOTE: If arguments are factor, it will triger a error when they
+  #' NOTE: If arguments are factor, it will trigger an error when they
   #'       have different levels.
   err <- (1 - acc)
   con <- table(observed = observed, predicted = predicted)
@@ -416,7 +416,7 @@ cl.perf <- function(obs, pre, pos = levels(as.factor(obs))[2]) {
   kappa <- classAgreement(con)$kappa
   con <- cbind(con, class.acc = diag(con) / rowSums(con))
 
-  #' change levels as pos(Positive) and neg (Negtive)
+  #' change levels as pos(Positive) and neg (Negative)
   levels(obs) <- list("neg" = levels(obs)[2], "pos" = levels(obs)[1])
   levels(pre) <- list("neg" = levels(pre)[2], "pos" = levels(pre)[1])
   #' levels(obs) <- levels(pre) <- c("pos", "neg")
@@ -470,9 +470,9 @@ cl.perf <- function(obs, pre, pos = levels(as.factor(obs))[2]) {
 #'           the better.
 #'       2.) AUC should be adjusted as:
 #'           auc[auc < 0.5] <- 1 - auc[auc < 0.5]
-#'       3.) This is the implementation of cauoff-independent AUC.
+#'       3.) This is the implementation of cutoff-independent AUC.
 #'       4.) The AUC has an important statistical property: the AUC of a
-#'           classifer is equivalent to the probability that the classifier
+#'           classifier is equivalent to the probability that the classifier
 #'           will rank a randomly chosen positive instance higher than a
 #'           randomly chosen negative instance. This is equivalent to the
 #'           Wilcoxon test of ranks.
@@ -755,7 +755,7 @@ classifier <- function(dat.tr, cl.tr, dat.te = NULL, cl.te = NULL, method,
   err <- sum(cl.te != pred.te) / length(cl.te)
   #' err <- cl.rate(cl.te, pred.te)$err.rate
 
-  #' Sort the prob by the column names. (for AUC claculation purpose)
+  #' Sort the prob by the column names. (for AUC calculation purpose)
   #' if (!is.null(prob.te)) {
   #'   dfnames <- colnames(prob.te)
   #'   dfnames <- sort(dfnames)
@@ -770,7 +770,7 @@ classifier <- function(dat.tr, cl.tr, dat.te = NULL, cl.te = NULL, method,
     margin <- mt:::.marg(prob.te, cl.te)
     names(margin) <- NULL #' lwc-19-05-2012:
     if (length(levels(cl.te)) == 2 && length(cl.te) > 1) {
-      #' claculate AUC if two-class problem
+      #' calculate AUC if two-class problem
       cl.tmp <- cl.te
       levels(cl.tmp) <- c(0, 1)
       stat <- prob.te[, 2]
@@ -833,7 +833,7 @@ classifier <- function(dat.tr, cl.tr, dat.te = NULL, cl.te = NULL, method,
 #'   23-03-2007: major changes in principles
 boot.err <- function(err, resub) {
 
-  #' apparent error rate/resubstitution rate ( not training error rate)
+  #' apparent error rate/re-substitution rate ( not training error rate)
   err.ae <- resub$err
   cl <- resub$cl
   pred <- resub$pred
@@ -959,7 +959,7 @@ boot.idx <- function(x, nreps, strat = FALSE) {
   if (strat) {
     x <- factor(x) #' drops the levels that do not occur
     idx <- sample(1:n, n, replace = F)
-    #' shuffl the original x, #' idx  <- c(1:n)
+    #' shuffle the original x, #' idx  <- c(1:n)
     x <- x[idx]
 
     v <- length(levels(x))
@@ -972,7 +972,7 @@ boot.idx <- function(x, nreps, strat = FALSE) {
       tmp <- lapply(s.idx, function(x) sample(x, length(x), replace = T))
       do.call("c", tmp)
     })
-    #' shuffl the results
+    #' shuffle the results
     train.ind <- lapply(train.ind, function(x) sample(x, length(x), replace = F))
   } else {
     train.ind <- lapply(1:nreps, function(x) sample(1:n, n, replace = T))
@@ -1101,7 +1101,7 @@ cv.idx <- function(x, nreps, strat = FALSE) {
   test.ind <- ssubset(x, nreps, strat = strat)
   #' get index of training
   train.ind <- lapply(1:nreps, function(i) seq(1, n)[-test.ind[[i]]])
-  #' shuffl the results
+  #' shuffle the results
   train.ind <- lapply(train.ind, function(x) sample(x, length(x), replace = F))
   return(train.ind)
 }
