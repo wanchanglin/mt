@@ -482,7 +482,7 @@ stats.mat <- function(x, y, method = "mean", test.method = "wilcox.test",
 #' wll-24-11-2015: add adjusted p-values
 #' wll-01-12-2015: add an argument for fold-change. fc is only for positive
 #'   values of 'x'. If not, the results are useless.
-#' wll-26-11-2016: drop the change direction so the results are numeric, not
+#' wll-26-01-2016: drop off change direction so the results are numeric, not
 #'   the character. Note that the fold change indicates the chaning
 #'   direction.
 stats.vec <- function(x, y, method = "mean", test.method = "wilcox.test",
@@ -498,7 +498,7 @@ stats.vec <- function(x, y, method = "mean", test.method = "wilcox.test",
   p.val <- round(mt:::.pval(x, y, test.method = test.method, ...), digits = 4)
   #' p.val  <- wilcox.test(x ~ y,correct = FALSE)$"p.value"
 
-  if (F) { #' wll-26-01-2016: drop off
+  if (F) {
     direc <- if (gmn[1] > gmn[2]) {
       "Down"
     } else if (gmn[1] < gmn[2]) {
@@ -560,7 +560,7 @@ if (F) {
 }
 
 .logratio2foldchange <- function(logratio, base = 2) {
-  retval <- base^(logratio)
+  retval <- base^ (logratio)
   retval <- ifelse(retval < 1, -1 / retval, retval)
   retval
 }
@@ -1955,9 +1955,6 @@ save.tab <- function(x, filename = "temp.csv", firstline = "\n") {
 #' =======================================================================
 #' lwc-13-12-2008: Convert a list with componets of vector to a data frame
 #'  for writing into an Excel file. Shorter vector will be filled with NA.
-#' lwc-28-01-2016: There are two internal functions in package 'plyr':
-#'  'list_to_dataframe' and 'quickdf'. However they require the equal
-#'   lengths of each component in the list.
 list2df <- function(x) {
   len <- max(sapply(x, length))
   df <- sapply(x, function(y) c(y, rep(NA, len - length(y))))
