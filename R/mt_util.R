@@ -380,9 +380,15 @@ panel.elli.1 <- function(x, y, subscripts, groups = NULL, conf.level = 0.975,
   if (!is.null(ell.grp)) { #' ellipse based on other group info
     grp <- ell.grp[subscripts]
     tmp <- data.frame(x = x, y = y, grp = grp)
-    ddply(tmp, .(grp), function(x) {
+
+    #' wl-05-11-2021, Fri: use base R 'by'
+    by(tmp, tmp$grp, function(x) {
       plot.elli(x$x, x$y, ..., type = "l", lty = 2, col = "cyan")
     })
+    ## plyr::ddply(tmp, .(grp), function(x) {
+    ##   plot.elli(x$x, x$y, ..., type = "l", lty = 2, col = "cyan")
+    ## })
+
   } else if (ep == 1) { #' over-line ellipse
     plot.elli(x, y, type = "l", col = "red", ...) #' lwd=2
     #' ellipse based on groups, individual or combination.
@@ -469,7 +475,6 @@ stats.mat <- function(x, y, method = "mean", test.method = "wilcox.test",
   #' function for calculation based on column vector.
   x <- as.data.frame(x, stringsAsFactors = F)
   res <- t(sapply(x, function(i) stats.vec(i, y, method, test.method, fc, ...)))
-  #' res <- t(colwise(stats.vec)(x,y,method,test.method))
   res <- as.data.frame(res, stringsAsFactors = FALSE)
 
   #' get adjusted p-values
@@ -618,7 +623,6 @@ vec.summ <- function(x) {
 
 #' =======================================================================
 #' lwc-03-03-2010: Summary function for data frame/matrix by column.
-#' lwc-08-06-2011: drop off colwise
 #' lwc-24-08-2011: Summary function for data matrix (wrapper function of
 #' vec.summ).
 #' lwc-22-05-2013: add dots for method's arguments.
@@ -644,7 +648,6 @@ df.summ <- function(dat, method = vec.summ, ...) {
   #' lwc-11-10-2011: dat must be data frame here.
 
   res <- t(sapply(dat, function(i) method(i, ...)))
-  #' res <- t(colwise(method)(dat))
 
   res <- as.data.frame(res, stringsAsFactors = FALSE)
   #' res <- cbind(Variable=rownames(res),res)
@@ -1799,6 +1802,17 @@ cor.heat <- function(mat, use = "pairwise.complete.obs", method = "pearson",
 #'   gclus can be used. These functions are order.single, order.endlink and
 #'   order.hclust.
 #' lwc-14-02-2012: change "des" as "main".
+#' Usages
+#' x1  <-rnorm(20,40,1)
+#' x2  <-rnorm(20,40,2.5)
+#' df1 <-data.frame(x1,x2)
+#' y1  <-rnorm(20,1,0.47)
+#' y2  <-rnorm(20,1,0.59)
+#' y3  <-rnorm(20,1,0.75)
+#' df2 <-data.frame(y1,y2,y3)
+#' m <- cor(df1, df2)
+#' matrix(m, dimnames=list(t(outer(colnames(m), rownames(m), FUN=paste)), NULL))
+#' res  <- cor.heat.gram(df1, df2)
 cor.heat.gram <- function(mat.1, mat.2, use = "pairwise.complete.obs",
                           method = "pearson", main = "Heatmap of correlation",
                           cex = 0.75, ...) {
@@ -1868,7 +1882,7 @@ cor.heat.gram <- function(mat.1, mat.2, use = "pairwise.complete.obs",
   ph.1
 
   #' convert short format to long format
-  co.1 <- melt(co)
+  co.1 <- reshape::melt(co)
   co.1 <- co.1[complete.cases(co.1), ] #' 17-03-2010: in case NA
   #' co.max  <- max(co.1[,3], na.rm=T)
   #' co.thre <- co.1[co.1[,3] >= 0.4,] #' lwc-09-03-2010: Very specific
@@ -1880,7 +1894,7 @@ cor.heat.gram <- function(mat.1, mat.2, use = "pairwise.complete.obs",
     diag(co.1) <- NA
     co.1 <- co.1[-1, -ncol(co.1), drop = F]
 
-    co.1 <- melt(co.1)
+    co.1 <- reshape::melt(co.1)
     co.1 <- co.1[complete.cases(co.1), ]
   }
 

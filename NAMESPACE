@@ -1,6 +1,7 @@
 ## useDynLib(mt)
 
 ### exported functions
+
 export(
 accest, binest, maccest, mbinest, valipars, trainind, classifier, boot.err, 
 dat.sel, preproc, pcalda, plslda, plsc, osc, osc.wold, osc.sjoblom, osc.wise,
@@ -21,7 +22,6 @@ mv.zene, mv.fill, mv.stats, df.summ, vec.summ, vec.summ.1, stats.vec,
 stats.mat, mdsplot, mds.plot.wrap, panel.outl
 
 )
-
 
 ### register S3 methods
 
@@ -81,15 +81,6 @@ S3method(osc, formula)
 
 S3method(frankvali, default)
 S3method(frankvali, formula)
-
-## imported functions
-## import(class)
-## import(MASS)
-## import(randomForest)
-## importFrom(stats, prcomp)
-## import(gtools)
-## importFrom(e1071, svm, tune, tune.control)
-## importFrom(gtools, combinations)
 
 import(graphics)   
 import(stats)
