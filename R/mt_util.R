@@ -1882,7 +1882,8 @@ cor.heat.gram <- function(mat.1, mat.2, use = "pairwise.complete.obs",
   ph.1
 
   #' convert short format to long format
-  co.1 <- reshape::melt(co)
+  co.1 <- my_melt(co)
+  #' co.1 <- reshape::melt(co)
   co.1 <- co.1[complete.cases(co.1), ] #' 17-03-2010: in case NA
   #' co.max  <- max(co.1[,3], na.rm=T)
   #' co.thre <- co.1[co.1[,3] >= 0.4,] #' lwc-09-03-2010: Very specific
@@ -1894,11 +1895,26 @@ cor.heat.gram <- function(mat.1, mat.2, use = "pairwise.complete.obs",
     diag(co.1) <- NA
     co.1 <- co.1[-1, -ncol(co.1), drop = F]
 
-    co.1 <- reshape::melt(co.1)
+    co.1 <- my_melt(co.1)
+    #' co.1 <- reshape::melt(co.1)
     co.1 <- co.1[complete.cases(co.1), ]
   }
 
   res <- list(cor.heat = ph, cor.gram = ph.1, cor.short = co, cor.long = co.1)
+}
+
+#' ========================================================================
+#' wl-05-11-2021, Fri: melt matrix into pairwise between row and column
+#' Internal format.  It is used to replace reshape::melt(x). 
+my_melt <- function(x) { 
+  res <- matrix(x, dimnames = list(t(outer(rownames(m), colnames(m), 
+                                           FUN = paste)), NULL))
+  res <- as.data.frame(res)
+  rn <- rownames(res)
+  rn <- do.call("rbind", sapply(rn, strsplit, " "))
+  res <- cbind(rn, res)
+  dimnames(res) <- list(1:nrow(res), c("X1", "X2", "value"))
+  res
 }
 
 #' ========================================================================
