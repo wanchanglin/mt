@@ -187,13 +187,13 @@ feat.mfs.stats <- function(fs.stats, cumu.plot = FALSE, main = "Stats Plot",
   st <- data.frame(st, stringsAsFactors = F)
 
   #' wl-06-11-2021, Sat: use base R function to get long format
-  st_l <- data.frame(idx = st$idx,stack(st,select = -idx))
-  st_l <- st_l[c("idx", "ind", "values")]
-  names(st_l) <- c("idx", "variable", "value")
+  st_long <- data.frame(idx = st$idx,stack(st,select = -idx))
+  st_long <- st_long[c("idx", "ind", "values")]
+  names(st_long) <- c("idx", "variable", "value")
 
   #' st_l <- reshape::melt(st, id = "idx")
   st.p <- xyplot(value ~ idx | variable,
-    data = st_l,
+    data = st_long,
     as.table = T, type = c("g", "l"),
     scales = list(cex = .75, relation = "free"),
     par.strip.text = list(cex = 0.65),
@@ -201,7 +201,7 @@ feat.mfs.stats <- function(fs.stats, cumu.plot = FALSE, main = "Stats Plot",
   )
   st.p
 
-  res <- list(stats.tab = fs.tab, stats.long = st_1, stats.p = st.p)
+  res <- list(stats.tab = fs.tab, stats.long = st_long, stats.p = st.p)
   return(res)
 }
 

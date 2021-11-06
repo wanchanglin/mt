@@ -25,11 +25,6 @@ mdsplot(x, y, method = "euclidean", dimen = c(1,2), \dots)
   \item{dimen}{
   A vector of index of dimentonal to be plotted. Only two dimentions are 
   are allowed.}
-  \item{ep}{
-  An integer for plotting an ellipse with 97.5\% confidence level. \code{1} and
-  \code{2} for plotting overall and group ellipse, respectively. Otherwise, 
-  none. 
-  }
   \item{\dots}{
   Further arguments to \code{\link{prcomp}} or \code{lattice}. See 
   corresponding entry in \code{\link{xyplot}} for non-trivial details of 

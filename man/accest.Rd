@@ -189,7 +189,7 @@ plot(acc1)
 
 ## -----------------------------------------------------------------------
 # Forensic Glass data in chap.12 of MASS
-data(fgl)              # in MASS package
+data(fgl, package = "MASS")    # in MASS package
 # Randomised validation (holdout) of SVM for fgl data
 acc2 <- accest(type~., data = fgl, method = "svm", cost = 100, gamma = 1, 
               pars = valipars(sampling = "rand",niter = 10, nreps=4,div = 2/3) )

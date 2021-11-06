@@ -116,7 +116,7 @@ cl.rate(obs=res$cl, res$pred)   ## same as: cl.rate(obs=test.cl, res$pred)
 
 ## -----------------------------------------------------------------------
 ## Measurements of Forensic Glass Fragments
-data(fgl)      ## from package MASS. 
+data(fgl, package = "MASS")    # in MASS package
 dat <- subset(fgl, grepl("WinF|WinNF",type))
 ## dat <- subset(fgl, type %in% c("WinF", "WinNF"))
 x   <- subset(dat, select = -type)

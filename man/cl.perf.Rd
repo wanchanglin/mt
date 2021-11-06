@@ -94,7 +94,9 @@
 
 % ----------------------------------------------------------------------
 \examples{
-data(fgl)      ## MASS. Measurements of Forensic Glass Fragments
+
+ ## Measurements of Forensic Glass Fragments
+data(fgl, package = "MASS")    # in MASS package
 dat <- subset(fgl, grepl("WinF|WinNF",type))
 ## dat <- subset(fgl, type %in% c("WinF", "WinNF"))
 x   <- subset(dat, select = -type)

@@ -66,8 +66,11 @@ hm.cols(low = "green", high = "red", n = 123)
     \emph{horizontally} or not.}
 
   \item{main, xlab, ylab}{Graphical parameters, see \code{\link{plot.default}}.}
-
-  \item{use}{Argument for \code{\link{cor}}. An optional character string giving a method for computing 
+  
+	\item{dend}{Character string indicating whether to draw 'right', 'top' or 
+	'none' dendrograms}.
+  
+	\item{use}{Argument for \code{\link{cor}}. An optional character string giving a method for computing 
     covariances in the presence of missing values.  This must be (an 
     abbreviation of) one of the strings \code{"everything"}, \code{"all.obs"}, 
     \code{"complete.obs"},  \code{"na.or.complete"}, or \code{"pairwise.complete.obs"}.}
@@ -76,8 +79,6 @@ hm.cols(low = "green", high = "red", n = 123)
     covariance) is to be computed.  One of  \code{"pearson"}, \code{"kendall"}, or \code{"spearman"},
     can be abbreviated.}
 
-  \item{distfun}{Function used to compute the distance (dissimilarity) between both rows and columns.} 
-  \item{hclustfun}{Function used to compute the hierarchical clustering for dendrograms.}
   \item{co}{Correlation matrix}
   \item{label}{ 
      A logical value indicating whether the correlation coefficient should be 
@@ -90,6 +91,7 @@ hm.cols(low = "green", high = "red", n = 123)
   \item{scales}{A list determining how the x- and y-axes (tick marks and labels) 
      are drawn. More details, see \code{\link{xyplot}}.
   }
+  \item{cex}{A numeric multiplier to control character sizes for axis labels}.
   \item{low}{ Colour for low value}
   \item{high}{ Colour for high value}
   \item{n}{The number of colors (>= 1) to be in the palette} 

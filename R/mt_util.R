@@ -1174,12 +1174,12 @@ plot.wrap.split <- function(plot.handle, plot.lab, perc = T) {
 #' ========================================================================
 #' lwc-09-06-2015: plot MDS using lattice package
 #' Usage:
-#'   data(iris)
-#'   x <- iris[,1:4]
-#'   y <- iris[,5]
-#'   mdsplot(x,y, dimen=c(1,2),ep=2)
-#'   mdsplot(x,y, dimen=c(2,1),ep=1)
-mdsplot <- function(x, y, method = "euclidean", dimen = c(1, 2), ep = 0, ...) {
+#' data(iris)
+#' x <- iris[,1:4]
+#' y <- iris[,5]
+#' mdsplot(x,y, dimen = c(1,2),ep = 2)
+#' mdsplot(x,y, dimen = c(2,1),ep = 1)
+mdsplot <- function(x, y, method = "euclidean", dimen = c(1, 2), ...) {
   METHODS <- c(
     "euclidean", "maximum", "manhattan", "canberra",
     "binary", "minkowski"
@@ -1199,7 +1199,7 @@ mdsplot <- function(x, y, method = "euclidean", dimen = c(1, 2), ep = 0, ...) {
   mds <- mds[, dimen]
 
   #' call group plot
-  p <- grpplot(mds, y, plot = "pairs", ep = ep, ...)
+  p <- grpplot(mds, y, plot = "pairs", ...)
   p
 }
 
@@ -1488,6 +1488,139 @@ combn.pw <- function(cls, choices = NULL) {
 
   idx <- as.data.frame(idx) #' for easy manipulation.
   return(idx)
+}
+
+#' ========================================================================
+#' lwc-13-08-2006: Generates the pairwise data set based on the class label.
+#' History:
+#'   18-09-2006: Fix a bug.
+#'   31-05-2007: Major changes
+#'   01-12-2009: fix a bug when cl is two-class.
+#'   21-02-2010: Change name from dat.set to .dat.sel and treat as internal
+#'               function
+#' NOTE: Using drop=F to keep the format of matrix even the matrix has one
+#'       element.
+.dat.sel <- function(dat, cl, choices = NULL) {
+
+  #' lwc-29-10-2006: combnations is from package gtools.
+  #' $Id: mt_util_1.r,v 1.16 2009/07/27 10:23:41 wll Exp $
+  #' From email by Brian D Ripley <ripley@stats.ox.ac.uk> to r-help
+  #' dated Tue, 14 Dec 1999 11:14:04 +0000 (GMT) in response to
+  #' Alex Ahgarin <datamanagement@email.com>.  Original version was
+  #' named "subsets" and was Written by Bill Venables.
+  combinations <- function(n, r, v = 1:n, set = TRUE, repeats.allowed = FALSE) {
+    if (mode(n) != "numeric" || length(n) != 1
+    || n < 1 || (n %% 1) != 0) {
+      stop("bad value of n")
+    }
+    if (mode(r) != "numeric" || length(r) != 1
+    || r < 1 || (r %% 1) != 0) {
+      stop("bad value of r")
+    }
+    if (!is.atomic(v) || length(v) < n) {
+      stop("v is either non-atomic or too short")
+    }
+    if ((r > n) & repeats.allowed == FALSE) {
+      stop("r > n and repeats.allowed=FALSE")
+    }
+    if (set) {
+      v <- unique(sort(v))
+      if (length(v) < n) stop("too few different elements")
+    }
+    v0 <- vector(mode(v), 0)
+
+    #' Inner workhorse
+    if (repeats.allowed) {
+      sub <- function(n, r, v) {
+        if (r == 0) {
+          v0
+        } else
+        if (r == 1) {
+          matrix(v, n, 1)
+        } else
+        if (n == 1) {
+          matrix(v, 1, r)
+        } else {
+          rbind(cbind(v[1], Recall(n, r - 1, v)), Recall(n - 1, r, v[-1]))
+        }
+      }
+    } else {
+      sub <- function(n, r, v) {
+        if (r == 0) {
+          v0
+        } else
+        if (r == 1) {
+          matrix(v, n, 1)
+        } else
+        if (r == n) {
+          matrix(v, 1, n)
+        } else {
+          rbind(cbind(v[1], Recall(n - 1, r - 1, v[-1])), Recall(n - 1, r, v[-1]))
+        }
+      }
+    }
+
+    sub(n, r, v[1:n])
+  }
+
+  func <- function(choices) {
+    if (is.null(choices)) {
+      choices <- g
+    } else {
+      choices <- unique(choices)
+    }
+
+    i <- pmatch(choices, g)
+    if (any(is.na(i))) {
+      stop("'choices' should be one of ", paste(g, collapse = ", "))
+    }
+
+    #' Get the binary combinations based on the class labels (package GTOOLS)
+    if (length(choices) == 1) {
+      com <- combinations(length(g), 2, v = g)
+      idx <- sapply(1:nrow(com), function(x) {
+        if (match(choices, com[x, ], nomatch = 0) > 0) {
+          return(T)
+        } else {
+          (F)
+        }
+      })
+      com <- com[idx, , drop = F] #' lwc-01-12-2009: fix a bug
+    } else {
+      com <- combinations(length(choices), 2, v = choices)
+    }
+    return(com)
+  }
+
+  if (missing(dat) || missing(cl)) {
+    stop(" The data set and/or class label are missing!")
+  }
+  cl <- as.factor(cl)
+  g <- levels(cl)
+
+  if (is.list(choices)) {
+    com <- lapply(choices, function(x) func(x))
+    com <- do.call("rbind", com)
+    com <- unique(com)
+  } else {
+    com <- func(choices)
+  }
+
+  #' process the data set labels being selected
+  dat.sub <- list()
+  cl.sub <- list()
+  for (i in (1:nrow(com))) {
+    idx <- (cl == com[i, ][1]) | (cl == com[i, ][2])
+    cl.sub[[i]] <- cl[idx]
+    cl.sub[[i]] <- cl.sub[[i]][, drop = T] #' drop the levels
+    dat.sub[[i]] <- dat[idx, , drop = F]
+  }
+
+  #' get comparison names
+  com.names <- apply(com, 1, paste, collapse = "~")
+  names(dat.sub) <- names(cl.sub) <- com.names
+
+  return(list(dat = dat.sub, cl = cl.sub, com = com))
 }
 
 #' ========================================================================
@@ -1894,7 +2027,7 @@ cor.heat.gram <- function(mat.1, mat.2, use = "pairwise.complete.obs",
 #' wl-05-11-2021, Fri: Convert matrix into long format
 #' Internal format.  It is used to replace reshape::melt(x). 
 my_melt <- function(x) { 
-  res <- matrix(x, dimnames = list(t(outer(colnames(m), rownames(m), 
+  res <- matrix(x, dimnames = list(t(outer(colnames(x), rownames(x), 
                                            FUN = paste)), NULL))
   res <- as.data.frame(res)
   rn <- rownames(res)
