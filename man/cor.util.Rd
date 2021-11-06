@@ -84,8 +84,7 @@ hm.cols(low = "green", high = "red", n = 123)
      plotted.
   }
   \item{\dots}{
-    Additional parameters to \code{\link{heatmap.2}} in \pkg{gplots},
-    \code{\link{plot.dendrogram}} or \pkg{lattice}.
+    Additional parameters to \pkg{lattice}.
   }
   \item{col.regions}{Color vector to be used}
   \item{scales}{A list determining how the x- and y-axes (tick marks and labels) 
@@ -159,10 +158,6 @@ hm.cols(low = "green", high = "red", n = 123)
 % ----------------------------------------------------------------------------
 \author{
   Wanchang Lin \email{wll@aber.ac.uk}
-}
-
-\seealso{
-  \code{\link{heatmap.2}} in package \pkg{gplots}.
 }
 
 % ----------------------------------------------------------------------

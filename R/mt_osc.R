@@ -32,9 +32,9 @@ osc.default <- function(x, y, method = "wold", center = TRUE, osc.ncomp = 4,
 
   #' Select OSC algorithm:
   oscFunc <- switch(method,
-    wold = osc.wold,
-    sjoblom = osc.sjoblom,
-    wise = osc.wise
+    wold = osc_wold,
+    sjoblom = osc_sjoblom,
+    wise = osc_wise
   )
 
   #' call OSC algorithm
@@ -165,7 +165,7 @@ osc.formula <- function(formula, data = NULL, ..., subset,
 
 #' ========================================================================
 #' wll-04-06-2007: Wold algorithm for OSC
-osc.wold <- function(x, y, center = TRUE, osc.ncomp = 4, pls.ncomp = 10,
+osc_wold <- function(x, y, center = TRUE, osc.ncomp = 4, pls.ncomp = 10,
                      tol = 1e-3, iter = 20, ...) {
   if (center) x <- sweep(x, 2, colMeans(x), "-") #' column-wise center
   x.ori <- x
@@ -226,7 +226,7 @@ osc.wold <- function(x, y, center = TRUE, osc.ncomp = 4, pls.ncomp = 10,
 #' wll-03-06-2007: Fix a algorithm mis-understanding in updating weights.
 #' wll-03-06-2007: Othogonalize t to y in the last step. This improve the
 #'                 performance of OSC.
-osc.sjoblom <- function(x, y, center = TRUE, osc.ncomp = 4, pls.ncomp = 10,
+osc_sjoblom <- function(x, y, center = TRUE, osc.ncomp = 4, pls.ncomp = 10,
                         tol = 1e-3, iter = 20, ...) {
   if (center) x <- sweep(x, 2, colMeans(x), "-") #' column-wise center
   x.ori <- x
@@ -299,7 +299,7 @@ osc.sjoblom <- function(x, y, center = TRUE, osc.ncomp = 4, pls.ncomp = 10,
 
 #' ========================================================================
 #' wll-03-06-2007: Wise algorithm
-osc.wise <- function(x, y, center = TRUE, osc.ncomp = 4, pls.ncomp = 10,
+osc_wise <- function(x, y, center = TRUE, osc.ncomp = 4, pls.ncomp = 10,
                      tol = 1e-3, iter = 20, ...) {
   if (center) x <- sweep(x, 2, colMeans(x), "-")
   x.ori <- x
@@ -380,6 +380,6 @@ osc.wise <- function(x, y, center = TRUE, osc.ncomp = 4, pls.ncomp = 10,
 #'  5) print.summary.osc
 #'  6) osc
 #'  7) osc.formula
-#'  8) osc.wold
-#'  9) osc.sjoblom
-#' 10) osc.wise
+#'  8) osc_wold
+#'  9) osc_sjoblom
+#' 10) osc_wise

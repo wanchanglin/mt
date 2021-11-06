@@ -45,8 +45,8 @@ class \code{osc}. If \code{newdata} is omitted, the corrected data set used in m
 }
 % ----------------------------------------------------------------------------
 \seealso{
-  \code{\link{osc}}, \code{\link{osc.wold}}, \code{\link{osc.sjoblom}},
-  \code{\link{osc.wise}}
+  \code{\link{osc}}, \code{\link{osc_wold}}, \code{\link{osc_sjoblom}},
+  \code{\link{osc_wise}}
 }
 % ----------------------------------------------------------------------------
 \examples{

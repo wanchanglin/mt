@@ -311,7 +311,8 @@ mc.fried <- function(x, p.adjust.method = p.adjust.methods, ...) {
   algo <- factor(rep(dname, each = n))
 
   #' t.htest <- pairwise.t.test(acc, algo, p.adj = "bonf",pool.sd = T,...)
-  w.htest <- pairwise.wilcox.test(acc, algo, p.adj = p.adjust.method, ...)
+  w.htest <- pairwise.wilcox.test(acc, algo, 
+	                                p.adjust.method = p.adjust.method, ...)
   lo <- lower.tri(w.htest$p.value, T)
   mc.pval <- w.htest$p.value[lo]
   #' pairwise comparison names

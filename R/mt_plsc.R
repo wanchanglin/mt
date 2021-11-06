@@ -60,7 +60,7 @@ plsc.default <- function(x, y, pls = "simpls", ncomp = 10, tune = FALSE,
   }
 
   #' Convert response to be sitable format for PLS
-  y.1 <- mt:::class.ind(y)
+  y.1 <- class.ind(y)
 
   #' Call PLS for regression
   #' pls.out <- do.call(pls.fit, c(list(X=x, Y=y.1, ncomp=ncomp), list(...)))

@@ -166,7 +166,7 @@ pcalda.default <- function(x, y, center = TRUE, scale. = FALSE, ncomp = NULL,
   x.tmp <- pca.out$x[, 1:ncomp, drop = F]
 
   #' stip off PCs constant within groups
-  x.tmp <- mt:::preproc.const(x.tmp, y)
+  x.tmp <- preproc.const(x.tmp, y)
   ncomp <- ncol(x.tmp)
   #' NOTE-28-01-2008: If the variables being strippt off is not in the end
   #'   of columns, they positions should be sotred somewhere. But this

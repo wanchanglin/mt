@@ -501,8 +501,8 @@ stats.vec <- function(x, y, method = "mean", test.method = "wilcox.test",
   gmn <- tapply(x, y, method, na.rm = TRUE)
   names(gmn) <- paste(names(gmn), method, sep = ".")
 
-  auc <- round(mt:::cl.auc(x, y), digits = 2)
-  p.val <- round(mt:::.pval(x, y, test.method = test.method, ...), digits = 4)
+  auc <- round(cl.auc(x, y), digits = 2)
+  p.val <- round(.pval(x, y, test.method = test.method, ...), digits = 4)
   #' p.val  <- wilcox.test(x ~ y,correct = FALSE)$"p.value"
 
   if (F) {
@@ -516,10 +516,10 @@ stats.vec <- function(x, y, method = "mean", test.method = "wilcox.test",
   }
 
   if (fc) {
-    fc <- round(mt:::.foldchange(gmn[2], gmn[1]), digits = 2)
+    fc <- round(.foldchange(gmn[2], gmn[1]), digits = 2)
     #' lwc-23-08-2013: gmn[1] is baseline
     names(fc) <- NULL
-    log2.fc <- round(mt:::.foldchange2logratio(fc), digits = 2)
+    log2.fc <- round(.foldchange2logratio(fc), digits = 2)
 
     res <- c(omn, gmn, #' direction=direc,
       fold.change = fc, log2.fold.change = log2.fc, auc = auc, pval = p.val

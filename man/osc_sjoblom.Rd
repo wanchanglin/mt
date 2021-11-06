@@ -1,18 +1,18 @@
 % wll-05-06-2007: 
 %
-\name{osc.wise}
-\alias{osc.wise}
+\name{osc_sjoblom}
+\alias{osc_sjoblom}
 
 \title{
-  Orthogonal Signal Correction (OSC) Approach by Wise and Gallagher.
+  Orthogonal Signal Correction (OSC) Approach by Sjoblom et al.
 }
 \description{
-  Orthogonal signal correction (OSC) approach by Wise and Gallagher.
+  Orthogonal signal correction (OSC) approach by Sjoblom et al.
 }
 
 \usage{
-  osc.wise(x, y, center=TRUE,osc.ncomp=4,pls.ncomp=10,
-           tol=1e-3,iter=20,\dots)
+  osc_sjoblom(x, y, center=TRUE,osc.ncomp=4,pls.ncomp=10,
+              tol=1e-3,iter=20,\dots)
 }
 
 % ----------------------------------------------------------------------------
@@ -72,10 +72,15 @@
 
 % ----------------------------------------------------------------------------
 \references{
+Sjoblom. J., Svensson, O., Josefson, M., Kullberg, H., Wold, S. (1998). An evaluation of
+orthogonal signal correction applied to calibration transfer of near infrared
+spectra. \emph{Chemometrics Intell. Lab. Syst.},44: 229-244.
+
+Svensson, O., Kourti, T. and MacGregor, J.F. (2002). An investigation of orthogonal 
+correction algorithms and their characteristics. \emph{Journal of Chemometrics}, 16:176-188.
+
 Westerhuis, J. A., de Jong, S., Smilde, A, K. (2001). Direct orthogonal signal correction. 
 \emph{Chemometrics Intell. Lab. Syst.}, 56: 13-25.
-
-Wise, B. M. and Gallagher, N.B. \emph{http://www.eigenvector.com/MATLAB/OSC.html}.
 }
 
 % ----------------------------------------------------------------------------
@@ -85,8 +90,8 @@ Wise, B. M. and Gallagher, N.B. \emph{http://www.eigenvector.com/MATLAB/OSC.html
 
 % ----------------------------------------------------------------------------
 \seealso{
-  \code{\link{osc}}, \code{\link{predict.osc}}, \code{\link{osc.sjoblom}},
-  \code{\link{osc.wold}}
+  \code{\link{osc}}, \code{\link{predict.osc}}, \code{\link{osc_wold}},
+  \code{\link{osc_wise}}
 }
 
 % ----------------------------------------------------------------------------
@@ -105,7 +110,7 @@ test.dat   <- dat[-idx,]
 test.t     <- cl[-idx] 
 
 ## build OSC model based on the training data
-res <- osc.wise(train.dat, train.t)
+res <- osc_sjoblom(train.dat, train.t)
 names(res)
 
 ## pre-process test data by OSC

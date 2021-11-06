@@ -767,7 +767,7 @@ classifier <- function(dat.tr, cl.tr, dat.te = NULL, cl.te = NULL, method,
 
   #' calculate margin
   if (!is.null(prob.te)) {
-    margin <- mt:::.marg(prob.te, cl.te)
+    margin <- .marg(prob.te, cl.te)
     names(margin) <- NULL #' lwc-19-05-2012:
     if (length(levels(cl.te)) == 2 && length(cl.te) > 1) {
       #' calculate AUC if two-class problem

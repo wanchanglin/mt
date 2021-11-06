@@ -4,7 +4,7 @@
 
 export(
 accest, binest, maccest, mbinest, valipars, trainind, classifier, boot.err, 
-dat.sel, preproc, pcalda, plslda, plsc, osc, osc.wold, osc.sjoblom, osc.wise,
+dat.sel, preproc, pcalda, plslda, plsc, osc, osc_wold, osc_sjoblom, osc_wise,
 predict.osc, mc.anova, mc.fried, mc.norm, tune.plsc, tune.plslda, tune.pcalda,
 
 fs.rf, fs.rfe, fs.snr, fs.welch, fs.wilcox, fs.anova, fs.auc, fs.kruskal, 
@@ -82,6 +82,16 @@ S3method(osc, formula)
 S3method(frankvali, default)
 S3method(frankvali, formula)
 
+import(MASS)
 import(graphics)   
 import(stats)
 import(e1071)
+import(randomForest)
+import(pls)
+import(ellipse)
+import(lattice)
+import(latticeExtra)
+
+importFrom("grDevices", "X11", "col2rgb", "colorRampPalette", "rgb")
+importFrom("methods", "hasArg")
+importFrom("utils", "combn", "flush.console", "stack", "write.table")

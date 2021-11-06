@@ -641,7 +641,7 @@ fs.relief <- function(x, y, m = NULL, k = 10, ...) {
   } else {
     m <- min(m, n)
   }
-  idx <- sample(1:n, m, rep = F)
+  idx <- sample(1:n, m, replace = F)
 
   weight <- rep(0, p)
   for (i in idx) {
@@ -1139,7 +1139,7 @@ frankvali.default <- function(dat, cl, cl.method = "svm",
       fs.order <- noquote(temp)
     }
   } else {
-    fs.rank <- mt:::order2rank(fs.order)
+    fs.rank <- order2rank(fs.order)
     fs.method <- "User defined"
   }
 

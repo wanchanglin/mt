@@ -155,8 +155,8 @@ Wise, B. M. and Gallagher, N.B. \emph{http://www.eigenvector.com/MATLAB/OSC.html
 
 % ----------------------------------------------------------------------------
 \seealso{
-  \code{\link{predict.osc}}, \code{\link{osc.wold}}, \code{\link{osc.sjoblom}},
-  \code{\link{osc.wise}}
+  \code{\link{predict.osc}}, \code{\link{osc_wold}}, \code{\link{osc_sjoblom}},
+  \code{\link{osc_wise}}
 }
 
 % ----------------------------------------------------------------------------

@@ -1,17 +1,17 @@
 % wll-05-06-2007: 
 %
-\name{osc.wold}
-\alias{osc.wold}
+\name{osc_wise}
+\alias{osc_wise}
 
 \title{
-  Orthogonal Signal Correction (OSC) Approach by Wold et al.
+  Orthogonal Signal Correction (OSC) Approach by Wise and Gallagher.
 }
 \description{
-  Orthogonal signal correction (OSC) approach by Wold et al.
+  Orthogonal signal correction (OSC) approach by Wise and Gallagher.
 }
 
 \usage{
-  osc.wold(x, y, center=TRUE,osc.ncomp=4,pls.ncomp=10,
+  osc_wise(x, y, center=TRUE,osc.ncomp=4,pls.ncomp=10,
            tol=1e-3,iter=20,\dots)
 }
 
@@ -72,15 +72,10 @@
 
 % ----------------------------------------------------------------------------
 \references{
-Wold, S., Antti, H., Lindgren, F., Ohman, J.(1998). Orthogonal signal correction of nearinfrared
-spectra. \emph{Chemometrics Intell. Lab. Syst.}, 44: 175-185.
-
-Svensson, O., Kourti, T. and MacGregor, J.F. (2002). An investigation of orthogonal 
-correction algorithms and their characteristics. \emph{Journal of Chemometrics}, 16:176-188.
-
 Westerhuis, J. A., de Jong, S., Smilde, A, K. (2001). Direct orthogonal signal correction. 
 \emph{Chemometrics Intell. Lab. Syst.}, 56: 13-25.
 
+Wise, B. M. and Gallagher, N.B. \emph{http://www.eigenvector.com/MATLAB/OSC.html}.
 }
 
 % ----------------------------------------------------------------------------
@@ -90,8 +85,8 @@ Westerhuis, J. A., de Jong, S., Smilde, A, K. (2001). Direct orthogonal signal c
 
 % ----------------------------------------------------------------------------
 \seealso{
-  \code{\link{osc}}, \code{\link{predict.osc}}, \code{\link{osc.sjoblom}},
-  \code{\link{osc.wise}}
+  \code{\link{osc}}, \code{\link{predict.osc}}, \code{\link{osc_sjoblom}},
+  \code{\link{osc_wold}}
 }
 
 % ----------------------------------------------------------------------------
@@ -110,7 +105,7 @@ test.dat   <- dat[-idx,]
 test.t     <- cl[-idx] 
 
 ## build OSC model based on the training data
-res <- osc.wold(train.dat, train.t)
+res <- osc_wise(train.dat, train.t)
 names(res)
 
 ## pre-process test data by OSC

@@ -1,18 +1,18 @@
 % wll-05-06-2007: 
 %
-\name{osc.sjoblom}
-\alias{osc.sjoblom}
+\name{osc_wold}
+\alias{osc_wold}
 
 \title{
-  Orthogonal Signal Correction (OSC) Approach by Sjoblom et al.
+  Orthogonal Signal Correction (OSC) Approach by Wold et al.
 }
 \description{
-  Orthogonal signal correction (OSC) approach by Sjoblom et al.
+  Orthogonal signal correction (OSC) approach by Wold et al.
 }
 
 \usage{
-  osc.sjoblom(x, y, center=TRUE,osc.ncomp=4,pls.ncomp=10,
-              tol=1e-3,iter=20,\dots)
+  osc_wold(x, y, center=TRUE,osc.ncomp=4,pls.ncomp=10,
+           tol=1e-3,iter=20,\dots)
 }
 
 % ----------------------------------------------------------------------------
@@ -72,15 +72,15 @@
 
 % ----------------------------------------------------------------------------
 \references{
-Sjoblom. J., Svensson, O., Josefson, M., Kullberg, H., Wold, S. (1998). An evaluation of
-orthogonal signal correction applied to calibration transfer of near infrared
-spectra. \emph{Chemometrics Intell. Lab. Syst.},44: 229-244.
+Wold, S., Antti, H., Lindgren, F., Ohman, J.(1998). Orthogonal signal correction of nearinfrared
+spectra. \emph{Chemometrics Intell. Lab. Syst.}, 44: 175-185.
 
 Svensson, O., Kourti, T. and MacGregor, J.F. (2002). An investigation of orthogonal 
 correction algorithms and their characteristics. \emph{Journal of Chemometrics}, 16:176-188.
 
 Westerhuis, J. A., de Jong, S., Smilde, A, K. (2001). Direct orthogonal signal correction. 
 \emph{Chemometrics Intell. Lab. Syst.}, 56: 13-25.
+
 }
 
 % ----------------------------------------------------------------------------
@@ -90,8 +90,8 @@ Westerhuis, J. A., de Jong, S., Smilde, A, K. (2001). Direct orthogonal signal c
 
 % ----------------------------------------------------------------------------
 \seealso{
-  \code{\link{osc}}, \code{\link{predict.osc}}, \code{\link{osc.wold}},
-  \code{\link{osc.wise}}
+  \code{\link{osc}}, \code{\link{predict.osc}}, \code{\link{osc_sjoblom}},
+  \code{\link{osc_wise}}
 }
 
 % ----------------------------------------------------------------------------
@@ -110,7 +110,7 @@ test.dat   <- dat[-idx,]
 test.t     <- cl[-idx] 
 
 ## build OSC model based on the training data
-res <- osc.sjoblom(train.dat, train.t)
+res <- osc_wold(train.dat, train.t)
 names(res)
 
 ## pre-process test data by OSC
