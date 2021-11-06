@@ -14,7 +14,7 @@ pcaplot, pca.outlier, pca.outlier.1, feat.mfs.stats,
 
 panel.elli, panel.elli.1, panel.smooth.line, feat.agg, save.tab, list2df, 
 un.list,shrink.list, fs.rf.1, fs.cl, fs.cl.1, aam.cl,aam.mcl, cor.cut,
-cor.hcl, cor.heat, cor.heat.1, preproc.sd, preproc.const, feat.mfs.stab,
+cor.hcl, cor.heat, preproc.sd, preproc.const, feat.mfs.stab,
 combn.pw, cl.rate, cl.perf, cl.roc, cl.auc, corrgram.circle,
 corrgram.ellipse, pval.reject, pval.test, pca.comp, pca.plot, cor.heat.gram,
 pca.plot.wrap, lda.plot.wrap, lda.plot.wrap.1, pls.plot.wrap, hm.cols, 

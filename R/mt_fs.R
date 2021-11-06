@@ -5,10 +5,10 @@
 #' =======================================================================
 #' Feature frequency and stability of feature ranking.
 #' History:
-#'   01-02-07: commence
-#'   04-02-07: feature ranking frequency and overlap rate
-#'   10-02-07: add the stability
-#'   09-07-07: output all frequency
+#'   01-02-2007: commence
+#'   04-02-2007: feature ranking frequency and overlap rate
+#'   10-02-2007: add the stability
+#'   09-07-2007: output all frequency
 #' Arguments:
 #'   x           - a matrix or data frame of feature order
 #'   rank.cutoff - top feature order cut-off
@@ -43,12 +43,11 @@ feat.freq <- function(x, rank.cutoff = 50, freq.cutoff = 0.5) {
 #' ========================================================================
 #' lwc-16-02-2007: Calculate the consensus of feature selection by different
 #' methods
+#' Internal function.
 #' Arguments:
 #'  freq - a list consisting of feature frequency more than a threshold
-#' Note: No R doc available. Called by feat.mfs or directly used by putting
-#'       mt::: in front of it.
 feat.cons <- function(freq, disp = TRUE) {
-  #' lwc-18-02-2007: If only to retrieve the names, the following code line
+  #' lwc-18-02-2007: If only retrieve the names, the following code line
   #'                 is enough.
   #' fs.names <- unique(unlist(lapply(freq, names)))
 
@@ -125,15 +124,11 @@ feat.mfs <- function(x, y, method, pars = valipars(), is.resam = TRUE,
 }
 
 #' ======================================================================
-#' lwc-25-02-2010: Wrapper function for the summary of 'feat.mfs'.
-#' Note: I have taken this code segment out of 'feat.mfs' in order to
-#'       increase the flexibility if intending to change 'rank.cutoff' or
-#'       'freq.cutoff' after re-sampling.
+#' lwc-25-02-2010: Calculate frequency and consensus from results of 
+#'  feat.mfs' with 'is.resam=TRUE'. 
+#' wll-05-12-2015: Should give an error checking here.
 feat.mfs.stab <- function(fs.res, rank.cutoff = 20, freq.cutoff = 0.5) {
-  #' frequency and consensus
   order.list <- lapply(fs.res$all, function(x) x$order.list)
-  #' wll-23-11-2015: This wrapper only works if the result is from
-  #' 'feat.mfs' with 'is.resam=TRUE'. Should give an error checking here.
 
   freq.all <- lapply(order.list, function(x) {
     feat.freq(x, rank.cutoff = rank.cutoff, freq.cutoff = freq.cutoff)
@@ -142,7 +137,7 @@ feat.mfs.stab <- function(fs.res, rank.cutoff = 20, freq.cutoff = 0.5) {
   fs.freq <- lapply(freq.all, function(x) x$freq)
   fs.subs <- lapply(freq.all, function(x) names(x$freq))
   fs.stab <- lapply(freq.all, function(x) x$stability)
-  fs.cons <- mt:::feat.cons(fs.freq)
+  fs.cons <- feat.cons(fs.freq)
   #' print(fs.cons,digits=2,na.print="")
 
   fs <- list(
@@ -163,11 +158,8 @@ feat.mfs.stab <- function(fs.res, rank.cutoff = 20, freq.cutoff = 0.5) {
 #'              plotted.
 feat.mfs.stats <- function(fs.stats, cumu.plot = FALSE, main = "Stats Plot",
                            ylab = "Values", xlab = "Index of variable", ...) {
-  #' get the sorted stats
-  #' fs.stats <- as.data.frame(fs.stats, stringsAsFactors=F)
+
   fs.stats <- as.matrix(fs.stats)
-  #' Note: Here I convert data into matrix in order to get names of
-  #' individual variable.
   nam <- colnames(fs.stats)
   fs.stats <- lapply(nam, function(x) { #'  x = nam[1]
     val <- fs.stats[, x] #' if stats is data frame, no names for val.
@@ -180,8 +172,6 @@ feat.mfs.stats <- function(fs.stats, cumu.plot = FALSE, main = "Stats Plot",
     list(fs = names(x), val = x)
   })
   #' fs.tab <- list2df(un.list(fs.tab))
-  #' Note-11-11-2009: Reshape the data for saving into one Excel sheet. This
-  #'  is a very  good example of effective applying list2df and un.list.
 
   #' Note-09-03-2010: If you use cumulative scores, you can easily calculate
   #' the numbers, such as fix at 80%.
@@ -195,10 +185,15 @@ feat.mfs.stats <- function(fs.stats, cumu.plot = FALSE, main = "Stats Plot",
   st <- do.call(cbind, st)
   st <- cbind(st, idx = 1:nrow(st))
   st <- data.frame(st, stringsAsFactors = F)
-  st <- melt(st, id = "idx")
 
+  #' wl-06-11-2021, Sat: use base R function to get long format
+  st_l <- data.frame(idx = st$idx,stack(st,select = -idx))
+  st_l <- st_l[c("idx", "ind", "values")]
+  names(st_l) <- c("idx", "variable", "value")
+
+  #' st_l <- reshape::melt(st, id = "idx")
   st.p <- xyplot(value ~ idx | variable,
-    data = st,
+    data = st_l,
     as.table = T, type = c("g", "l"),
     scales = list(cex = .75, relation = "free"),
     par.strip.text = list(cex = 0.65),
@@ -206,7 +201,7 @@ feat.mfs.stats <- function(fs.stats, cumu.plot = FALSE, main = "Stats Plot",
   )
   st.p
 
-  res <- list(stats.tab = fs.tab, stats.long = st, stats.p = st.p)
+  res <- list(stats.tab = fs.tab, stats.long = st_1, stats.p = st.p)
   return(res)
 }
 

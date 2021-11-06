@@ -5,7 +5,6 @@
 \alias{cor.cut}
 \alias{cor.hcl}
 \alias{cor.heat}
-\alias{cor.heat.1}
 \alias{corrgram.circle}
 \alias{corrgram.ellipse}
 \alias{cor.heat.gram}
@@ -30,10 +29,6 @@ cor.hcl(mat, cutoff=0.75, use = "pairwise.complete.obs",
 cor.heat(mat, use = "pairwise.complete.obs", method = "pearson",
          dend = c("right", "top", "none"),\dots)
   
-cor.heat.1(mat, dend = c("both", "row", "column", "none"),
-           distfun=function(x) as.dist(1 - x),hclustfun = hclust,
-           use = "pairwise.complete.obs", method = "pearson",\dots)
-
 corrgram.circle(co, 
                 col.regions = colorRampPalette(c("red", "white", "blue")),
                 scales = list(x = list(rot = 90)), \dots) 
@@ -81,10 +76,6 @@ hm.cols(low = "green", high = "red", n = 123)
     covariance) is to be computed.  One of  \code{"pearson"}, \code{"kendall"}, or \code{"spearman"},
     can be abbreviated.}
 
-  \item{dend}{For \code{cor.heat.1}, character string indicating whether to draw 'none', 'row', 'column' or 
-  'both' dendrograms.  For details, see \code{\link{heatmap.2}}. For \code{cor.heat}, indicating
-  whether to draw 'right', 'top' or 'none'.
-  } 
   \item{distfun}{Function used to compute the distance (dissimilarity) between both rows and columns.} 
   \item{hclustfun}{Function used to compute the hierarchical clustering for dendrograms.}
   \item{co}{Correlation matrix}
@@ -139,8 +130,6 @@ hm.cols(low = "green", high = "red", n = 123)
   
   \code{cor.heat} display correlation heatmap using \pkg{lattice}.
 
-  \code{cor.heat.1} displays correlation heatmap with dendrogram.
-
   \code{corrgram.circle} and \code{corrgram.ellipse} display corrgrams with
   circle and ellipse. The functions are modified from codes given in 
   Deepayan Sarkar's \code{Lattice: Multivariate Data Visualization with R, 
@@ -192,9 +181,6 @@ cor.heat(iris[,1:4], dend="right", xlab="", ylab="",
 ## or use hm.cols
 cor.heat(iris[,1:4], dend="right", xlab="", ylab="", col.regions = hm.cols())
 
-cor.heat.1(iris[,1:4], dend = "both", col = rev(heat.colors(16)), 
-           cexRow=0.7,  cexCol=0.7, keysize = 1.0, main="Correlation map")
-
 ## prepare data set
 data(abr1)
 cls <- factor(abr1$fact$class)
@@ -217,10 +203,6 @@ ch <- cor.hcl(mat,cutoff=0.75,fig.f = TRUE, horiz=TRUE,center=TRUE,
 names(ch)
 cor.heat(mat,dend="right")
 cor.heat(mat,dend="right",col.regions = colorRampPalette(c("yellow", "red")))
-cor.heat.1(mat, dend = "column",col = rev(heat.colors(16)))
-
-## some difference if changing 'distfun' as 'dist'
-cor.heat.1(mat, dend = "row",distfun=dist)
 
 ## use corrgram with order by the hierarchical clustering
 co  <- cor(mat, use="pairwise.complete.obs")

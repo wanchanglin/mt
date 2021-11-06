@@ -365,7 +365,7 @@ mc.norm <- function(x, ...) {
   s.htest <- lapply(x, function(x) shapiro.test(x))
 
   rownames(x) <- NULL
-  x <- stack(x) #' melt(acc)   #' in package reshape
+  x <- stack(x)
   X11()
   print(bwplot(~ values | ind,
     data = x, as.table = T,

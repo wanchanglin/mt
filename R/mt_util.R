@@ -1222,7 +1222,7 @@ pca.plot <- function(x, y, scale = TRUE, abbrev = FALSE, ep.plot = FALSE, ...) {
 
   pca <- pca.comp(x, scale = scale, pcs = 1:2, ...)
   val <- pca$scores
-  val <- val[c("PC2", "PC1")
+  val <- val[c("PC2", "PC1")]
 
   if (abbrev) levels(y) <- abbreviate(levels(y), abbrev)
 
@@ -1787,7 +1787,6 @@ cor.heat <- function(mat, use = "pairwise.complete.obs", method = "pearson",
 #'   functions for ordering objects using hierarchical clustering in package
 #'   gclus can be used. These functions are order.single, order.endlink and
 #'   order.hclust.
-#' lwc-14-02-2012: change "des" as "main".
 #' Usages
 #' x1  <-rnorm(20,40,1)
 #' x2  <-rnorm(20,40,2.5)
@@ -1796,9 +1795,8 @@ cor.heat <- function(mat, use = "pairwise.complete.obs", method = "pearson",
 #' y2  <-rnorm(20,1,0.59)
 #' y3  <-rnorm(20,1,0.75)
 #' df2 <-data.frame(y1,y2,y3)
-#' m <- cor(df1, df2)
-#' matrix(m, dimnames=list(t(outer(colnames(m), rownames(m), FUN=paste)), NULL))
-#' res  <- cor.heat.gram(df1, df2)
+#' cor(df1, df2)
+#' cor.heat.gram(df1, df2)
 cor.heat.gram <- function(mat.1, mat.2, use = "pairwise.complete.obs",
                           method = "pearson", main = "Heatmap of correlation",
                           cex = 0.75, ...) {
@@ -1886,63 +1884,25 @@ cor.heat.gram <- function(mat.1, mat.2, use = "pairwise.complete.obs",
     co.1 <- co.1[complete.cases(co.1), ]
   }
 
-  res <- list(cor.heat = ph, cor.gram = ph.1, cor.short = co, cor.long = co.1)
+  res <- list(cor.heat = ph, cor.gram = ph.1, 
+              cor.short = co, cor.long = co.1)
+
+  return(res)
 }
 
 #' ========================================================================
-#' wl-05-11-2021, Fri: melt matrix into pairwise between row and column
+#' wl-05-11-2021, Fri: Convert matrix into long format
 #' Internal format.  It is used to replace reshape::melt(x). 
 my_melt <- function(x) { 
-  res <- matrix(x, dimnames = list(t(outer(rownames(m), colnames(m), 
+  res <- matrix(x, dimnames = list(t(outer(colnames(m), rownames(m), 
                                            FUN = paste)), NULL))
   res <- as.data.frame(res)
   rn <- rownames(res)
   rn <- do.call("rbind", sapply(rn, strsplit, " "))
   res <- cbind(rn, res)
-  dimnames(res) <- list(1:nrow(res), c("X1", "X2", "value"))
-  res
-}
-
-#' ========================================================================
-#' lwc-30-09-2008: Plot heatmap with dendrogram for correlation matrix. This
-#'   function will call heatmap.2 in package gplots.
-#'  Arguments:
-#'    data - matrix of correlation analysis
-#' NOTE: 1.) Some definition of dissimilarity:
-#'     * Dissimilarity = 1 - Correlation
-#'     * Dissimilarity = 1 - Abs(Correlation)
-#'     * Dissimilarity = Sqrt(1 - Correlation^2)
-#'      2.) According to heatmap.2's help page: Rowv determines if and how
-#'          the row dendrogram should be reordered. By default, it is TRUE,
-#'          which implies dendrogram is computed and reordered based on row
-#'          means. If NULL or FALSE, then no dendrogram is computed and no
-#'          reordering is done. If a dendrogram, then it is used "as-is", ie
-#'          without any reordering. If a vector of integers, then dendrogram
-#'          is computed and reordered based on the order of the vector. So
-#'          the modification is to ignore the reordered based on the row
-#'          means and keep it "as-is".
-cor.heat.1 <- function(mat, dend = c("both", "row", "column", "none"),
-                       distfun = function(x) as.dist(1 - x), hclustfun = hclust,
-                       use = "pairwise.complete.obs",
-                       method = "pearson", ...) {
-  #' require("gplots", quietly = TRUE) #' for heatmap.2
-  co <- cor(mat, use = use, method = method)
-
-  #' process dendrogram
-  Rowv <- FALSE
-  Colv <- FALSE
-  dend <- match.arg(dend)
-  if (dend %in% "row") Rowv <- as.dendrogram(hclustfun(distfun(t(co))))
-  if (dend %in% "column") Colv <- as.dendrogram(hclustfun(distfun(co)))
-  if (dend %in% "both") {
-    Colv <- as.dendrogram(hclustfun(distfun(co)))
-    Rowv <- as.dendrogram(hclustfun(distfun(t(co))))
-  }
-
-  heatmap.2(co,
-    Colv = Colv, Rowv = Rowv, trace = "none", density.info = "none",
-    dendrogram = dend, ...
-  )
+  dimnames(res) <- list(1:nrow(res), c("X2", "X1", "value"))
+  res <- res[c("X1", "X2", "value")]
+  return(res)
 }
 
 #' =======================================================================
@@ -2093,11 +2053,10 @@ toc <- function(echo = TRUE) {
 #' 45) cor.hcl
 #' 46) cor.heat
 #' 47) cor.heat.gram
-#' 48) cor.heat.1
-#' 49) save.tab
-#' 50) list2df
-#' 51) un.list
-#' 52) shrink.list
-#' 53) class.ind
-#' 54) tic
-#' 55) toc
+#' 48) save.tab
+#' 49) list2df
+#' 50) un.list
+#' 51) shrink.list
+#' 52) class.ind
+#' 53) tic
+#' 54) toc

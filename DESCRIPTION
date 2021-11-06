@@ -1,15 +1,15 @@
 Package: mt
-Version: 2.0-1.17
+Version: 2.0-1.18
 Date: 2016-01-26
-Title: Metabolomics Data Analysis Package
-Depends: MASS, e1071, randomForest, pls, gplots, ellipse, lattice, 
-  latticeExtra,reshape
+Title: Metabolomics Data Analysis Toolbox
 Author: Wanchang Lin
 Maintainer: Wanchang Lin <wanchanglin@gmail.com>
 Description:  This package provides functions for metabolomics data analysis: data 
   pre-processing, orthogonal signal correction, PCA analysis, PCADA analysis, 
   PLSDA analysis, classification, feature selection, correlation analysis, 
   data visualisation and re-sampling strategies.
+Depends: R (>= 3.1.0)
+Imports: MASS, e1071, randomForest, pls, ellipse, lattice, latticeExtra
 License: GPL (>= 2)
 LazyLoad: yes
 LazyData: yes
