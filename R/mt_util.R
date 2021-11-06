@@ -25,7 +25,7 @@ pca.outlier <- function(x, center = TRUE, scale = TRUE,
     panel.abline(h = 0, v = 0, col = c("gray"), lty = 2)
     #' overall ellipse line
     panel.points(elli[, 1], elli[, 2], type = "l", col = "red", lwd = 2, ...)
-    #' labelling outliers
+    #' labeling outliers
     if (any(id)) {
       ltext(x[id], y[id], labs[id], ...)
       #' cex = dots$cex, adj = dots$adj)
@@ -165,7 +165,6 @@ pca.outlier.1 <- function(x, center = TRUE, scale = TRUE, conf.level = 0.975,
 #' lwc-13-11-2007: Plot columns of matrix-like object by group
 #' lwc-18-12-2007: Major changes. Call .grpplot.
 #' lwc-28-09-2008: Add ocall. For details, see plot.shingle in lattice
-#' package
 #' lwc-11-02-2010: Change the point of median in boxplot as line
 #' lwc-21-02-2010: change name from gplot to grpplot.
 #' lwc-15-07-2015: remove 'ep'
@@ -232,7 +231,7 @@ grpplot <- function(x, y, plot = "pairs", ...) {
 #'       superpose.symbol <- trellis.par.get("superpose.symbol")
 #'       superpose.symbol$col <- rainbow(16)
 #'       trellis.par.set("superpose.symbol",superpose.symbol)
-#'  Then call .grpplot.  A list of colours names is produced by colors().
+#'  Then call .grpplot.  A list of colour's names is produced by colors().
 #' lwc-17-01-2008: pch range from 1 to 25. So I recycle the symbols if number
 #'     of symbol exceed the limits.
 #' TO-DO: 1.) Check validity of arguments
@@ -341,7 +340,6 @@ pcaplot <- function(x, y, scale = TRUE, pcs = 1:2, ...) {
   names(x) <- dfn
   x <- x[, pcs]
 
-  #' call group plot
   p <- grpplot(x, y, plot = "pairs", ...)
   p
 }
@@ -429,7 +427,6 @@ panel.elli <- function(x, y, groups = NULL, conf.level = 0.975, ...) {
     Var <- var(cbind(x, y))
     Mean <- cbind(mean(x), mean(y))
     Elli <- ellipse(Var, centre = Mean, level = conf.level)
-    #' panel.xyplot(x, y,...)
     panel.xyplot(Elli[, 1], Elli[, 2], ...)
   }
 }
@@ -552,13 +549,10 @@ stats.vec <- function(x, y, method = "mean", test.method = "wilcox.test",
 #' =======================================================================
 #' lwc-16-07-2013: Fold change from gtools
 #' Usage:
-if (F) {
-  a <- 1:21
-  b <- 21:1
-  f <- .foldchange(a, b)
-  cbind(a, b, f)
-}
-
+#' a <- 1:21
+#' b <- 21:1
+#' f <- .foldchange(a, b)
+#' cbind(a, b, f)
 .foldchange <- function(num, denom) {
   ifelse(num >= denom, num / denom, -denom / num)
 }
@@ -659,7 +653,7 @@ df.summ <- function(dat, method = vec.summ, ...) {
 #' lwc-11-10-2011: replace zero/negative with NA.
 mv.zene <- function(dat) {
   vec.func <- function(x) {
-    x <- ifelse(x < .Machine$double.eps, NA, x) #' vectorisation of ifelse
+    x <- ifelse(x < .Machine$double.eps, NA, x)
   }
 
   dat <- as.data.frame(dat, stringsAsFactors = F)
@@ -722,7 +716,7 @@ mv.fill <- function(dat, method = "mean", ze_ne = FALSE) {
 #'  tmp <- mv.fill(dat, method = "median")
 #'  tmp <- mt:::mv.pattern(dat)
 mv.stats <- function(dat, grp = NULL, ...) {
-  #' overall mising values rate
+  #' overall missing values rate
   mv.all <- sum(is.na(as.matrix(dat))) / length(as.matrix(dat))
 
   #' MV stats function for vector
@@ -816,20 +810,18 @@ mv.pattern <- function(x) {
   counts <- colSums(mat %all.==% t(unique(mat)))
   rownames(pattern) <- counts
 
-  #' add some statistics
   #' number of missing values with respect to column (variable)
   nmis <- apply(1 * is.na(x), 2, sum)
   #' number of missing values in the pattern
   pmis <- ncol(pattern) - apply(pattern, 1, sum)
 
   pattern <- rbind(pattern, c(nmis)) #' a trick to take off the row name
-  #' using c
   pattern <- cbind(pattern, c(pmis, sum(nmis)))
   pattern
 }
 
 #' =========================================================================
-#' lwc-24-11-2010: Get heatmap colors
+#' lwc-24-11-2010: Get heatmap colours
 #' Note: compare this:
 #'  col.regions = colorRampPalette(c("green", "black", "red"))
 #'  in lattice levelplot
@@ -1024,7 +1016,6 @@ lda.plot.wrap.1 <- function(data.list, title = "plotting", ...) {
   dn <- names(data.list)
   lda <- lapply(dn, function(x) {
     res <- pcalda(data.list[[x]]$dat, data.list[[x]]$cls)
-    #' res <- nlda(data.list[[x]]$dat,data.list[[x]]$cls)
     dfs <- as.data.frame(res$x)
     dfs <- cbind(dfs,
       cls = data.list[[x]]$cls,
@@ -1064,7 +1055,7 @@ lda.plot.wrap.1 <- function(data.list, title = "plotting", ...) {
         main = paste(title, ": LDA", sep = ""), ...
       )
     #' wll-07-05-2009: I have added the auto.key and par.settings
-    #'   only large number of subfigures. Otherwise, this two
+    #'   only large number of sub-figures. Otherwise, this two
     #'   line should be removed.
   }
 
@@ -1231,7 +1222,7 @@ pca.plot <- function(x, y, scale = TRUE, abbrev = FALSE, ep.plot = FALSE, ...) {
 
   pca <- pca.comp(x, scale = scale, pcs = 1:2, ...)
   val <- pca$scores
-  val <- val[c("PC2", "PC1")] #' Swap position
+  val <- val[c("PC2", "PC1")
 
   if (abbrev) levels(y) <- abbreviate(levels(y), abbrev)
 
@@ -1269,7 +1260,6 @@ pca.comp <- function(x, scale = FALSE, pcs = 1:2, ...) {
   x <- x[, pcs]
   vars <- vars[pcs]
   dfn <- dfn[pcs]
-  #' names(x) <- dfn
 
   return(list(scores = x, vars = vars, varsn = dfn))
 }
@@ -1365,8 +1355,6 @@ corrgram.ellipse <- function(co, label = FALSE,
 #' lwc-27-04-2012: put scales in argument list
 #' Arguments:
 #'  co    - Correlation matrices
-#'  lable - Logical value indicating whether the correlation coefficient (x
-#'  100) should be displayed.
 corrgram.circle <- function(co,
                             col.regions =
                               colorRampPalette(c("red", "white", "blue")),
@@ -1509,7 +1497,7 @@ combn.pw <- function(cls, choices = NULL) {
 panel.smooth.line <- function(x, y, ...) {
   panel.grid(h = -1, v = -1)
   panel.xyplot(x, y, ...)
-  #' panel.xyplot(x, y, type="p")     #' lwc-27-02-2010: change from "l"
+  #' panel.xyplot(x, y, type="p")
   if (sd(y) > 0.001) { # .Machine$double.eps)
     panel.loess(x, y, span = 1, col = "red")
   } else {
@@ -1600,7 +1588,7 @@ preproc.sd <- function(x, y = NULL, na.rm = FALSE) {
     #' minimal s.d.
     z.1 <- sapply(data.frame(z), function(i) min(i))
 
-    #' which one is zero withing group?
+    #' which one is zero within group?
     if (any(z.1 <= .Machine$double.eps)) {
       z.2 <- which(z.1 <= .Machine$double.eps)
       x <- x[, -z.2, drop = F]
@@ -1627,7 +1615,7 @@ preproc.const <- function(x, y, tol = 1.0e-4) {
 
   f1 <- sqrt(diag(var(x - group.means[g, ])))
 
-  #' which one is constant withing group?
+  #' which one is constant within group?
   if (any(f1 < tol)) {
     const <- (1:p)[f1 < tol]
     x <- x[, -const, drop = F]
@@ -1664,7 +1652,6 @@ cor.cut <- function(mat, cutoff = 0.75, abs.f = FALSE,
   }
 
   if (length(idx) != 0) {
-    #' idx <- idx[(idx[,1]!=idx[,2]),,drop=F]    #' lwc-23-06-2008: mistake
     #' tow-columns correlation
     fs1 <- rownames(co)[idx[, 1]]
     fs2 <- colnames(co)[idx[, 2]]
@@ -1672,7 +1659,6 @@ cor.cut <- function(mat, cutoff = 0.75, abs.f = FALSE,
       com1 = fs1, com2 = fs2, cor = co[idx],
       stringsAsFactors = FALSE
     )
-    #' lwc-07-06-2011: add stringsAsFactors
   } else {
     res <- NA
   }
