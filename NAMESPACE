@@ -84,17 +84,43 @@ S3method(frankvali, formula)
 
 import(stats)
 import(graphics)
-import(MASS)
-import(class)
 import(e1071)
 import(randomForest)
-# import(pls)
-# import(ellipse)
 import(pls, except = loadings)
-import(ellipse, except = pairs)
-import(lattice)
-import(latticeExtra)
 
+importFrom("utils", "combn", "flush.console", "stack", "write.table")
 importFrom("grDevices", "X11", "col2rgb", "colorRampPalette", "rgb")
 importFrom("methods", "hasArg")
-importFrom("utils", "combn", "flush.console", "stack", "write.table")
+importFrom("MASS", ldahist, ginv, lda, eqscplot)
+importFrom("class", knn)
+importFrom("ellipse", "ellipse")
+importFrom("grid", gpar, grid.polygon, grid.circle)
+importFrom("latticeExtra", dendrogramGrob)
+importFrom("lattice",
+           xyplot,
+           levelplot,
+           stripplot,
+           bwplot,
+           densityplot,
+           dotplot,
+           splom,
+           histogram,
+           panel.xyplot,
+           panel.levelplot,
+           panel.fill,
+           panel.loess,
+           panel.lmline,
+           panel.polygon,
+           panel.superpose,
+           panel.abline,
+           panel.points,
+           panel.histogram,
+           panel.mathdensity,
+           panel.text,
+           panel.grid,
+           ltext,
+           do.breaks,
+           level.colors,
+           trellis.par.get,
+           trellis.par.set
+           )

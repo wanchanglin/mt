@@ -1,7 +1,4 @@
 
-require("grid", quietly = TRUE)
-require(ellipse)
-
 #' ========================================================================
 #' lwc-29-03-2013: PCA outlier plot by lattice
 #' wll-29-11-2015: Examples of 'panel.elli' and 'panel.outl' give more
@@ -125,7 +122,7 @@ pca.outlier.1 <- function(x, center = TRUE, scale = TRUE, conf.level = 0.975,
   outlier <- which(dis > cutoff)
 
   #' Plot PCA with ellipse and outliers
-  z <- ellipse::ellipse(x = cova, center = cent, level = conf.level)
+  z <- ellipse(x = cova, center = cent, level = conf.level)
   x1 <- c(min(x[, 1], z[, 1]), max(x[, 1], z[, 1]))
   y1 <- c(min(x[, 2], z[, 2]), max(x[, 2], z[, 2]))
 

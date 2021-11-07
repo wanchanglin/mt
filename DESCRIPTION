@@ -8,7 +8,7 @@ Description: This package provides functions for metabolomics data analysis:
   data pre-processing, orthogonal signal correction, PCA analysis, PCA-DA 
 	analysis, PLS-DA analysis, classification, feature selection, correlation 
 	analysis, data visualisation and re-sampling strategies.
-Depends: R (>= 3.1.0)
+Depends: R (>= 3.0.0)
 Imports: methods, MASS, class, e1071, randomForest, pls, ellipse,
         lattice, latticeExtra
 License: GPL (>= 2)
