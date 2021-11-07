@@ -100,7 +100,7 @@ cls <- factor(abr1$fact$class)
 ## dat <- tmp[[1]]$dat
 ## cls <- tmp[[1]]$cls
 
-idx <- sample(1:nrow(dat), round((2/3)*nrow(dat)), replace=FALSE) 
+idx <- sample(1:nrow(dat), round((2/3)*nrow(dat)), replace = FALSE) 
 ## constrcuct train and test data 
 train.dat  <- dat[idx,]
 train.cl   <- cls[idx]
@@ -114,7 +114,6 @@ res
 ## get confusion matrix
 cl.rate(obs=res$cl, res$pred)   ## same as: cl.rate(obs=test.cl, res$pred)
 
-## -----------------------------------------------------------------------
 ## Measurements of Forensic Glass Fragments
 data(fgl, package = "MASS")    # in MASS package
 dat <- subset(fgl, grepl("WinF|WinNF",type))
@@ -123,7 +122,7 @@ x   <- subset(dat, select = -type)
 y   <- factor(dat$type)
 
 ## construct train and test data 
-idx   <- sample(1:nrow(x), round((2/3)*nrow(x)), replace=F) 
+idx   <- sample(1:nrow(x), round((2/3)*nrow(x)), replace = FALSE) 
 tr.x  <- x[idx,]
 tr.y  <- y[idx]
 te.x  <- x[-idx,]        

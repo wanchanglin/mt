@@ -205,7 +205,7 @@ cor.heat(mat,dend="right",col.regions = colorRampPalette(c("yellow", "red")))
 co  <- cor(mat, use="pairwise.complete.obs")
 ord <- order.dendrogram(as.dendrogram(hclust(as.dist(1-co)))) 
 corrgram.circle(co[ord,ord], main="Corrgrams with circle")
-corrgram.ellipse(co[ord,ord], label=T,main="Corrgrams with circle",
+corrgram.ellipse(co[ord,ord], label = TRUE, main = "Corrgrams with circle",
                  col.regions = hm.cols())
 ## R package gclus provides other order methods. See order.single,
 ## order.endlink and order.hclust for details.

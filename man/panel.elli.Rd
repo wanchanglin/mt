@@ -67,128 +67,129 @@ panel.outl(x, y, subscripts, groups=NULL, conf.level = 0.975, labs, \dots)
 }
 
 \examples{
-  data(iris)
+library(lattice) 
+data(iris)
 
-  ## =====================================================================
-  ## Examples of calling 'panel.elli' and 'panel.outl'
-  xyplot(Sepal.Length ~ Petal.Length, data = iris, groups=Species,
-         par.settings = list(superpose.symbol = list(pch=c(15:17)),
-                             superpose.line = list(lwd=2, lty=1:3)),
-         panel = function(x, y, ...) {
-             panel.xyplot(x, y, ...)
-             panel.elli(x, y, ..., type="l",lwd=2)
-             panel.outl(x,y, ...)
-         },
-         auto.key = list(x = .1, y = .8, corner = c(0, 0)),
-         labs=rownames(iris), conf.level=0.9,adj = -0.5)
-  
-  ## Without groups
-  xyplot(Sepal.Length ~ Petal.Length, data = iris,
-         par.settings = list(plot.symbol = list(cex = 1.1, pch=16)),
-         panel = function(x, y, ...) {
-             panel.xyplot(x, y, ...)
-             panel.elli(x, y, ..., type="l", lwd = 2)
-             panel.outl(x,y, ...)
-         },
-         auto.key = list(x = .1, y = .8, corner = c(0, 0)),
-         labs=rownames(iris), conf.level=0.9,adj = -0.5)
-  
-  
-  ## With conditioning
-  xyplot(Sepal.Length ~ Petal.Length|Species, data = iris, 
-         par.settings = list(plot.symbol = list(cex = 1.1, pch=16)),
-         layout=c(2,2),
-         panel = function(x, y, ...) {
-             panel.xyplot(x, y, ...)
-             panel.elli(x, y, ..., type="l", lwd = 2)
-             panel.outl(x,y, ...)
-         },
-         auto.key = list(x = .6, y = .8, corner = c(0, 0)),
-         adj = 0,labs=rownames(iris), conf.level=0.95)
+## =====================================================================
+## Examples of calling 'panel.elli' and 'panel.outl'
+xyplot(Sepal.Length ~ Petal.Length, data = iris, groups=Species,
+        par.settings = list(superpose.symbol = list(pch=c(15:17)),
+                            superpose.line = list(lwd=2, lty=1:3)),
+        panel = function(x, y, ...) {
+            panel.xyplot(x, y, ...)
+            panel.elli(x, y, ..., type="l",lwd=2)
+            panel.outl(x,y, ...)
+        },
+        auto.key = list(x = .1, y = .8, corner = c(0, 0)),
+        labs=rownames(iris), conf.level=0.9,adj = -0.5)
 
-  ## =====================================================================
-  ## Examples of 'panel.elli.1'
-  xyplot(Sepal.Length ~ Petal.Length, data = iris, groups=Species,
-         ## ---------------------------------------------------
-         ## Select what to be plotted.
-         ep=2,
-         ## com.grp = list(a="setosa",b=c("versicolor", "virginica")),
-         ## no.grp = "setosa", ## Not draw ellipse for "setosa"
-         ## ---------------------------------------------------
-         par.settings = list(superpose.symbol = list(pch=c(15:17)),
-                             superpose.line = list(lwd=2, lty=1:3)),
-         panel = function(x, y, ...) {
-             panel.xyplot(x, y, ...)
-             panel.elli.1(x, y, ...)
-             panel.outl(x,y, ...)
-         },
-         auto.key = list(points = T, rectangles = F, space = "right"),
-         adj = 0,labs=rownames(iris), conf.level=0.95)
+## Without groups
+xyplot(Sepal.Length ~ Petal.Length, data = iris,
+        par.settings = list(plot.symbol = list(cex = 1.1, pch=16)),
+        panel = function(x, y, ...) {
+            panel.xyplot(x, y, ...)
+            panel.elli(x, y, ..., type="l", lwd = 2)
+            panel.outl(x,y, ...)
+        },
+        auto.key = list(x = .1, y = .8, corner = c(0, 0)),
+        labs=rownames(iris), conf.level=0.9,adj = -0.5)
 
-  xyplot(Sepal.Length ~ Petal.Length, data = iris, groups=Species,
-         ## ---------------------------------------------------
-         ## Select what to be plotted.
-         ep=2,
-         ## com.grp = list(a="setosa",b=c("versicolor", "virginica")),
-         no.grp = c("setosa","versicolor"),## Only draw "virginica"
-         ## ---------------------------------------------------
-         par.settings = list(superpose.symbol = list(pch=c(15:17)),
-                             superpose.line = list(lwd=2, lty=1:3)),
-         panel = function(x, y, ...) {
-             panel.xyplot(x, y, ...)
-             panel.elli.1(x, y, ...)
-         },
-         auto.key = list(x = .1, y = .8, corner = c(0, 0)))
 
-  xyplot(Sepal.Length ~ Petal.Length, data = iris, groups=Species,
-         ## ---------------------------------------------------
-         ## Select what to be plotted.
-         ep=2,
-         com.grp = list(a="setosa",b=c("versicolor", "virginica")),
-         ## no.grp = "setosa", ## Not draw ellipse for "setosa"
-         ## ---------------------------------------------------
-         par.settings = list(superpose.symbol = list(pch=c(15:17)),
-                             superpose.line = list(lwd=2, lty=1:3)),
-         panel = function(x, y, ...) {
-             panel.xyplot(x, y, ...)
-             panel.elli.1(x, y, ...)
-         },
-         auto.key = list(x = .1, y = .8, corner = c(0, 0)))
+## With conditioning
+xyplot(Sepal.Length ~ Petal.Length|Species, data = iris, 
+        par.settings = list(plot.symbol = list(cex = 1.1, pch=16)),
+        layout=c(2,2),
+        panel = function(x, y, ...) {
+            panel.xyplot(x, y, ...)
+            panel.elli(x, y, ..., type="l", lwd = 2)
+            panel.outl(x,y, ...)
+        },
+        auto.key = list(x = .6, y = .8, corner = c(0, 0)),
+        adj = 0,labs=rownames(iris), conf.level=0.95)
 
-   xyplot(Sepal.Length ~ Petal.Length, data = iris, groups=Species, ep=1,
-         par.settings = list(superpose.symbol = list(pch=c(15:17)),
-                             superpose.line = list(lwd=2, lty=1:3)),
-         panel = function(x, y, ...) {
-             panel.xyplot(x, y, ...)
-             panel.elli.1(x, y, ...)
-         },
-         auto.key = list(points = T, rectangles = F, space = "right"))
+## =====================================================================
+## Examples of 'panel.elli.1'
+xyplot(Sepal.Length ~ Petal.Length, data = iris, groups=Species,
+        ## ---------------------------------------------------
+        ## Select what to be plotted.
+        ep=2,
+        ## com.grp = list(a="setosa",b=c("versicolor", "virginica")),
+        ## no.grp = "setosa", ## Not draw ellipse for "setosa"
+        ## ---------------------------------------------------
+        par.settings = list(superpose.symbol = list(pch=c(15:17)),
+                            superpose.line = list(lwd=2, lty=1:3)),
+        panel = function(x, y, ...) {
+            panel.xyplot(x, y, ...)
+            panel.elli.1(x, y, ...)
+            panel.outl(x,y, ...)
+        },
+        auto.key = list(points = TRUE, rectangles = FALSE, space = "right"),
+        adj = 0,labs=rownames(iris), conf.level=0.95)
 
-  ## =====================================================================
-  ## Another data set from package MASS
-  require(MASS)
-  data(Cars93)
+xyplot(Sepal.Length ~ Petal.Length, data = iris, groups=Species,
+        ## ---------------------------------------------------
+        ## Select what to be plotted.
+        ep=2,
+        ## com.grp = list(a="setosa",b=c("versicolor", "virginica")),
+        no.grp = c("setosa","versicolor"),## Only draw "virginica"
+        ## ---------------------------------------------------
+        par.settings = list(superpose.symbol = list(pch=c(15:17)),
+                            superpose.line = list(lwd=2, lty=1:3)),
+        panel = function(x, y, ...) {
+            panel.xyplot(x, y, ...)
+            panel.elli.1(x, y, ...)
+        },
+        auto.key = list(x = .1, y = .8, corner = c(0, 0)))
 
-  ## Plot ellipse based on original groups: DriveTrain
-  xyplot(Price~EngineSize, data=Cars93, groups=DriveTrain, ep=2,
-         par.settings = list(superpose.symbol = list(pch=c(15:17)),
-                             superpose.line = list(lwd=2, lty=1:3)),
-         panel = function(x, y, ...) {
-             panel.xyplot(x, y, ...)
-             panel.elli.1(x, y, ...)
-         },
-         auto.key = list(points = T, rectangles = F, space = "right"))
+xyplot(Sepal.Length ~ Petal.Length, data = iris, groups=Species,
+        ## ---------------------------------------------------
+        ## Select what to be plotted.
+        ep=2,
+        com.grp = list(a="setosa",b=c("versicolor", "virginica")),
+        ## no.grp = "setosa", ## Not draw ellipse for "setosa"
+        ## ---------------------------------------------------
+        par.settings = list(superpose.symbol = list(pch=c(15:17)),
+                            superpose.line = list(lwd=2, lty=1:3)),
+        panel = function(x, y, ...) {
+            panel.xyplot(x, y, ...)
+            panel.elli.1(x, y, ...)
+        },
+        auto.key = list(x = .1, y = .8, corner = c(0, 0)))
 
-  ## But we want to plot ellipse using AirBags
-  xyplot(Price~EngineSize, data=Cars93, groups=DriveTrain, 
-         ell.grp=Cars93$AirBags,
-         par.settings = list(superpose.symbol = list(pch=c(15:17)),
-                             superpose.line = list(lwd=2, lty=1:3)),
-         panel = function(x, y, ...) {
-             panel.xyplot(x, y, ...)
-             panel.elli.1(x, y, ...)
-         },
-         auto.key = list(points = T, rectangles = F, space = "right"))
+  xyplot(Sepal.Length ~ Petal.Length, data = iris, groups=Species, ep=1,
+        par.settings = list(superpose.symbol = list(pch=c(15:17)),
+                            superpose.line = list(lwd=2, lty=1:3)),
+        panel = function(x, y, ...) {
+            panel.xyplot(x, y, ...)
+            panel.elli.1(x, y, ...)
+        },
+        auto.key = list(points = TRUE, rectangles = FALSE, space = "right"))
+
+## =====================================================================
+## Another data set from package MASS
+require(MASS)
+data(Cars93)
+
+## Plot ellipse based on original groups: DriveTrain
+xyplot(Price~EngineSize, data=Cars93, groups=DriveTrain, ep=2,
+        par.settings = list(superpose.symbol = list(pch=c(15:17)),
+                            superpose.line = list(lwd=2, lty=1:3)),
+        panel = function(x, y, ...) {
+            panel.xyplot(x, y, ...)
+            panel.elli.1(x, y, ...)
+        },
+        auto.key = list(points = TRUE, rectangles = FALSE, space = "right"))
+
+## But we want to plot ellipse using AirBags
+xyplot(Price~EngineSize, data=Cars93, groups=DriveTrain, 
+        ell.grp=Cars93$AirBags,
+        par.settings = list(superpose.symbol = list(pch=c(15:17)),
+                            superpose.line = list(lwd=2, lty=1:3)),
+        panel = function(x, y, ...) {
+            panel.xyplot(x, y, ...)
+            panel.elli.1(x, y, ...)
+        },
+        auto.key = list(points = TRUE, rectangles = FALSE, space = "right"))
 
 }
 

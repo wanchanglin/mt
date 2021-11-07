@@ -18,9 +18,9 @@ panel.smooth.line(x, y,\dots)
 \author{Wanchang Lin \email{wll@aber.ac.uk}}
 
 \examples{
-  data(iris)
-  splom(~iris[,1:4], varname.cex = 1.0, pscales = 0, 
-        panel = panel.smooth.line)
+library(lattice) 
+data(iris)
+splom(~iris[,1:4], varname.cex = 1.0, pscales = 0, panel = panel.smooth.line)
 }
 
 

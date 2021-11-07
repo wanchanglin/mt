@@ -322,8 +322,8 @@ plot.plsc.1 <- function(x, panel = panel.plsc, cex = 0.7, dimen,
 
   if (nDimen <= 2) {
     if (nDimen == 1) { #' One component
-      MASS:::ldahist(xval[, 1], g, ...)
-      #' MASS:::ldahist(xval, g, xlab=varlab,...)
+      ldahist(xval[, 1], g, ...)
+      #' ldahist(xval, g, xlab=varlab,...)
     } else { #' Second component versus first
       xlab <- varlab[1]
       ylab <- varlab[2]

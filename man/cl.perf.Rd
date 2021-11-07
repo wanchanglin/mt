@@ -95,7 +95,8 @@
 % ----------------------------------------------------------------------
 \examples{
 
- ## Measurements of Forensic Glass Fragments
+## Measurements of Forensic Glass Fragments
+library(MASS)
 data(fgl, package = "MASS")    # in MASS package
 dat <- subset(fgl, grepl("WinF|WinNF",type))
 ## dat <- subset(fgl, type %in% c("WinF", "WinNF"))
@@ -103,7 +104,7 @@ x   <- subset(dat, select = -type)
 y   <- factor(dat$type)
 
 ## construct train and test data 
-idx   <- sample(1:nrow(x), round((2/3)*nrow(x)), replace=F) 
+idx   <- sample(1:nrow(x), round((2/3)*nrow(x)), replace = FALSE) 
 tr.x  <- x[idx,]
 tr.y  <- y[idx]
 te.x  <- x[-idx,]        
@@ -134,12 +135,12 @@ cl.roc (stat,obs, pos=pos)
 ## test examples for ROC and AUC
 label <- rbinom(30,size=1,prob=0.2)
 stat  <- rnorm(30)
-cl.roc(stat,label, pos=levels(factor(label))[2],plot=T)
+cl.roc(stat,label, pos=levels(factor(label))[2],plot = TRUE)
 cl.auc(stat,label,pos=levels(factor(label))[2])
 
 ## if auc is less than 0.5, it should be adjusted by 1 - auc. 
 ## Or re-run them:
-cl.roc(1 - stat,label, pos=levels(factor(label))[2],plot=T)
+cl.roc(1 - stat,label, pos=levels(factor(label))[2],plot = TRUE)
 cl.auc(1 - stat,label,pos=levels(factor(label))[2])
 
 }

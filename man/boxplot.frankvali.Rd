@@ -51,7 +51,7 @@ x.1 <- dat[[1]]$dat
 y.1 <- dat[[1]]$cls
 
 pars <- valipars(sampling="cv",niter=2,nreps=4)
-res  <- frankvali(x.1,y.1,fs.method="rfe",fs.len="power2", 
+res  <- frankvali(x.1,y.1,fs.method = "fs.rfe",fs.len = "power2", 
                   cl.method = "knn",pars = pars)
 res
 summary(res)

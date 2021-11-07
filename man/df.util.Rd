@@ -75,15 +75,15 @@ vec.segment <- function(x, bar=c("SD", "SE", "CI"))
 {  
   bar <- match.arg(bar)
 
-  centre <- mean(x, na.rm=T)
+  centre <- mean(x, na.rm = TRUE)
 
   if (bar == "SD") {
-    stderr <- sd(x, na.rm=T)        ## Standard derivation (SD)
+    stderr <- sd(x, na.rm = TRUE)        ## Standard derivation (SD)
     lower  <- centre - stderr
     upper  <- centre + stderr
   } else if (bar == "SE") {      ## Standard error(SE) of mean
-    stderr <- sd(x, na.rm=T)/sqrt(sum(!is.na(x)))
-    ## stderr <- sqrt(var(x, na.rm = T)/length(x[complete.cases(x)]))
+    stderr <- sd(x, na.rm = TRUE)/sqrt(sum(!is.na(x)))
+    ## stderr <- sqrt(var(x, na.rm = TRUE)/length(x[complete.cases(x)]))
     lower  <- centre - stderr
     upper  <- centre + stderr
   } else if (bar == "CI") {      ## Confidence interval (CI), here 95%.
@@ -103,18 +103,18 @@ vec.segment(dat[,2])
 summ.2 <- df.summ(dat, method=vec.segment, bar="SE")
 
 ## ----------------------------------------------------------
-## iris data
+#' iris data
 df.summ(iris)
 
-## Group summary
+#' Group summary
 ## library(plyr)
 ## ddply(iris, .(Species), df.summ)
-(tmp <- dlply(iris, .(Species), df.summ, method=vec.segment))
-do.call("rbind", tmp)
+## (tmp <- dlply(iris, .(Species), df.summ, method=vec.segment))
+##do.call("rbind", tmp)
 
-## or you can use summarise to get the group summary for single variable:
-ddply(iris, .(Species), summarise, 
-      mean=mean(Sepal.Length), std=sd(Sepal.Length))
+#' or you can use summarise to get the group summary for single variable:
+## ddply(iris, .(Species), summarise, 
+##      mean=mean(Sepal.Length), std=sd(Sepal.Length))
 
 }
 

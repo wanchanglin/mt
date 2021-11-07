@@ -167,6 +167,7 @@ implemented in package \pkg{pls}.
 
 % ----------------------------------------------------------------------------
 \examples{
+library(pls)  
 data(abr1)
 cl   <- factor(abr1$fact$class)
 dat  <- preproc(abr1$pos , y=cl, method=c("log10"),add=1)[,110:500]
@@ -181,7 +182,7 @@ test.dat   <- dat[-idx,]
 test.t     <- cl[-idx] 
 
 ## apply plsc and plslda
-(res   <- plsc(train.dat,train.t, ncomp=20, tune=F))
+(res   <- plsc(train.dat,train.t, ncomp = 20, tune = FALSE))
 ## Estimate the mean squared error of prediction (MSEP), root mean squared error
 ## of prediction (RMSEP) and R^2 (coefficient of multiple determination) for 
 ## fitted PLSR model 
@@ -189,7 +190,7 @@ MSEP(res$pls.out)
 RMSEP(res$pls.out)
 R2(res$pls.out)
 
-(res.1  <- plslda(train.dat,train.t, ncomp=20, tune=F))
+(res.1  <- plslda(train.dat,train.t, ncomp = 20, tune = FALSE))
 ## Estimate the mean squared error of prediction (MSEP), root mean squared error
 ## of prediction (RMSEP) and R^2 (coefficient of multiple determination) for 
 ## fitted PLSR model 
@@ -198,8 +199,8 @@ RMSEP(res.1$pls.out)
 R2(res.1$pls.out)
 
 ## with function of tuning component numbers
-(z.plsc   <- plsc(train.dat,train.t, ncomp=20, tune=TRUE))
-(z.plslda <- plslda(train.dat,train.t, ncomp=20, tune=TRUE))
+(z.plsc   <- plsc(train.dat,train.t, ncomp = 20, tune = TRUE))
+(z.plslda <- plslda(train.dat,train.t, ncomp = 20, tune = TRUE))
 
 ## check nomp tuning results
 z.plsc$ncomp

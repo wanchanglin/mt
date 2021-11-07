@@ -125,7 +125,6 @@ pca.plot.wrap(tmp,strip=FALSE)$pca.p
 pls.plot.wrap(tmp,strip=FALSE)$pls.p
 lda.plot.wrap(tmp,strip=FALSE)$lda.p
 
-## ===================================================================
 data(abr1)
 cls <- factor(abr1$fact$class)
 dat <- preproc(abr1$pos, method="log")
@@ -135,7 +134,7 @@ dat.pw <- dat.sel(dat, cls,choices=c("2","3","4"))
 ## add mult-class
 idx <- grep("2|3|4",cls)
 cls.234 <- factor(cls[idx])
-dat.234 <- dat[idx,,drop=F]
+dat.234 <- dat[idx,,drop = FALSE]
 
 ## combine all
 dat.tmp <- c(dat.pw, 

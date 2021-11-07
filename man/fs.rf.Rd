@@ -84,7 +84,7 @@ fs <- cbind(fs.rf=res$fs.order, fs.rf.1=res.1$fs.order)
 
 ## plot the important score of 'fs.rf' (not 'fs.rf.1')
 score <- res$stats
-score <- sort(score, decreasing=T)
+score <- sort(score, decreasing = TRUE)
 plot(score)
 
 ## --------------------------------------------------------------------

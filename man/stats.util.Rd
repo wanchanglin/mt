@@ -82,11 +82,12 @@ tab <- stats.mat(dat,cls, method = "median",test.method = "wilcox.test",
                 padj.method = "BH")
 sapply(tab, class)
 
-## Use ddply with stats.VEC. It is very useful for long format.
-mat <- melt(cbind(dat,cls))
-ddply(mat, .(variable), function(x,method,...){
-   stats.vec(x$value, x$cls,method=method,...)
-}, method="median",test.method = "wilcox.test",padj.method = "BH")
+#' Use ddply with stats.VEC. It is very useful for long format.
+# mat <- reshape::melt(cbind(dat,cls))
+# plyr::ddply(mat, .(variable), function(x,method,...){
+#    stats.vec(x$value, x$cls,method=method,...)
+# }, method="median",test.method = "wilcox.test",padj.method = "BH")
+
 }
 
 \keyword{util}

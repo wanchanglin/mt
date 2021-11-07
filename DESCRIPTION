@@ -4,15 +4,16 @@ Date: 2021-11-06
 Title: Metabolomics Data Analysis Toolbox
 Author: Wanchang Lin
 Maintainer: Wanchang Lin <wanchanglin@gmail.com>
-Description:  This package provides functions for metabolomics data analysis: 
+Description: This package provides functions for metabolomics data analysis: 
   data pre-processing, orthogonal signal correction, PCA analysis, PCA-DA 
 	analysis, PLS-DA analysis, classification, feature selection, correlation 
 	analysis, data visualisation and re-sampling strategies.
 Depends: R (>= 3.1.0)
-Imports: methods, MASS, class, e1071, randomForest, pls, ellipse, lattice,
-         latticeExtra
+Imports: methods, MASS, class, e1071, randomForest, pls, ellipse,
+        lattice, latticeExtra
 License: GPL (>= 2)
 LazyLoad: yes
 LazyData: yes
 ZipData: No
-Packaged: 2021-11-06 16:00:58 UTC; Wanchang Lin
+Packaged: 2021-11-07 14:14:07 UTC; Administrator
+NeedsCompilation: no

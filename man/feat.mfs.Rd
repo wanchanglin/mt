@@ -132,28 +132,28 @@ print(fs.stab$fs.cons,digits=2,na.print="")
 
 ## plot feature selection frequency
 freq <- fs.stab$fs.freq
-dotplot(freq$fs.anova, type="o", main="Feature Selection Frequencies")
-## Barchart(freq$fs.anova)
+lattice::dotplot(freq$fs.anova, type="o", main="Feature Selection Frequencies")
+## barchart(freq$fs.anova)
 
-## Venn diagram
+#' Venn diagram
 ## require("gplots", quietly = TRUE) 
-fs.ord  <- fs$fs.order[1:20,]
-fs.ord  <- as.list(data.frame(fs.ord, stringsAsFactors=F))
-count   <- venn(fs.ord)
+## fs.ord  <- fs$fs.order[1:20,]
+## fs.ord  <- as.list(data.frame(fs.ord, stringsAsFactors = FALSE))
+## count   <- venn(fs.ord)
 
 ## rank aggregation 
 fs.agg <- feat.agg(fs$fs.rank)
 
 ## stats table and plotting
 fs.stats <- fs$fs.stats
-tmp <- feat.mfs.stats(fs.stats, cumu.plot=T)
+tmp <- feat.mfs.stats(fs.stats, cumu.plot = TRUE)
 tmp$stats.p
 fs.tab <- tmp$stats.tab
 ## convert to matrix
 fs.tab <- list2df(un.list(fs.tab))
 
 ## without resampling
-fs.1 <- feat.mfs(x, y, method=fs.method, is.resam=FALSE)
+fs.1 <- feat.mfs(x, y, method=fs.method, is.resam = FALSE)
 }
 
 \keyword{classif}

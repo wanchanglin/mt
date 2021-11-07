@@ -49,6 +49,8 @@
 
 % ----------------------------------------------------------------------
 \examples{
+library(lattice)
+
 ## Example for pval.test and pval.reject
 ## prepare data set
 data(abr1)
@@ -74,15 +76,19 @@ pval.reject(pval.ad,c(0.005, 0.01, 0.05))
 ## plot the all p-values
 tmp <- cbind(pval.ad, idx=1:nrow(pval.ad))
 tmp <- data.frame(tmp)
-pval.melt <- melt(tmp, id="idx")
 
-pval.p <- xyplot(value~idx, data=pval.melt, groups=variable,
+# pval_long <- melt(tmp, id="idx")
+pval_long <- data.frame(idx = tmp$idx, stack(tmp, select = -idx))
+pval_long <- pval_long[c("idx", "ind", "values")]
+names(pval_long) <- c("idx", "variable", "value")
+
+pval.p <- xyplot(value~idx, data=pval_long, groups=variable,
                 par.settings = list(superpose.line = list(lty=c(1:7))),
-                as.table=T, type="l", 
+                as.table = TRUE, type="l", 
                 par.strip.text = list(cex=0.65), ylim=c(-0.005, 1.0),
                 ylab="P-values", xlab="Index of variables",
                 main="p-values",
-                auto.key = list(lines=TRUE,points = F,space="right"),
+                auto.key = list(lines=TRUE, points = FALSE,space="right"),
                 panel = function(x, y,...) {
                   panel.xyplot(x, y, ...)
                   panel.abline(h = 0.05, col = "red",lty =2)

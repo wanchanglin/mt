@@ -1,3 +1,7 @@
+
+require("grid", quietly = TRUE)
+require(ellipse)
+
 #' ========================================================================
 #' lwc-29-03-2013: PCA outlier plot by lattice
 #' wll-29-11-2015: Examples of 'panel.elli' and 'panel.outl' give more
@@ -32,7 +36,6 @@ pca.outlier <- function(x, center = TRUE, scale = TRUE,
     }
   }
 
-  require(ellipse)
   #' argument list
   dots <- list(...)
   if (length(dots) > 0) {
@@ -221,7 +224,7 @@ grpplot <- function(x, y, plot = "pairs", ...) {
 #' =======================================================================
 #' lwc-13-12-2007: Scatter plot by group
 #' lwc-17-12-2007: deal with 1 column problem. This idea is from
-#' MASS:::ldahist
+#' ldahist
 #' lwc-09-01-2008: argument of default of auto.key.
 #' lwc-12-01-2008-note:
 #'   Colours in supervose.symbol re-cycle after 7 by default. I did not
@@ -1400,7 +1403,6 @@ panel.corrgram.ell <- function(x, y, z, subscripts, at, level = 0.9,
 #' From Lattice book chapter 13. Internal function.
 panel.corrgram.cir <- function(x, y, z, subscripts, at = pretty(z),
                                scale = 0.8, ...) {
-  require("grid", quietly = TRUE)
   x <- as.numeric(x)[subscripts]
   y <- as.numeric(y)[subscripts]
   z <- as.numeric(z)[subscripts]

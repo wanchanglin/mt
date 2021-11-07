@@ -54,19 +54,20 @@ x      <- subset(iris, select = -Species)
 y      <- iris$Species
 
 ## 10 bootstrap training samples 
-pars   <- valipars(sampling="boot", niter = 1, nreps=10)
+pars   <- valipars(sampling = "boot", niter = 1, nreps = 10)
 tr.idx <- trainind(y, pars=pars)[[1]]
 
 ## bootstrap error rate
 err <- sapply(tr.idx, function(i){
-  pred <- classifier(x[i,,drop=F],y[i],x[-i,,drop=F],y[-i], method="knn")$err
+  pred <- classifier(x[i,,drop = FALSE],y[i],x[-i,,drop = FALSE],y[-i], 
+                     method = "knn")$err
 })
 
 ## average bootstrap error rate
 err <- mean(err)
 
 ## apparent error rate
-resub  <- classifier(x,y,method="knn")
+resub  <- classifier(x,y,method = "knn")
 
 ## 
 err.boot <- boot.err(err, resub)
