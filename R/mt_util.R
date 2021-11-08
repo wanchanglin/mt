@@ -759,7 +759,7 @@ mv.stats <- function(dat, grp = NULL, ...) {
 
     mv.grp.plot <-
       xyplot(values ~ var | ind,
-        data = mv.grp.1, groups = ind, as.table = T,
+        data = mv.grp.1, groups = mv.grp.1$ind, as.table = T,
         layout = c(1, nlevels(mv.grp.1$ind)), type = "l",
         auto.key = list(space = "right"),
         #' main="Missing Values Percentage With Respect of Variables",
@@ -866,7 +866,7 @@ pca.plot.wrap <- function(data.list, title = "plotting", ...) {
 
   pca.p <-
     xyplot(PC2 ~ PC1 | type,
-      data = pca.scores, groups = cls, as.table = T,
+      data = pca.scores, groups = pca.scores$cls, as.table = T,
       xlab = "PC1", ylab = "PC2", main = paste(title, ": PCA", sep = ""),
       auto.key = list(space = "right"),
       par.settings = list(superpose.symbol = list(pch = rep(1:25))),
@@ -925,7 +925,7 @@ mds.plot.wrap <- function(data.list, method = "euclidean",
   #' MDS plot
   mds.p <-
     xyplot(Coord_2 ~ Coord_1 | type,
-      data = mds, groups = cls, as.table = T,
+      data = mds, groups = mds$cls, as.table = T,
       xlab = "Coordinate 1", ylab = "Coordinate 2",
       main = paste(title, ": MDS Plot", sep = ""),
       auto.key = list(space = "right"),
@@ -981,7 +981,7 @@ lda.plot.wrap <- function(data.list, title = "plotting", ...) {
   lda.eig <- do.call(rbind, lapply(lda, function(x) x$eig))
 
   lda.p <- xyplot(LD2 ~ LD1 | type,
-    data = lda.dfs, groups = cls, as.table = T,
+    data = lda.dfs, groups = lda.dfs$cls, as.table = T,
     xlab = "DF1", ylab = "DF2", main = paste(title, ": LDA", sep = ""),
     #' auto.key = list(columns=nlevels(cl)),
     auto.key = list(space = "right"),
@@ -1034,7 +1034,7 @@ lda.plot.wrap.1 <- function(data.list, title = "plotting", ...) {
   if (length(grep("LD2", colnames(lda.dfs))) > 0) {
     lda.p <-
       xyplot(LD2 ~ LD1 | type,
-        data = lda.dfs, groups = cls, as.table = T,
+        data = lda.dfs, groups = lda.dfs$cls, as.table = T,
         xlab = "LD1", ylab = "LD2", main = paste(title, ": LDA", sep = ""),
         #' auto.key = list(columns=nlevels(cl)),
         auto.key = list(space = "right"),
@@ -1048,7 +1048,7 @@ lda.plot.wrap.1 <- function(data.list, title = "plotting", ...) {
   } else {
     lda.p <-
       stripplot(LD1 ~ cls | type,
-        data = lda.dfs, as.table = T, groups = cls,
+        data = lda.dfs, as.table = T, groups = lda.dfs$cls,
         auto.key = list(space = "right"),
         par.settings = list(superpose.symbol = list(pch = rep(1:25))),
         #' scales = "free",
@@ -1107,7 +1107,7 @@ pls.plot.wrap <- function(data.list, title = "plotting", ...) {
 
   pls.p <-
     xyplot(LC2 ~ LC1 | type,
-      data = pls.scores, groups = cls, as.table = T,
+      data = pls.scores, groups = pls.scores$cls, as.table = T,
       xlab = "LC1", ylab = "LC2", main = paste(title, ": PLS", sep = ""),
       auto.key = list(space = "right"),
       par.settings = list(superpose.symbol = list(pch = rep(1:25))),

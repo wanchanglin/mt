@@ -723,7 +723,9 @@ classifier <- function(dat.tr, cl.tr, dat.te = NULL, cl.te = NULL, method,
   } else {
     #' pre-process only for SVM
     dots <- list(...)
-    if (hasArg(probability)) dots$probability <- NULL
+    #' wl-08-11-2021, Mon: Use this one 
+    if (hasArg("probability")) dots$probability <- NULL
+    # if (hasArg(probability)) dots$probability <- NULL
     model <- do.call(method, c(list(dat.tr, cl.tr), probability = T, dots))
     #' Note-30-06-2007: Using probability = T only for SVM.
   }

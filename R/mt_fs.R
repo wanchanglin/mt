@@ -187,7 +187,8 @@ feat.mfs.stats <- function(fs.stats, cumu.plot = FALSE, main = "Stats Plot",
   st <- data.frame(st, stringsAsFactors = F)
 
   #' wl-06-11-2021, Sat: use base R function to get long format
-  st_long <- data.frame(idx = st$idx,stack(st,select = -idx))
+  st_long <- with(st, data.frame(idx = st$idx, stack(st, select = -idx)))
+  # st_long <- data.frame(idx = st$idx,stack(st,select = -idx))
   st_long <- st_long[c("idx", "ind", "values")]
   names(st_long) <- c("idx", "variable", "value")
 
@@ -485,8 +486,12 @@ fs.pls <- function(x, y, pls = "simpls", ncomp = 10, ...) {
     stop("x and y is not consistent.")
   }
 
-  val <- plsc(x, y, pls = pls, ncomp = ncomp, ...)
-  coe <- drop(pls:::coef.mvr(val$pls.out, ncomp = val$ncomp))
+  val <- plsc(x, y, pls = pls, ncomp = ncomp)#, ...)
+  #' wl-08-11-2021, Mon: Use this one
+  coe <- drop(coef(val$pls.out, ncomp = val$ncomp))
+  # coe <- drop(pls:::coef.mvr(val$pls.out, ncomp = val$ncomp))
+
+
   #' lwc-14-06-2010: After runing plsc, ncomp may change; hence ncomp here
   #'                 use val$ncomp
 

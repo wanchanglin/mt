@@ -11,9 +11,10 @@ Description: This package provides functions for metabolomics data analysis:
 Depends: R (>= 3.0.0)
 Imports: methods, MASS, class, e1071, randomForest, pls, ellipse,
         lattice, latticeExtra
+Encoding: UTF-8
 License: GPL (>= 2)
 LazyLoad: yes
 LazyData: yes
 ZipData: No
-Packaged: 2021-11-07 14:14:07 UTC; Administrator
 NeedsCompilation: no
+Packaged: 2021-11-07 14:14:07 UTC; Administrator
