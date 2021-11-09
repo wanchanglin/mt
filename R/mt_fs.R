@@ -486,7 +486,7 @@ fs.pls <- function(x, y, pls = "simpls", ncomp = 10, ...) {
     stop("x and y is not consistent.")
   }
 
-  val <- plsc(x, y, pls = pls, ncomp = ncomp)#, ...)
+  val <- plsc(x, y, pls = pls, ncomp = ncomp, ...)
   #' wl-08-11-2021, Mon: Use this one
   coe <- drop(coef(val$pls.out, ncomp = val$ncomp))
   # coe <- drop(pls:::coef.mvr(val$pls.out, ncomp = val$ncomp))
