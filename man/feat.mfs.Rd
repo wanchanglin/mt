@@ -92,7 +92,7 @@ feat.mfs.stats(fs.stats,cumu.plot=FALSE, main="Stats Plot",
   purpose is to provide a guidance in selecting the best number of
   features by spotting the elbow point. This method should work in
   conjunction with plotting of p-values and their corresponding adjusted
-  values such as FDR and Bonnferoni in the multiple hypothesis test.
+  values such as FDR and Bonferroni in the multiple hypothesis test.
 }
 
 \note{

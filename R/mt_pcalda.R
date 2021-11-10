@@ -111,12 +111,12 @@ tune.pcalda.2 <- function(x, y, ncomp = NULL, center = TRUE, scale. = FALSE,
 #' PCA+LDA for classification
 #' History:
 #'   wll-22-06-2007: commence
-#'   wll-01-07-2007: try number of PCs as n - g. Overfitting.
+#'   wll-01-07-2007: try number of PCs as n - g. Over-fitting.
 #'   wll-24-01-2008: stip off constant PCs within group
 pcalda.default <- function(x, y, center = TRUE, scale. = FALSE, ncomp = NULL,
                            tune = FALSE, ...) {
 
-  #' arguments validility checking
+  #' arguments validity checking
   if (missing(x) || missing(y)) {
     stop("data set or class are missing")
   }
@@ -292,7 +292,7 @@ plot.pcalda <- function(x, dimen, ...) {
   if (missing(dimen)) {
     dimen <- seq(along = colnames(x$x))
   } else {
-    #' check validaty
+    #' check validity
     if (!all(dimen %in% c(1:ncol(x$x)))) {
       stop("dimen is not valid")
     }
@@ -344,7 +344,7 @@ plot.pcalda.1 <- function(x, panel = panel.pcalda, cex = 0.7, dimen,
   if (missing(dimen)) {
     dimen <- seq(along = colnames(xval))
   } else {
-    #' check validaty
+    #' check validity
     if (!all(dimen %in% c(1:ncol(xval)))) {
       stop("dimen is not valid")
     }

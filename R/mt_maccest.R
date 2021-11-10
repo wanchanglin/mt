@@ -1,5 +1,5 @@
 #' =========================================================================
-#' mult-Classifier accuracy estimation with results of accuracy and
+#' Mult-Classifier accuracy estimation with results of accuracy and
 #' significant test using ANOVA plus TukeyHSD test.
 #' History:
 #' 05-12-06: commence
@@ -175,7 +175,7 @@ boxplot.maccest <- function(x, ...) {
 #' =======================================================================
 #' wll-02-12-2006: user defined x-ticks
 #' wll-04-12-2006: std bar
-#' wll-03-07-2007: Check validility of acc.std
+#' wll-03-07-2007: Check validity of acc.std
 plot.maccest <- function(x, main = NULL, xlab = NULL, ylab = NULL, ...) {
   dots <- list(...)
   #' ylim <- if("ylim" %in% names(dots)) dots$ylim else
@@ -253,7 +253,7 @@ maccest.formula <- function(formula, data = NULL, ..., subset,
 #'   03-12-06: Create
 #'   18-12-06: keep all the results
 #'   03-07-07: add auc and margin
-#' NOTE: It is difficult to provide user-defined data partioning before
+#' NOTE: It is difficult to provide user-defined data partition before
 #'       data extracting for pairwise comparison.
 mbinest <- function(dat, cl, choices = NULL, method,
                     pars = valipars(), ...) {
@@ -299,7 +299,7 @@ mbinest <- function(dat, cl, choices = NULL, method,
 mc.fried <- function(x, p.adjust.method = p.adjust.methods, ...) {
   p.adjust.method <- match.arg(p.adjust.method)
 
-  #' significat test using Friedman test
+  #' significant test using Friedman test
   f.htest <- friedman.test(x, ...)
   #' global null hypothesis test p value
   gl.pval <- f.htest$p.value

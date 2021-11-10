@@ -43,7 +43,7 @@
   
   \item{\dots}{Further arguments to \code{lattice}. See corresponding
     entry in \code{\link{xyplot}} for non-trivial details of
-    \code{lattice}. One argument is \code{ep}: an integer falg for
+    \code{lattice}. One argument is \code{ep}: an integer flag for
     ellipse. \code{1} and \code{2} for plotting overall and group
     ellipse, respectively. Otherwise, none. For details, see
     \code{\link{panel.elli.1}}. } }

@@ -59,7 +59,7 @@ plsc.default <- function(x, y, pls = "simpls", ncomp = 10, tune = FALSE,
     ncomp <- val$ncomp
   }
 
-  #' Convert response to be sitable format for PLS
+  #' Convert response to be suitable format for PLS
   y.1 <- class.ind(y)
 
   #' Call PLS for regression
@@ -80,7 +80,7 @@ plsc.default <- function(x, y, pls = "simpls", ncomp = 10, tune = FALSE,
   B0 <- rep(B0, each = nrow(x))
   B1 <- x %*% B
   pred <- B1 + B0
-  #' softmax for convert values to probobilities
+  #' softmax for convert values to probabilities
   poste <- exp(pred)
   poste <- poste / rowSums(poste)
   #' generates the predict class
@@ -107,7 +107,7 @@ plsc.default <- function(x, y, pls = "simpls", ncomp = 10, tune = FALSE,
 }
 
 #' =========================================================================
-#' wll-01-10-2007: predict mthod. See predict.mvr and coef.mvr in package
+#' wll-01-10-2007: predict method. See predict.mvr and coef.mvr in package
 #'                 pls for details.
 #' NOTE: More cpmments are in function pred.pls which can be call directly
 #'       by simpls.fit etc.
@@ -259,7 +259,7 @@ plot.plsc <- function(x, dimen, ...) {
   if (missing(dimen)) {
     dimen <- seq(along = colnames(x$x))
   } else {
-    #' check validaty
+    #' check validity
     if (!all(dimen %in% c(1:ncol(x$x)))) {
       stop("dimen is not valid")
     }
@@ -310,7 +310,7 @@ plot.plsc.1 <- function(x, panel = panel.plsc, cex = 0.7, dimen,
   if (missing(dimen)) {
     dimen <- seq(along = colnames(xval))
   } else {
-    #' check validaty
+    #' check validity
     if (!all(dimen %in% c(1:ncol(xval)))) {
       stop("dimen is not valid")
     }

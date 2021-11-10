@@ -58,7 +58,7 @@
 }
 
 \note{ Examples of \code{\link{panel.elli}} and \code{\link{panel.outl}}
-  give more general inofrmation about ellipses and outliers. If you
+  give more general information about ellipses and outliers. If you
   ONLY want to plot outliers based on PCA in a general way, for
   example, outliers in different groups or in conditional panel, you can
   write an wrapper function combining with \code{\link{pca.comp}},

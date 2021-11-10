@@ -55,7 +55,7 @@ plslda.default <- function(x, y, pls = "simpls", ncomp = 10, tune = FALSE,
   pls <- match.arg(pls, c("kernelpls", "simpls", "oscorespls"))
   pls.fit <- paste(pls, ".fit", sep = "")
 
-  #' initilisation
+  #' initialisation
   x <- as.matrix(x)
   y <- as.factor(y)
   n <- nrow(x)
@@ -240,7 +240,7 @@ plot.plslda <- function(x, dimen, ...) {
   if (missing(dimen)) {
     dimen <- seq(along = colnames(x$x))
   } else {
-    #' check validaty
+    #' check validity
     if (!all(dimen %in% c(1:ncol(x$x)))) {
       stop("dimen is not valid")
     }
@@ -291,7 +291,7 @@ plot.plslda.1 <- function(x, panel = panel.plslda, cex = 0.7, dimen,
   if (missing(dimen)) {
     dimen <- seq(along = colnames(xval))
   } else {
-    #' check validaty
+    #' check validity
     if (!all(dimen %in% c(1:ncol(xval)))) {
       stop("dimen is not valid")
     }

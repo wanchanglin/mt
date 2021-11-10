@@ -130,7 +130,7 @@ accest.default <- function(dat, cl, method,
     auc <- NULL
   }
 
-  #' calculate accurary rate
+  #' calculate accuracy rate
   acc.all <- 1 - err.all
   acc.iter <- 1 - err.iter
   acc <- 1 - err
@@ -658,11 +658,11 @@ cl.roc.1 <- function(stat, label, pos = levels(as.factor(label))[2],
 #' History:
 #'  15-09-06: check predict's output
 #'  24-03-07: add dat.te and cl.te as NULLs.
-#'  30-06-07: Add the posterior, marg and AUC. I doubt using average of
+#'  30-06-07: Add the posterior, margin and AUC. I doubt using average of
 #'            margin as an assessment factor like AUC for classification.
 #'  02-07-07: Deal with constant variables which have zero SD. Any
 #'            possible bugs or mistakes in both programming and algorithm?
-#'  04-07-07: check validity of auc and correct the way of meaging factors.
+#'  04-07-07: check validity of auc
 #'  06-07-07: Fix a bug
 #'  03-10-07: Restore user defined predict function.
 #'  14-12-07: method and pred.dunc can be a function or a character string
@@ -794,7 +794,7 @@ classifier <- function(dat.tr, cl.tr, dat.te = NULL, cl.te = NULL, method,
 }
 
 #' ========================================================================
-#' lwc-30-06-2007: claculate the margin of a classifier based on the
+#' lwc-30-06-2007: calculate the margin of a classifier based on the
 #' posterior
 #' NOTE: 1. This function hacked from package 'randomForest'. For more
 #'       description, see package 'randomForest'.

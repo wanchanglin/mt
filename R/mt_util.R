@@ -26,7 +26,7 @@ pca.outlier <- function(x, center = TRUE, scale = TRUE,
     panel.abline(h = 0, v = 0, col = c("gray"), lty = 2)
     #' overall ellipse line
     panel.points(elli[, 1], elli[, 2], type = "l", col = "red", lwd = 2, ...)
-    #' labeling outliers
+    #' labelling outliers
     if (any(id)) {
       ltext(x[id], y[id], labs[id], ...)
       #' cex = dots$cex, adj = dots$adj)
@@ -94,10 +94,7 @@ pca.outlier <- function(x, center = TRUE, scale = TRUE,
 
 #' ========================================================================
 #' lwc-03-06-2010: PCA plot with outlier detection
-#' lwc-01-09-2010: Add group info. Take code segment from FIEmspro's grpplot.
-#' Note:
-#'  1.) Modified from outl.det in my another package FIEmspro.
-#'  2.) Another lattice version
+#' lwc-01-09-2010: Add group info.
 #' To-Do:
 #'  1.) Display group text inside the ellipse
 pca.outlier.1 <- function(x, center = TRUE, scale = TRUE, conf.level = 0.975,
@@ -1283,7 +1280,7 @@ pval.reject <- function(adjp, alpha) {
 }
 
 #' ========================================================================
-#' lwc-20-01-2009: Calculate the p-values for columns of data matix
+#' lwc-20-01-2009: Calculate the p-values for columns of data matrix
 #'   with respect to group information. Support multiple categorical data.
 #' lwc-16-06-2010: Provide argument method. Support user defined test method
 #'   which has formula format and returned p.value.
@@ -1501,7 +1498,7 @@ combn.pw <- function(cls, choices = NULL) {
 #'       element.
 .dat.sel <- function(dat, cl, choices = NULL) {
 
-  #' lwc-29-10-2006: combnations is from package gtools.
+  #' lwc-29-10-2006: combinations is from package gtools.
   #' $Id: mt_util_1.r,v 1.16 2009/07/27 10:23:41 wll Exp $
   #' From email by Brian D Ripley <ripley@stats.ox.ac.uk> to r-help
   #' dated Tue, 14 Dec 1999 11:14:04 +0000 (GMT) in response to
@@ -2062,7 +2059,7 @@ save.tab <- function(x, filename = "temp.csv", firstline = "\n") {
 }
 
 #' =======================================================================
-#' lwc-13-12-2008: Convert a list with componets of vector to a data frame
+#' lwc-13-12-2008: Convert a list with components of vector to a data frame
 #'  for writing into an Excel file. Shorter vector will be filled with NA.
 list2df <- function(x) {
   len <- max(sapply(x, length))

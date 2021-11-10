@@ -1,7 +1,3 @@
-#' Feature Selection or ranking
-#' wll-19-05-2008: Take off most noquote and re-arrange fs.order appeared in
-#' the first of the output list.
-
 #' =======================================================================
 #' Feature frequency and stability of feature ranking.
 #' History:
@@ -336,7 +332,7 @@ fs.plsvip <- function(x, y, ncomp = 10, ...) {
   }
 
   val <- plsc(x, y, pls = "oscorespls", ncomp = ncomp)
-  #' NOTE: Only NIPLS supprots VIP values.
+  #' NOTE: Only NIPLS supports VIP values.
   pls <- val$pls.out
 
   #' calculate SS
@@ -345,7 +341,7 @@ fs.plsvip <- function(x, y, ncomp = 10, ...) {
   x.sc <- matrix(x.sc, nrow = nrow(y.lo), ncol = ncol(y.lo), byrow = T)
   SS <- y.lo * x.sc #' not matrix product %*%.
 
-  #' calculate normalised sqared weight
+  #' calculate normalised squared weight
   W <- (unclass(pls$loading.weights))^2
   sumW <- colSums(W)
   sumW <- matrix(sumW, nrow = nrow(W), ncol = ncol(W), byrow = T)
@@ -385,7 +381,7 @@ fs.plsvip.1 <- function(x, y, ncomp = 10, ...) {
   }
 
   val <- plsc(x, y, pls = "oscorespls", ncomp = ncomp)
-  #' NOTE: Only NIPLS supprots VIP values.
+  #' NOTE: Only NIPLS supports VIP values.
   pls <- val$pls.out
 
   #' calculate SS
@@ -394,7 +390,7 @@ fs.plsvip.1 <- function(x, y, ncomp = 10, ...) {
   x.sc <- matrix(x.sc, nrow = nrow(y.lo), ncol = ncol(y.lo), byrow = T)
   SS <- y.lo * x.sc #' not matrix product %*%.
 
-  #' calculate normalised sqared weight
+  #' calculate normalised squared weight
   W <- (unclass(pls$loading.weights))^2
   sumW <- colSums(W)
   sumW <- matrix(sumW, nrow = nrow(W), ncol = ncol(W), byrow = T)
@@ -518,7 +514,7 @@ fs.pls <- function(x, y, pls = "simpls", ncomp = 10, ...) {
 #' NOTE: 1. To check the eignenvalue, use screeplot().
 #'       2. If it combines with other supervised methods such as fs.rf and
 #'       fs.anove as the input methods for feat.mfs and feat.mfs.1, the
-#'       'thres' should be given explicily in case of conflicting with 'y'.
+#'       'thres' should be given explicitly in case of conflicting with 'y'.
 #'       e.g., fs.m <- c("fs.anova", "fs.rf", "fs.pca") feat.mfs.1(dat, cls,
 #'       method=fs.m, is.resam=F, thres=0.8)
 fs.pca <- function(x, thres = 0.8, ...) {
@@ -600,7 +596,7 @@ fs.bw <- function(x, y, ...) {
 #' wll-15-10-07: 1. Extend to ReliefF, in which main ideas are that there
 #'               are k (k>=1, default as 10) nearest hits/misses and all the
 #'               hits and misses are averaged. 2. Add the user defined
-#'               number of instances to sample. Default is all instnces will
+#'               number of instances to sample. Default is all instances will
 #'               be used.
 #' References:
 #' 1.) KIRA, K. and RENDEL, L. (1992). The Feature Selection Problem :
@@ -620,7 +616,7 @@ fs.relief <- function(x, y, m = NULL, k = 10, ...) {
   nearest <- function(x, mat, k = 10) {
     #' Euclidean distance
     dis <- sapply(as.data.frame(t(mat)), function(y) sqrt(sum((x - y)^2)))
-    k <- min(k, length(dis)) #' wll-21-03-2008: fix a bug spotted by Ian.
+    k <- min(k, length(dis)) #' wll-21-03-2008: fix a bug spotted by Ian Scott.
     #' ind  <- which.min(dis)
     ind <- sort.list(dis)[1:k]
 
@@ -636,7 +632,7 @@ fs.relief <- function(x, y, m = NULL, k = 10, ...) {
   n <- nrow(x)
   p <- ncol(x)
   gp <- levels(y)
-  prio <- table(y) / n #' Computing the priors
+  prio <- table(y) / n #' Computing the prior
 
   #' Calculating the range of each feature. range = Max - Min
   rng <- sapply(as.data.frame(x), function(x) diff(range(x)))
@@ -696,7 +692,7 @@ fs.relief <- function(x, y, m = NULL, k = 10, ...) {
 #'                   svm, not dots' problem.  So I have to strip off ... here.
 #'                   Does svm treat ... and list(...) differently?
 fs.rfe <- function(x, y, fs.len = "power2", ...) {
-  #' lwc-16-01-2007: aoid multiple actual arguments in calling svm.
+  #' lwc-16-01-2007: avoid multiple actual arguments in calling svm.
   #' dots <- list(...)
   #' if(hasArg(kernel)) dots$kernel <- NULL
 
@@ -936,7 +932,7 @@ fs.welch <- function(x, y, ...) {
 #' =========================================================================
 #' wll-19-05-2008: Welch test for feature selection
 #'   NOTE: This function selects features based on the p-values rather than
-#'   absolute values of statistics. And also supports addtional arguments
+#'   absolute values of statistics. And also supports additional arguments
 #'   passing, such as paired test or not, and the alternative hypothesis.
 fs.welch.1 <- function(x, y, ...) {
   tmp <- sapply(as.data.frame(x), function(x) {
@@ -1041,7 +1037,7 @@ fs.kruskal <- function(x, y, ...) {
 }
 
 #' =========================================================================
-#' Feature ranking validaton by error estimaton.
+#' Feature ranking validation by error estimation.
 #' History:
 #'   08-11-2006: commence
 #'   09-11-2006: output different errors.
@@ -1049,8 +1045,8 @@ fs.kruskal <- function(x, y, ...) {
 #'   10-01-2007: Add user-defined data partitioning
 
 #'   12-10-2007: Add fs.order as a argument. This allows the user to
-#'               estimate error using a feature order claculated somewhere
-#'               else. Actually this function replaces rankvali (depreated).
+#'               estimate error using a feature order calculated somewhere
+#'               else. Actually this function replaces rankvali (deprecated).
 frankvali.default <- function(dat, cl, cl.method = "svm",
                               fs.method = "fs.auc", fs.order = NULL,
                               fs.len = "power2", pars = valipars(),
@@ -1104,7 +1100,7 @@ frankvali.default <- function(dat, cl, cl.method = "svm",
       cl.tr <- cl[train.ind[[j]]]
       dat.te <- dat[-train.ind[[j]], , drop = F]
       cl.te <- cl[-train.ind[[j]]]
-      #' Error estimation of feature selectin with fs.order or with rank
+      #' Error estimation of feature selection with fs.order or with rank
       #' method.
       res[[j]] <- frank.err(dat.tr, cl.tr, dat.te, cl.te,
         cl.method = cl.method,
@@ -1112,7 +1108,7 @@ frankvali.default <- function(dat, cl, cl.method = "svm",
         fs.len = fs.len, ...
       )
     } #' end of j
-    #' feature ranking list (nosense if fs.order feeded in from putside.)
+    #' feature ranking list 
     fs.list[[i]] <- sapply(res, function(x) cbind(x$fs.rank))
     rownames(fs.list[[i]]) <- colnames(dat)
 
@@ -1455,8 +1451,8 @@ perf <- function(res) {
 #' Generate a sequence of feature number
 #' History:
 #'  25-10-2006: commence
-#'  31-10-2006: add uer defined sequence
-#'  15-11-2006: fix a bug in returning a decresing vector
+#'  31-10-2006: add user defined sequence
+#'  15-11-2006: fix a bug in returning a decreasing vector
 #' Usages:
 #' get.fs.len(10,fs.len=c(1,5,3,11.2,7.8,23,1,0))
 #' get.fs.len(200,fs.len="half")

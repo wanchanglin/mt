@@ -167,7 +167,7 @@ osc.formula <- function(formula, data = NULL, ..., subset,
 #' wll-04-06-2007: Wold algorithm for OSC
 osc_wold <- function(x, y, center = TRUE, osc.ncomp = 4, pls.ncomp = 10,
                      tol = 1e-3, iter = 20, ...) {
-  if (center) x <- sweep(x, 2, colMeans(x), "-") #' column-wise center
+  if (center) x <- sweep(x, 2, colMeans(x), "-") #' column-wise centre
   x.ori <- x
   y <- class.ind(y) #' convert class labels to numeric values
 
@@ -179,9 +179,9 @@ osc_wold <- function(x, y, center = TRUE, osc.ncomp = 4, pls.ncomp = 10,
     k <- 0
     while (dif > tol & k < iter) {
       k <- k + 1
-      #' Othogonalize t to y
+      #' Orthogonalize t to y
       tnew <- t - (y %*% ginv(t(y) %*% y) %*% t(y) %*% t)
-      #' claculate weight vector using PLS
+      #' calculate weight vector using PLS
       pls <- simpls.fit(x, tnew, ncomp = pls.ncomp, ...)
       w <- pls$coefficients[, , ncomp = pls.ncomp, drop = FALSE]
       w <- w / sqrt(sum(w^2))
@@ -224,11 +224,11 @@ osc_wold <- function(x, y, center = TRUE, osc.ncomp = 4, pls.ncomp = 10,
 #' ========================================================================
 #' wll-03-06-2007: Sjoblom algorithm
 #' wll-03-06-2007: Fix a algorithm mis-understanding in updating weights.
-#' wll-03-06-2007: Othogonalize t to y in the last step. This improve the
+#' wll-03-06-2007: Orthogonalize t to y in the last step. This improve the
 #'                 performance of OSC.
 osc_sjoblom <- function(x, y, center = TRUE, osc.ncomp = 4, pls.ncomp = 10,
                         tol = 1e-3, iter = 20, ...) {
-  if (center) x <- sweep(x, 2, colMeans(x), "-") #' column-wise center
+  if (center) x <- sweep(x, 2, colMeans(x), "-") #' column-wise centre
   x.ori <- x
   y <- class.ind(y) #' convert class labels to numeric values
 
@@ -240,7 +240,7 @@ osc_sjoblom <- function(x, y, center = TRUE, osc.ncomp = 4, pls.ncomp = 10,
     k <- 0
     while (dif > tol & k < iter) {
       k <- k + 1
-      #' Othogonalize t to y (by tnew = t - y*inv(y'*y)*y'*t).
+      #' Orthogonalize t to y (by tnew = t - y*inv(y'*y)*y'*t).
       tnew <- t - (y %*% ginv(t(y) %*% y) %*% t(y) %*% t)
       #' Update weights and scores
       w <- t(x) %*% tnew %*% ginv(t(tnew) %*% tnew)
@@ -262,7 +262,7 @@ osc_sjoblom <- function(x, y, center = TRUE, osc.ncomp = 4, pls.ncomp = 10,
 
     #' Update scores, loads and corrected data
     t <- x %*% w
-    #' Othogonalize t to y
+    #' Orthogonalize t to y
     t <- t - y %*% ginv(t(y) %*% y) %*% t(y) %*% t
 
     p <- t(x) %*% t %*% ginv(t(t) %*% t)
