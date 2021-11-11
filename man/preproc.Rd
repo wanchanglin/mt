@@ -70,7 +70,7 @@ preproc.const(x, y, tol = 1.0e-4)
 }
 
 \author{
-  Wanchang Lin \email{wll@aber.ac.uk}
+  Wanchang Lin 
 }
 
 % ----------------------------------------------------------------------

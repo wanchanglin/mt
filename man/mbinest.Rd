@@ -51,7 +51,7 @@ mbinest(dat, cl, choices = NULL, method, pars=valipars(),\dots)
 
 % ----------------------------------------------------------------------------
 \author{
-  Wanchang Lin \email{wll@aber.ac.uk}
+  Wanchang Lin 
 }
 
 \seealso{

@@ -34,7 +34,7 @@ mc.fried(x, p.adjust.method = p.adjust.methods,\dots)
 
 % ----------------------------------------------------------------------------
 \author{
-  Wanchang Lin \email{wll@aber.ac.uk}
+  Wanchang Lin 
 }
 
 \seealso{

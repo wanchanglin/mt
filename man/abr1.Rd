@@ -46,7 +46,6 @@ dat.log   <- preproc(dat, method = "log")
 dat.sqrt  <- preproc(dat, method = "sqrt")
 dat.asinh <- preproc(dat, method = "asinh")
 
-# -----------------------------------------------------------------
 op <- par(mfrow=c(2,2), pch=16)
 matplot(t(dat),main="Original",type="l",col="blue",
      ylab="Intensity")

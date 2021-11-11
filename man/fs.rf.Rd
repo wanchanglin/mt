@@ -41,7 +41,7 @@
   important variables.
 }
 
-\author{ Wanchang Lin \email{wll@aber.ac.uk} }
+\author{ Wanchang Lin  }
 
 % ----------------------------------------------------------------------
 \examples{

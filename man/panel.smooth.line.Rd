@@ -15,7 +15,7 @@ panel.smooth.line(x, y,\dots)
     \code{\link{xyplot}} for non-trivial details.  }
 }
 
-\author{Wanchang Lin \email{wll@aber.ac.uk}}
+\author{Wanchang Lin }
 
 \examples{
 library(lattice) 

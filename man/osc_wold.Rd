@@ -85,7 +85,7 @@ Westerhuis, J. A., de Jong, S., Smilde, A, K. (2001). Direct orthogonal signal c
 
 % ----------------------------------------------------------------------------
 \author{
-  Wanchang Lin \email{wll@aber.ac.uk}.
+  Wanchang Lin 
 }
 
 % ----------------------------------------------------------------------------

@@ -41,7 +41,7 @@ This function is for two-class problem only.
 
 % ----------------------------------------------------------------------------
 \author{
-  Wanchang Lin \email{wll@aber.ac.uk}
+  Wanchang Lin 
 }
 
 % ----------------------------------------------------------------------

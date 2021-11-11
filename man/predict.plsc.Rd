@@ -48,7 +48,7 @@ training data in \code{plsc} or \code{plslda} object will be returned.
 }
 % ----------------------------------------------------------------------------
 \author{
-  Wanchang Lin \email{wll@aber.ac.uk}.
+  Wanchang Lin 
 }
 % ----------------------------------------------------------------------------
 \seealso{

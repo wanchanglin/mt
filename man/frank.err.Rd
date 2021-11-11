@@ -62,7 +62,7 @@ frank.err(dat.tr, cl.tr, dat.te, cl.te, cl.method="svm",
 
 % ----------------------------------------------------------------------------
 \author{
-  Wanchang Lin \email{wll@aber.ac.uk}
+  Wanchang Lin 
 }
 
 \seealso{

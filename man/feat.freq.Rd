@@ -38,7 +38,7 @@
   vol.365, 488 - 492.
 }
 
-\author{ Wanchang Lin \email{wll@aber.ac.uk}. }
+\author{ Wanchang Lin  }
 
 \seealso{ \code{\link{feat.rank.re}} }
 

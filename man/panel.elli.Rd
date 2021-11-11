@@ -58,7 +58,7 @@ panel.outl(x, y, subscripts, groups=NULL, conf.level = 0.975, labs, \dots)
   details. }
 
 \author{
-  Wanchang Lin \email{wll@aber.ac.uk}
+  Wanchang Lin 
 }
 
 % ----------------------------------------------------------------------------

@@ -89,7 +89,7 @@
 
 % ----------------------------------------------------------------------------
 \author{
-  Wanchang Lin \email{wll@aber.ac.uk}
+  Wanchang Lin 
 }
 
 % ----------------------------------------------------------------------
@@ -131,7 +131,6 @@ stat <- pred$posterior[,pos]
 cl.auc (stat,obs, pos=pos)
 cl.roc (stat,obs, pos=pos)
 
-## -----------------------------------------------------------
 ## test examples for ROC and AUC
 label <- rbinom(30,size=1,prob=0.2)
 stat  <- rnorm(30)

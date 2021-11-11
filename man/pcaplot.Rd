@@ -63,7 +63,7 @@ pca.comp(x, scale=FALSE, pcs=1:2,\dots)
 }  
 
 \author{
-  Wanchang Lin \email{wll@aber.ac.uk}
+  Wanchang Lin 
 }
 
 \seealso{ \code{\link{grpplot}}, \code{\link{panel.elli.1}},

@@ -44,7 +44,7 @@ in \code{pcalda} object will be returned.
 }
 % ----------------------------------------------------------------------------
 \author{
-  Wanchang Lin \email{wll@aber.ac.uk}.
+  Wanchang Lin 
 }
 % ----------------------------------------------------------------------------
 \seealso{

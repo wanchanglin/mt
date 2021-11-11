@@ -25,7 +25,7 @@ trainind(cl, pars = valipars())
 
 % ----------------------------------------------------------------------------
 \author{
-  Wanchang Lin \email{wll@aber.ac.uk}
+  Wanchang Lin 
 }
 
 \seealso{\code{\link{valipars}}}

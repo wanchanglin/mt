@@ -21,7 +21,7 @@
   \item{fs.rank}{Aggregated rank list by Borda count. }
 }
 
-\author{ Wanchang Lin \email{wll@aber.ac.uk}. }
+\author{ Wanchang Lin  }
 
 \seealso{ \code{\link{feat.rank.re}}, \code{\link{feat.mfs}} }
 

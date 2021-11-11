@@ -58,7 +58,7 @@ tune.pcalda(x,y, ncomp=NULL, tune.pars,\dots)
 
 % ----------------------------------------------------------------------------
 \author{
-  Wanchang Lin \email{wll@aber.ac.uk}
+  Wanchang Lin 
 }
 
 \seealso{

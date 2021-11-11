@@ -40,7 +40,7 @@ This function is a method for the generic function \code{plot()} for class
 
 % ----------------------------------------------------------------------------
 \author{
-  Wanchang Lin \email{wll@aber.ac.uk}.
+  Wanchang Lin 
 }
 
 

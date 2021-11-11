@@ -107,7 +107,7 @@ feat.mfs.stats(fs.stats,cumu.plot=FALSE, main="Stats Plot",
   
 }
 
-\author{ Wanchang Lin \email{wll@aber.ac.uk} }
+\author{ Wanchang Lin  }
 
 \seealso{ \code{\link{feat.rank.re}}, \code{\link{feat.freq}} }
 

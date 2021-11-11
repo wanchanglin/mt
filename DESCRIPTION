@@ -3,7 +3,7 @@ Version: 2.0-1.18
 Date: 2021-11-06
 Title: Metabolomics Data Analysis Toolbox
 Author: Wanchang Lin
-Maintainer: Wanchang Lin <wanchanglin@gmail.com>
+Maintainer: Wanchang Lin <wanchanglin@hotmail.com>
 Description: This package provides functions for metabolomics data analysis: 
   data pre-processing, orthogonal signal correction, PCA analysis, PCA-DA 
 	analysis, PLS-DA analysis, classification, feature selection, correlation 

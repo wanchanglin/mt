@@ -41,7 +41,7 @@ mdsplot(x, y, method = "euclidean", dimen = c(1,2), \dots)
 
 
 \author{
-  Wanchang Lin \email{wll@aber.ac.uk}
+  Wanchang Lin 
 }
 
 \seealso{

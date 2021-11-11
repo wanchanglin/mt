@@ -60,7 +60,7 @@ stats.mat(x,y, method="mean",test.method = "wilcox.test",
 
 % ----------------------------------------------------------------------------
 \author{
-  Wanchang Lin \email{wll@aber.ac.uk}
+  Wanchang Lin 
 }
 
 % ----------------------------------------------------------------------

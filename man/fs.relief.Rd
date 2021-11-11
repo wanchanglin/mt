@@ -69,7 +69,7 @@ nearest neighbours from each of the different classes, called \emph{misses}.
 
 % ----------------------------------------------------------------------------
 \author{
-  Wanchang Lin \email{wll@aber.ac.uk}
+  Wanchang Lin 
 }
 
 % ----------------------------------------------------------------------

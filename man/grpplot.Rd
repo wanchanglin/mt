@@ -34,7 +34,7 @@
   \code{\link{pls.plot.wrap}}.
 }
 
-\author{Wanchang Lin \email{wll@aber.ac.uk}}
+\author{Wanchang Lin }
 
 \examples{
   data(iris)

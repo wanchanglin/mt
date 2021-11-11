@@ -59,7 +59,7 @@
 
 % ----------------------------------------------------------------------------
 \author{
-  Wanchang Lin \email{wll@aber.ac.uk}
+  Wanchang Lin 
 }
 
 % ----------------------------------------------------------------------
@@ -83,7 +83,6 @@ names(binmat.2)
 binmat.3 <- dat.sel(x,y,choices= NULL)
 names(binmat.3)
 
-## -------------------------------------------------------------------
 data(abr1)
 cls <- factor(abr1$fact$class)
 dat <- preproc(abr1$pos, method="log")

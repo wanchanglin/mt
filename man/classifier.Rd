@@ -83,7 +83,7 @@ classifier(dat.tr, cl.tr, dat.te=NULL, cl.te=NULL, method,
 
 % ----------------------------------------------------------------------------
 \author{
-  Wanchang Lin \email{wll@aber.ac.uk}
+  Wanchang Lin 
 }
 
 \seealso{

@@ -132,7 +132,7 @@ from PCA will be the input variable to LDA for classification.
 
 % ----------------------------------------------------------------------------
 \author{
-  Wanchang Lin \email{wll@aber.ac.uk}.
+  Wanchang Lin 
 }
 
 % ----------------------------------------------------------------------------

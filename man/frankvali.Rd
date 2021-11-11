@@ -147,7 +147,7 @@ fs.cl.1(dat,cl,fs.order=colnames(dat), cl.method = "svm",
 }
 % ----------------------------------------------------------------------------
 \author{
-  Wanchang Lin \email{wll@aber.ac.uk}
+  Wanchang Lin 
 }
 
 \seealso{

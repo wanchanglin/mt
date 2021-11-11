@@ -51,7 +51,7 @@ valipars(sampling="cv", niter=10, nreps=10, strat=FALSE,div = 2/3)
 
 % ----------------------------------------------------------------------------
 \author{
-  Wanchang Lin \email{wll@aber.ac.uk}
+  Wanchang Lin 
 }
 
 \seealso{

@@ -41,7 +41,7 @@ class \code{osc}. If \code{newdata} is omitted, the corrected data set used in m
 }
 % ----------------------------------------------------------------------------
 \author{
-  Wanchang Lin \email{wll@aber.ac.uk}.
+  Wanchang Lin 
 }
 % ----------------------------------------------------------------------------
 \seealso{

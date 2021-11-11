@@ -80,7 +80,7 @@ Wise, B. M. and Gallagher, N.B. \emph{http://www.eigenvector.com/MATLAB/OSC.html
 
 % ----------------------------------------------------------------------------
 \author{
-  Wanchang Lin \email{wll@aber.ac.uk}.
+  Wanchang Lin 
 }
 
 % ----------------------------------------------------------------------------
