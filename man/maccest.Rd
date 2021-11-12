@@ -175,9 +175,7 @@ res    <- maccest(x, y, method=method, pars=pars,
 res
 summary(res)
 plot(res)
-X11()
 boxplot(res)
-X11()
 par(mar = c(5,10,4,2) + 0.1)
 plot(res$h.test$tukey,las=1)   ## plot the tukey results
 }

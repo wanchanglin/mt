@@ -92,7 +92,6 @@ pcaplot(iris[,1:4], iris[,5],pcs=c(2,1),main="IRIS DATA", cex=1.2,
 
 ## compare pcaplot and pca.plot. 
 pcaplot(iris[,1:4], iris[,5],pcs=c(1,2),ep=2)
-X11()
 pca.plot(iris[,1:4], iris[,5], ep.plot = TRUE)
 
 ## an example of 'pca.comp'

@@ -24,7 +24,7 @@ mc.norm(x, \dots)
 
 % ----------------------------------------------------------------------
 \value{
-  Object of \code{shapiro.test}.
+  Object of \code{shapiro.test}, boxplot and histogram.
 }
 
 % ----------------------------------------------------------------------------
@@ -38,18 +38,16 @@ mc.norm(x, \dots)
 
 % ----------------------------------------------------------------------
 \examples{
-
-# Iris data
 data(iris)
 x      <- subset(iris, select = -Species)
 y      <- iris$Species
-
 method <- c("randomForest","svm","pcalda","knn")
 pars   <- valipars(sampling="boot", niter = 10, nreps=10)
 res    <- maccest(x, y, method=method, pars=pars,
-                  comp="anova",kernel="linear") 
+                  comp="anova") 
 res
-norm.t <- mc.norm(res$acc.iter)
+res$acc.iter
+mc.norm(res$acc.iter)
 }
 
 \keyword{classif}

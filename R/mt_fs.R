@@ -1373,34 +1373,34 @@ fs.cl.1 <- function(dat, cl, fs.order = colnames(dat), cl.method = "svm",
 #' lwc-22-10-2012: To get aam, call perf.aam.
 #' lwc-21-01-2014: To get other outcome such as SE and CI, need to provide
 #' extra code scripts. Refer to frankvali. Usages:
-if (F) {
-  data(abr1)
-  dat <- abr1$pos
-  x <- preproc(dat[, 110:500], method = "log10")
-  y <- factor(abr1$fact$class)
-  dat <- dat.sel(x, y, choices = c("1", "2"))
-  x.1 <- dat[[1]]$dat
-  y.1 <- dat[[1]]$cls
-  pars <- valipars(sampling = "cv", niter = 4, nreps = 4)
-
-  #' multi-classes
-  fs <- fs.rf(x, y)
-  ord <- fs$fs.order[1:50]
-  res <- fs.cl.2(x, y,
-    fs.order = ord, cl.method = "svm", pars = pars,
-    agg_f = TRUE
-  )
-  perf.aam(res)
-
-  #' two-classes
-  fs <- fs.rf(x.1, y.1)
-  ord <- fs$fs.order[1:50]
-  res.1 <- fs.cl.2(x.1, y.1,
-    fs.order = ord, cl.method = "svm", pars = pars,
-    agg_f = TRUE
-  )
-  perf.aam(res.1)
-}
+#' usages
+#'  data(abr1)
+#'  dat <- abr1$pos
+#'  x <- preproc(dat[, 110:500], method = "log10")
+#'  y <- factor(abr1$fact$class)
+#'  dat <- dat.sel(x, y, choices = c("1", "2"))
+#'  x.1 <- dat[[1]]$dat
+#'  y.1 <- dat[[1]]$cls
+#'  pars <- valipars(sampling = "cv", niter = 4, nreps = 4)
+#'
+#'  #' multi-classes
+#'  fs <- fs.rf(x, y)
+#'  ord <- fs$fs.order[1:50]
+#'  res <- fs.cl.2(x, y,
+#'    fs.order = ord, cl.method = "svm", pars = pars,
+#'    agg_f = TRUE
+#'  )
+#'  perf.aam(res)
+#'
+#'  #' two-classes
+#'  fs <- fs.rf(x.1, y.1)
+#'  ord <- fs$fs.order[1:50]
+#'  res.1 <- fs.cl.2(x.1, y.1,
+#'    fs.order = ord, cl.method = "svm", pars = pars,
+#'    agg_f = TRUE
+#'  )
+#'  perf.aam(res.1)
+#'
 fs.cl.2 <- function(dat, cl, fs.order = colnames(dat), cl.method = "svm",
                     pars = valipars(), agg_f = FALSE, ...) {
   len <- length(fs.order)

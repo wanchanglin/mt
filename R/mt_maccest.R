@@ -355,26 +355,20 @@ mc.anova <- function(x, ...) {
 
 #' ========================================================================
 #' lwc-19-12-2006: normality test using shpiro.test, and plot boxplot and
-#' density
-#' lwc-26-02-2010: Modify. Need more modification. e.g., output object of
-#' lattice.
-#' NOTE: Calling functions of package lattice inside a function must add
-#' 'print' as prefix.
+#' histogram
+#' lwc-26-02-2010: Using lattice. 
+#' wl-12-11-2021, Fri: return two lattice objects.
 mc.norm <- function(x, ...) {
   x <- data.frame(x)
   #' normality test
-  s.htest <- lapply(x, function(x) shapiro.test(x))
+  s.test <- lapply(x, function(x) shapiro.test(x))
 
   rownames(x) <- NULL
   x <- stack(x)
-  X11()
-  print(bwplot(~ values | ind,
-    data = x, as.table = T,
-    xlab = "", pch = "|", scales = list(cex = .75, relation = "free"), ...
-  ))
-
-  X11()
-  print(histogram(~ values | ind,
+  p.bw <- bwplot(~ values | ind,  data = x, as.table = T, xlab = "", 
+                 pch = "|", scales = list(cex = .75, relation = "free"), ...)
+  p.hist <- 
+  histogram(~ values | ind,
     data = x, as.table = T,
     scales = list(cex = .75, relation = "free"),
     panel = function(x, ...) {
@@ -384,7 +378,7 @@ mc.norm <- function(x, ...) {
         args = list(mean = mean(x), sd = sd(x))
       )
     }, ...
-  ))
+  )
 
   #' densityplot(~ values | ind, data=x, as.table=T,
   #'             scales=list(cex =.75,relation="free"), plot.points = F)
@@ -392,7 +386,7 @@ mc.norm <- function(x, ...) {
   #'        scales=list(cex =.75,relation="free"),
   #'        xlab = "Standard Normal Quantiles")
 
-  return(s.htest)
+  return(list(s.test = s.test, bwplot = p.bw, histogram = p.hist))
 }
 
 #'  1) maccest.default

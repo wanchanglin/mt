@@ -2112,29 +2112,6 @@ class.ind <- function(cl) {
   x
 }
 
-#' =========================================================================
-#' tic() and toc() functions.
-#' Internal function.
-#' Modified from package MATLAB by David Enot
-tic <- function(gcFirst = FALSE) {
-  if (gcFirst == TRUE) {
-    gc(verbose = FALSE)
-  }
-  assign("savedTime", proc.time()[3], envir = .GlobalEnv)
-  invisible()
-}
-
-toc <- function(echo = TRUE) {
-  prevTime <- get("savedTime", envir = .GlobalEnv)
-  diffTimeSecs <- proc.time()[3] - prevTime
-  if (echo) {
-    cat(sprintf("elapsed time is %f seconds", diffTimeSecs), "\n")
-    return(invisible())
-  } else {
-    return(diffTimeSecs)
-  }
-}
-
 #'  1) pca.outlier
 #'  2) pca.outlier.1
 #'  3) grpplot
@@ -2189,5 +2166,3 @@ toc <- function(echo = TRUE) {
 #' 52) un.list
 #' 53) shrink.list
 #' 54) class.ind
-#' 55) tic
-#' 56) toc
