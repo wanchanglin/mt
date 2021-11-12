@@ -39,6 +39,10 @@ This function is a method for the generic function \code{plot()} for class
 classifiers. 
 }
 
+\value{
+  Returns plot of class \code{maccest}.
+}
+
 % ----------------------------------------------------------------------------
 \author{
   Wanchang Lin 

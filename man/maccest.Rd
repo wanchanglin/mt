@@ -167,17 +167,17 @@ y      <- iris$Species
 method <- c("randomForest","svm","pcalda","knn")
 pars   <- valipars(sampling="boot", niter = 3, nreps=5, strat=TRUE)
 res    <- maccest(Species~., data = iris, method=method, pars = pars, 
-                  comp="anova",kernel="linear")
+                  comp="anova")
 ## or 
-res    <- maccest(x, y, method=method, pars=pars,
-                  comp="anova",kernel="linear") 
+res    <- maccest(x, y, method=method, pars=pars, comp="anova") 
 
 res
 summary(res)
 plot(res)
 boxplot(res)
-par(mar = c(5,10,4,2) + 0.1)
+oldpar <- par(mar = c(5,10,4,2) + 0.1)
 plot(res$h.test$tukey,las=1)   ## plot the tukey results
+par(oldpar)
 }
 
 \keyword{classif}

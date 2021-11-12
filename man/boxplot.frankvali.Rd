@@ -30,6 +30,10 @@ This function is a method for the generic function \code{boxplot()} for class
 \code{frankvali}. It plots the error rate of each feature subset.
 }
 
+\value{
+Returns boxplot of class \code{frankvali}.
+}
+
 % ----------------------------------------------------------------------------
 \author{
   Wanchang Lin 

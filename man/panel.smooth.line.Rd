@@ -15,6 +15,10 @@ panel.smooth.line(x, y,\dots)
     \code{\link{xyplot}} for non-trivial details.  }
 }
 
+\value{
+	An object of class \code{"trellis"}.
+}
+
 \author{Wanchang Lin }
 
 \examples{

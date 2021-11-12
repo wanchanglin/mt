@@ -45,12 +45,9 @@
 
 % ----------------------------------------------------------------------
 \examples{
-\dontrun{
-## prepare data set
 data(abr1)
 cls <- factor(abr1$fact$class)
 dat <- abr1$pos
-## dat <- abr1$pos[,110:1930]
 
 ## fill zeros with NAs
 dat <- mv.zene(dat)
@@ -60,9 +57,7 @@ mv <- mv.stats(dat, grp=cls)
 mv    ## View the missing value pattern
 
 ## filter missing value variables
-## dim(dat)
 dat <- dat[,mv$mv.var < 0.15]
-## dim(dat)
 
 ## fill NAs with mean
 dat <- mv.fill(dat,method="mean")
@@ -88,35 +83,5 @@ score <- res$stats
 score <- sort(score, decreasing = TRUE)
 plot(score)
 
-## --------------------------------------------------------------------
-## Since Random Forest is an random method, the results are different in
-## different runs.
-set.seed(1234)
-
-## apply random forests for feature selection/ranking
-tmp <- lapply(1:10, function(x){
-  res   <- fs.rf(mat,grp)
-  res.1 <- fs.rf.1(mat,grp)
-  
-  list(order = res$fs.order, order.1 = res.1$fs.order,
-       rank  = res$fs.rank,  rank.1  = res.1$fs.rank)
-})
-
-## compare the results:
-## 1.) feature orders
-order <- lapply(tmp, function(x) x$order)
-order <- do.call(cbind, order)
-
-order.1 <- lapply(tmp, function(x) x$order.1)
-order.1 <- do.call(cbind, order.1)
-
-## 2.) feature ranks
-rank <- lapply(tmp, function(x) x$rank)
-rank <- do.call(cbind, rank)
-
-rank.1 <- lapply(tmp, function(x) x$rank.1)
-rank.1 <- do.call(cbind, rank.1)
-
-}
 }
 \keyword{classif}

@@ -69,7 +69,6 @@ data(iris)
 sel <- c("setosa", "versicolor")
 grp <- iris[,5]
 idx <- match(iris[,5],sel,nomatch = 0) > 0
-## idx <- iris[,5] %in% sel  ## have problem in producing help page for %in%
 
 cls <- factor(iris[idx,5])
 dat <- iris[idx,1:4]
@@ -79,14 +78,8 @@ stats.vec(dat[[1]],cls, method = "median",test.method = "wilcox.test")
 
 ## use matrix format
 tab <- stats.mat(dat,cls, method = "median",test.method = "wilcox.test",
-                padj.method = "BH")
+                 padj.method = "BH")
 sapply(tab, class)
-
-#' Use ddply with stats.VEC. It is very useful for long format.
-# mat <- reshape::melt(cbind(dat,cls))
-# plyr::ddply(mat, .(variable), function(x,method,...){
-#    stats.vec(x$value, x$cls,method=method,...)
-# }, method="median",test.method = "wilcox.test",padj.method = "BH")
 
 }
 

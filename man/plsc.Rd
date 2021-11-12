@@ -167,7 +167,6 @@ implemented in package \pkg{pls}.
 
 % ----------------------------------------------------------------------------
 \examples{
-\dontrun{
 library(pls)  
 data(abr1)
 cl   <- factor(abr1$fact$class)
@@ -199,6 +198,7 @@ MSEP(res.1$pls.out)
 RMSEP(res.1$pls.out)
 R2(res.1$pls.out)
 
+\dontrun{
 ## with function of tuning component numbers
 (z.plsc   <- plsc(train.dat,train.t, ncomp = 20, tune = TRUE))
 (z.plslda <- plslda(train.dat,train.t, ncomp = 20, tune = TRUE))

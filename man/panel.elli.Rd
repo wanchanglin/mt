@@ -39,6 +39,10 @@ panel.outl(x, y, subscripts, groups=NULL, conf.level = 0.975, labs, \dots)
     \code{\link{xyplot}} for non-trivial details.  }
 }
 
+\value{
+  Retuns objects of class \code{"trellis"}.
+}
+
 \details{
   \code{panel.elli} is modified from function
   \code{\link{panel.ellipse}} in package \pkg{latticeExtra}.

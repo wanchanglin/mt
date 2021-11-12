@@ -32,6 +32,10 @@
   }
 }
 
+\value{
+  Returns plot of class \code{accest}.
+}
+
 % ----------------------------------------------------------------------------
 \details{
 This function is a method for the generic function \code{plot()} for class 

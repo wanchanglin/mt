@@ -114,6 +114,7 @@ feat.mfs.stats(fs.stats,cumu.plot=FALSE, main="Stats Plot",
 % -------------------------------------------------------------------------
 \examples{
 \dontrun{
+library(lattice)	
 data(abr1)
 dat <- preproc(abr1$pos[,200:400], method="log10")  
 cls <- factor(abr1$fact$class)
@@ -133,14 +134,8 @@ print(fs.stab$fs.cons,digits=2,na.print="")
 
 ## plot feature selection frequency
 freq <- fs.stab$fs.freq
-lattice::dotplot(freq$fs.anova, type="o", main="Feature Selection Frequencies")
-## barchart(freq$fs.anova)
-
-#' Venn diagram
-## require("gplots", quietly = TRUE) 
-## fs.ord  <- fs$fs.order[1:20,]
-## fs.ord  <- as.list(data.frame(fs.ord, stringsAsFactors = FALSE))
-## count   <- venn(fs.ord)
+dotplot(freq$fs.anova, type="o", main="Feature Selection Frequencies")
+barchart(freq$fs.anova)
 
 ## rank aggregation 
 fs.agg <- feat.agg(fs$fs.rank)

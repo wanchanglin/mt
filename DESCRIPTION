@@ -4,9 +4,9 @@ Date: 2021-11-06
 Title: Metabolomics Data Analysis Toolbox
 Author: Wanchang Lin
 Maintainer: Wanchang Lin <wanchanglin@hotmail.com>
-Description: The R package mt provides functions for metabolomics data analysis: 
-  data preprocessing, orthogonal signal correction, PCA analysis, PCA-DA 
-	analysis, PLS-DA analysis, classification, feature selection, correlation 
+Description: Functions for metabolomics data analysis: data preprocessing, 
+  orthogonal signal correction, PCA analysis, PCA-DA analysis, 
+	PLS-DA analysis, classification, feature selection, correlation 
 	analysis, data visualisation and re-sampling strategies.
 Depends: R (>= 3.0.0)
 Imports: methods, MASS, class, e1071, randomForest, pls, ellipse,

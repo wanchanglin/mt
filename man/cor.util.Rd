@@ -207,12 +207,6 @@ ord <- order.dendrogram(as.dendrogram(hclust(as.dist(1-co))))
 corrgram.circle(co[ord,ord], main="Corrgrams with circle")
 corrgram.ellipse(co[ord,ord], label = TRUE, main = "Corrgrams with circle",
                  col.regions = hm.cols())
-## R package gclus provides other order methods. See order.single,
-## order.endlink and order.hclust for details.
-## Usage: 
-## library(gclus)
-## ord.1 <- order.single(as.dist(1-co))  
-## corrgram.circle(co[ord.1,ord.1], main="Corrgrams with circle")
 
 ## if without ordering
 corrgram.circle(co, main="Corrgrams with circle")

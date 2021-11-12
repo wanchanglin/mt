@@ -102,7 +102,7 @@ dat.rand <- mv.fill(dat,method="rand")
 dat.low <- mv.fill(dat, method="low") 
 
 ## summary of imputed data set
-mt:::df.summ(dat.mean)
+df.summ(dat.mean)
 
 }
 

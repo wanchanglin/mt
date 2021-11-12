@@ -50,15 +50,14 @@ y      <- iris$Species
 
 method <- c("randomForest","svm","pcalda","knn")
 pars   <- valipars(sampling="boot", niter = 10, nreps=4)
-res    <- maccest(x, y, method=method, pars=pars,
-                  comp="anova",kernel="linear") 
+res    <- maccest(x, y, method=method, pars=pars, comp="anova") 
 
 res
-
 htest <- mc.anova(res$acc.iter)
-par(mar = c(5,10,4,2) + 0.1)
-plot(htest$tukey,las=1)   ## plot the tukey results
 
+oldpar <- par(mar = c(5,10,4,2) + 0.1)
+plot(htest$tukey,las=1)   ## plot the tukey results
+par(oldpar)
 }
 
 \keyword{classif}

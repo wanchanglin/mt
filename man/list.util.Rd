@@ -25,6 +25,12 @@ shrink.list(x)
   \item{y}{A character or string of separator.}
 }
 
+\value{
+  \code{list2df} returns a data frame.
+  \code{un.list} returns a list.
+	\code{shrink.list} retuns a list.
+}
+
 \details{
   \code{list2df} converts a list with components of vector to a data 
   frame. Shorter vectors will be filled with 

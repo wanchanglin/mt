@@ -165,7 +165,6 @@ fs.cl.1(dat,cl,fs.order=colnames(dat), cl.method = "svm",
 
 % ----------------------------------------------------------------------------
 \examples{
-\dontrun{
 data(abr1)
 dat <- abr1$pos
 x   <- preproc(dat[,110:500], method="log10")  
@@ -183,6 +182,7 @@ res
 summary(res)
 boxplot(res)  
 
+\dontrun{
 ## or apply feature selection with re-sampling procedure at first
 fs  <- feat.rank.re(x.1,y.1,method="fs.auc",pars = pars)
 
@@ -190,8 +190,6 @@ fs  <- feat.rank.re(x.1,y.1,method="fs.auc",pars = pars)
 res.1  <- frankvali(x.1,y.1,cl.method = "knn", fs.order=fs$fs.order,
                     fs.len=len, pars = pars)
 res.1
-summary(res.1)
-boxplot(res.1)  
 
 ## use formula
 data.bin <- data.frame(y.1,x.1)
@@ -200,8 +198,6 @@ pars <- valipars(sampling="cv",niter=2,nreps=4)
 res.2  <- frankvali(y.1~., data=data.bin,fs.method="fs.rfe",fs.len=len, 
                     cl.method = "knn",pars = pars)
 res.2
-summary(res.2)
-boxplot(res.2)                  
 
 ## examples of fs.cl and fs.cl.1
 fs <- fs.rf(x.1, y.1)

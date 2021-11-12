@@ -87,13 +87,12 @@ data(abr1)
 cls <- factor(abr1$fact$class)
 dat <- preproc(abr1$pos, method="log")
 
-## choices = c("2")
-## choices = c("2","3","4")
-choices = list(c("2","3"),c("4","5"))
-## choices = NULL
+## There are some examples of 'choices'
+choices <- c("2")
+choices <- c("2","3","4")
+choices <- list(c("2","3"),c("4","5"))
+choices <- NULL
 idx <- combn.pw(cls,choices=choices)  
-## head(idx)
-## idx.1 <- sapply(idx, which)
 
 dat.pw <- dat.sel(dat, cls,choices=choices)
 

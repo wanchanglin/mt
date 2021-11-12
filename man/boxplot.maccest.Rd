@@ -30,6 +30,10 @@ This function is a method for the generic function \code{boxplot()} for class
 \code{maccest}. It plots the accurary rate for each classifier.
 }
 
+\value{
+  Returns boxplot of class \code{maccest}.
+}
+
 % ----------------------------------------------------------------------------
 \author{
   Wanchang Lin 

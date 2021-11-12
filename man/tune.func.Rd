@@ -92,9 +92,9 @@ ncomp.pcalda <- tune.pcalda(dat,cl, ncomp=60)
 (z.pcalda <- pcalda(train.dat,train.t, ncomp=ncomp.pcalda$ncomp))
 
 ## or indirect use tune function in model fit
-\dontrun{z.plsc   <- plsc(train.dat,train.t, ncomp=20, tune=TRUE)}
-\dontrun{z.plslda <- plslda(train.dat,train.t, ncomp=20, tune=TRUE)}
-\dontrun{z.pcalda <- pcalda(train.dat,train.t, ncomp=60, tune=TRUE)}
+z.plsc   <- plsc(train.dat,train.t, ncomp=20, tune=TRUE)
+z.plslda <- plslda(train.dat,train.t, ncomp=20, tune=TRUE)
+z.pcalda <- pcalda(train.dat,train.t, ncomp=60, tune=TRUE)
 
 ## predict test data
 pred.plsc   <- predict(z.plsc, test.dat)$class

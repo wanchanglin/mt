@@ -2037,7 +2037,7 @@ my_melt <- function(x) {
 #' =======================================================================
 #' lwc-26-04-2008: save a list into a table file.
 save.tab <- function(x, filename = "temp.csv", firstline = "\n") {
-  options(warn = -1) #' disable warning message
+  # options(warn = -1) #' disable warning message
   write(firstline, file = filename)
   if (is.list(x) && !is.data.frame(x)) { #' lwc-18-02-2010: fix
     for (i in names(x)) {
@@ -2054,7 +2054,7 @@ save.tab <- function(x, filename = "temp.csv", firstline = "\n") {
       quote = F, row.names = T, col.names = NA
     )
   }
-  options(warn = 0) #' restore to default value
+  # options(warn = 0) #' restore to default value
   invisible()
 }
 
