@@ -45,6 +45,7 @@
 
 % ----------------------------------------------------------------------
 \examples{
+\dontrun{
 ## prepare data set
 data(abr1)
 cls <- factor(abr1$fact$class)
@@ -117,5 +118,5 @@ rank.1 <- lapply(tmp, function(x) x$rank.1)
 rank.1 <- do.call(cbind, rank.1)
 
 }
-
+}
 \keyword{classif}

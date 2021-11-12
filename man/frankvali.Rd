@@ -165,6 +165,7 @@ fs.cl.1(dat,cl,fs.order=colnames(dat), cl.method = "svm",
 
 % ----------------------------------------------------------------------------
 \examples{
+\dontrun{
 data(abr1)
 dat <- abr1$pos
 x   <- preproc(dat[,110:500], method="log10")  
@@ -217,5 +218,5 @@ res.5 <- fs.cl.1(x.1,y.1,fs.order=ord, cl.method = "svm", pars = pars,
                  agg_f=FALSE)
                  
 }
-
+}
 \keyword{classif}

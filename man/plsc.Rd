@@ -167,6 +167,7 @@ implemented in package \pkg{pls}.
 
 % ----------------------------------------------------------------------------
 \examples{
+\dontrun{
 library(pls)  
 data(abr1)
 cl   <- factor(abr1$fact$class)
@@ -220,6 +221,7 @@ pred.plslda <- predict(z.plslda, test.dat)$class
 cl.rate(test.t, pred.plsc)
 cl.rate(test.t, pred.plslda)
 
+}
 }
 
 \keyword{classif}

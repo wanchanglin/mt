@@ -41,6 +41,7 @@
 
 % ----------------------------------------------------------------------
 \examples{
+\dontrun{
 data(abr1)
 dat <- preproc(abr1$pos[,200:400], method="log10")  
 cls <- factor(abr1$fact$class)
@@ -59,8 +60,8 @@ fs <- fs[1:3]
 filename  <- "fs.csv"
 firstline <- paste('\nResults of feature selection', sep='')
 
-\dontrun{save.tab(fs, filename, firstline)}
- 
+save.tab(fs, filename, firstline)
+}
 }
 
 \keyword{manip}

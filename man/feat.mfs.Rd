@@ -113,6 +113,7 @@ feat.mfs.stats(fs.stats,cumu.plot=FALSE, main="Stats Plot",
 
 % -------------------------------------------------------------------------
 \examples{
+\dontrun{
 data(abr1)
 dat <- preproc(abr1$pos[,200:400], method="log10")  
 cls <- factor(abr1$fact$class)
@@ -155,5 +156,5 @@ fs.tab <- list2df(un.list(fs.tab))
 ## without resampling
 fs.1 <- feat.mfs(x, y, method=fs.method, is.resam = FALSE)
 }
-
+}
 \keyword{classif}

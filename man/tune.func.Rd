@@ -67,6 +67,7 @@ tune.pcalda(x,y, ncomp=NULL, tune.pars,\dots)
 
 % ----------------------------------------------------------------------------
 \examples{
+\dontrun{
 data(abr1)
 cl   <- factor(abr1$fact$class)
 dat  <- preproc(abr1$pos , y=cl, method=c("log10"),add=1)[,110:500]
@@ -106,6 +107,6 @@ cl.rate(test.t, pred.plslda)
 cl.rate(test.t, pred.pcalda)
 
 }
-
+}
 
 \keyword{models}
