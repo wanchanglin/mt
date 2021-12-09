@@ -663,6 +663,7 @@ mv.zene <- function(dat) {
 #' lwc-15-06-2011: minor changes.
 #' lwc-22-06-2011: Replace ifelse(x < .Machine$double.eps, m, x) with
 #'   ifelse(x < .Machine$double.eps, NA, x) and change its line position.
+#' wl-27-11-2021, Sat: bug. if dat have minus values, do not use 'ze_ne = T'
 #' Usage
 #'   data(abr1)
 #'   dat <- abr1$pos[,1970:1980]
