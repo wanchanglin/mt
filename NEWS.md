@@ -91,3 +91,8 @@ lattice version and the later is the basic graphics version.
 - Change CHANGELOG as NEWS.md
 - Move packages from Depends to Imports in DESCRIPTION
 - Spell check on R scripts using RStudio
+
+
+# mt 2.0-1.19: (31-01-2022)
+
+- no changes but test against new version of randomForest 4.7.1 as requested.
