@@ -1,6 +1,6 @@
 Package: mt
 Version: 2.0-1.19
-Date: 2021-11-06
+Date: 2022-02-01
 Title: Metabolomics Data Analysis Toolbox
 Author: Wanchang Lin
 Maintainer: Wanchang Lin <wanchanglin@hotmail.com>
@@ -19,4 +19,3 @@ LazyLoad: yes
 LazyData: yes
 ZipData: No
 NeedsCompilation: no
-Packaged: 2021-11-11 06:35:28 UTC; Administrator
