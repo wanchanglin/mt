@@ -79,7 +79,7 @@ feat.cons <- function(freq, disp = TRUE) {
 #' lwc-15-02-2010: drop fs.tab.
 #' lwc-25-02-2010: minor changes
 #' Arguments:
-#'   x         - data matirx or data fram
+#'   x         - data matrix or data frame
 #'   y         - class labels (factor)
 #'   method    - a set of feature selections methods
 #'   pars      - validation control parameters.
@@ -313,7 +313,7 @@ feat.rank.re <- function(x, y, method, pars = valipars(), tr.idx = NULL,
 #' =======================================================================
 #' wll-31-10-2007: feature selection using VIP of PLS.
 #' NOTE: This function supports multiple response, Y (i.e. dummy matrix for
-#' discriminat). The Mahalanobis distance of VIP is computed as the values
+#' discriminant). The Mahalanobis distance of VIP is computed as the values
 #' for selection of feature/variables.
 #' References:
 #' 1. Svante Wold et. al., PLS-regression: a basic tool of chemometrics.
@@ -373,7 +373,7 @@ fs.plsvip <- function(x, y, ncomp = 10, ...) {
 #' =======================================================================
 #' wll-31-10-2007: feature selection using VIP of PLS.
 #' NOTE: This function supports multiple response, Y (i.e. dummy matrix for
-#'       discriminat). The final VIP is the means of absolute value of VIP.
+#'       discriminant). The final VIP is the means of absolute value of VIP.
 fs.plsvip.1 <- function(x, y, ncomp = 10, ...) {
   if (!is.data.frame(x)) x <- as.data.frame(x)
   if (length(y) != nrow(x)) {
@@ -440,7 +440,7 @@ fs.plsvip.2 <- function(x, y, ncomp = 10, ...) {
   #' NOTE: need to consider a nice way to convert
 
   pls <- oscorespls.fit(as.matrix(x), y, ncomp = ncomp)
-  #' NOTE: Only NIPLS supprots VIP values.
+  #' NOTE: Only NIPLS supports VIP values.
 
   #' VIP values (taken from http://mevik.net/work/software/pls.html)
   SS <- c(pls$Yloadings)^2 * colSums(pls$scores^2)
@@ -466,7 +466,7 @@ fs.plsvip.2 <- function(x, y, ncomp = 10, ...) {
 #' wll-29-10-2007: feature selection using regression coefficient of PLS.
 #' wll-19-11-2015: add 'pls:::' in the front of 'coef.mvr' since it 'hides'
 #'   in the new version of 'pls'
-#' NOTE: I try to use robust estimation of center and covarian matrix by
+#' NOTE: I try to use robust estimation of center and covariant matrix by
 #'       cov.rob in package MASS. But it seems the collinearity problem to
 #'       appear. Therefore, the simple Mahalanobis distance is used.
 #' NOTES: 1.) Mahalanobis distance and leverage are often used to detect
@@ -488,7 +488,7 @@ fs.pls <- function(x, y, pls = "simpls", ncomp = 10, ...) {
   # coe <- drop(pls:::coef.mvr(val$pls.out, ncomp = val$ncomp))
 
 
-  #' lwc-14-06-2010: After runing plsc, ncomp may change; hence ncomp here
+  #' lwc-14-06-2010: After running plsc, ncomp may change; hence ncomp here
   #'                 use val$ncomp
 
   #' Mahalanobis distances
@@ -513,7 +513,7 @@ fs.pls <- function(x, y, pls = "simpls", ncomp = 10, ...) {
 #' lwc-22-09-2011: a bug fixed.
 #' NOTE: 1. To check the eignenvalue, use screeplot().
 #'       2. If it combines with other supervised methods such as fs.rf and
-#'       fs.anove as the input methods for feat.mfs and feat.mfs.1, the
+#'       fs.anova as the input methods for feat.mfs and feat.mfs.1, the
 #'       'thres' should be given explicitly in case of conflicting with 'y'.
 #'       e.g., fs.m <- c("fs.anova", "fs.rf", "fs.pca") feat.mfs.1(dat, cls,
 #'       method=fs.m, is.resam=F, thres=0.8)
@@ -552,7 +552,7 @@ fs.pca <- function(x, thres = 0.8, ...) {
 
 #' =======================================================================
 #' lwc-12-04-2007: feature selection using ratio of between-group
-#'                 to within-group sums of squres (BW).
+#'                 to within-group sums of squares (BW).
 #' References: Dudoit S, Fridlyand J, Speed T.P. Comparison of
 #'   discrimination methods for the classification of tumors using gene
 #'   expression data. J Amer Statist Assoc 2002, 97:7.

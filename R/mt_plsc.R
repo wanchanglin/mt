@@ -42,7 +42,7 @@ plsc.default <- function(x, y, pls = "simpls", ncomp = 10, tune = FALSE,
   pls <- match.arg(pls, c("kernelpls", "simpls", "oscorespls"))
   pls.fit <- paste(pls, ".fit", sep = "")
 
-  #' initilisation
+  #' initialisation
   x <- as.matrix(x)
   y <- as.factor(y)
   n <- nrow(x)
@@ -109,7 +109,7 @@ plsc.default <- function(x, y, pls = "simpls", ncomp = 10, tune = FALSE,
 #' =========================================================================
 #' wll-01-10-2007: predict method. See predict.mvr and coef.mvr in package
 #'                 pls for details.
-#' NOTE: More cpmments are in function pred.pls which can be call directly
+#' NOTE: More comments are in function pred.pls which can be call directly
 #'       by simpls.fit etc.
 predict.plsc <- function(object, newdata, ...) {
   if (!inherits(object, "plsc")) stop("object not of class \"plsc\"")
@@ -172,7 +172,7 @@ print.plsc <- function(x, ...) {
 
   cat("\nConfusion matrix of training data:\n")
   print(x$conf)
-  cat("\nAccurary rate of training data:\n")
+  cat("\nAccuracy rate of training data:\n")
   print(x$acc)
   invisible(x)
 }

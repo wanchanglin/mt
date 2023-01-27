@@ -78,7 +78,7 @@ maccest.default <- function(dat, cl, method = "svm", pars = valipars(),
     comp <- paste(names(h.test)[1], "+", names(h.test)[2], sep = " ")
   }
 
-  #' prepar the returned values
+  #' prepare the returned values
   ret <- list(
     method = method,
     acc = acc,
@@ -145,7 +145,7 @@ print.summary.maccest <- function(x, digits = 3, ...) {
   print.maccest(x)
   cat("\n\nAccuracy on each iteration:\n")
   print(round(x$acc.iter, digits))
-  cat("\nSummary of accurary on each iteration:\n")
+  cat("\nSummary of accuracy on each iteration:\n")
   #' print(summary(x$acc.iter))
   print(apply(x$acc.iter, 2, summary)) #' nicely formatted summary
 
@@ -164,7 +164,7 @@ boxplot.maccest <- function(x, ...) {
 
   ylim <- c(0, 1.0)
 
-  main <- "Classifier Accurary"
+  main <- "Classifier Accuracy"
 
   boxplot(data.frame(x$acc.iter),
     main = main, col = col, xlab = xlab,
@@ -189,7 +189,7 @@ plot.maccest <- function(x, main = NULL, xlab = NULL, ylab = NULL, ...) {
   }
 
   if (is.null(main)) {
-    main <- paste("Performance of classfier (Sampling: ", x$sampling, " )",
+    main <- paste("Performance of classifier (Sampling: ", x$sampling, " )",
       sep = ""
     )
   }

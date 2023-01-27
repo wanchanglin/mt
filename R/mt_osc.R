@@ -81,7 +81,7 @@ predict.osc <- function(object, newdata, ...) {
     x <- newdata - newdata %*% object$w %*% t(object$p)
   }
 
-  #' claculate the removed variance of X
+  #' calculate the removed variance of X
   Q2 <- sum(x^2) / sum(newdata^2) * 100
 
   return(list(x = x, Q2 = Q2))

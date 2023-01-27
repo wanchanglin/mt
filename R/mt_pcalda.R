@@ -112,7 +112,7 @@ tune.pcalda.2 <- function(x, y, ncomp = NULL, center = TRUE, scale. = FALSE,
 #' History:
 #'   wll-22-06-2007: commence
 #'   wll-01-07-2007: try number of PCs as n - g. Over-fitting.
-#'   wll-24-01-2008: stip off constant PCs within group
+#'   wll-24-01-2008: strip off constant PCs within group
 pcalda.default <- function(x, y, center = TRUE, scale. = FALSE, ncomp = NULL,
                            tune = FALSE, ...) {
 
@@ -168,8 +168,8 @@ pcalda.default <- function(x, y, center = TRUE, scale. = FALSE, ncomp = NULL,
   #' stip off PCs constant within groups
   x.tmp <- preproc.const(x.tmp, y)
   ncomp <- ncol(x.tmp)
-  #' NOTE-28-01-2008: If the variables being strippt off is not in the end
-  #'   of columns, they positions should be sotred somewhere. But this
+  #' NOTE-28-01-2008: If the variables being stript off is not in the end
+  #'   of columns, they positions should be sorted somewhere. But this
   #'   situation is rare in PCs. Refer to predict.pcalda where the ncomp is
   #'   used.
 

@@ -79,7 +79,7 @@ plslda.default <- function(x, y, pls = "simpls", ncomp = 10, tune = FALSE,
   #' lwc-21-05-2012: use wrapper function of "mvr".
   pls.out <- plsr(class.ind(y) ~ x, method = pls, ncomp = ncomp, ...)
 
-  #' Use latent varables as input data for LDA.
+  #' Use latent variables as input data for LDA.
   x.lv <- unclass(pls.out$scores)
 
   #' Transform test data using weight matrix (projection)(Xt = X*W)
@@ -153,7 +153,7 @@ print.plslda <- function(x, ...) {
 
   cat("\nConfusion matrix of training data:\n")
   print(x$conf)
-  cat("\nAccurary rate of training data:\n")
+  cat("\nAccuracy rate of training data:\n")
   print(x$acc)
   invisible(x)
 }
