@@ -17,9 +17,9 @@ un.list,shrink.list, fs.rf.1, fs.cl, fs.cl.1, aam.cl,aam.mcl, cor.cut,
 cor.hcl, cor.heat, preproc.sd, preproc.const, feat.mfs.stab,
 combn.pw, cl.rate, cl.perf, cl.roc, cl.auc, corrgram.circle,
 corrgram.ellipse, pval.reject, pval.test, pca.comp, pca.plot, cor.heat.gram,
-pca.plot.wrap, lda.plot.wrap, lda.plot.wrap.1, pls.plot.wrap, hm.cols, 
+pca_plot_wrap, lda_plot_wrap, lda_plot_wrap.1, pls_plot_wrap, hm.cols, 
 mv.zene, mv.fill, mv.stats, df.summ, vec.summ, vec.summ.1, stats.vec, 
-stats.mat, mdsplot, mds.plot.wrap, panel.outl
+stats.mat, mdsplot, mds_plot_wrap, panel.outl
 
 )
 

@@ -56,8 +56,8 @@ panel.outl(x, y, subscripts, groups=NULL, conf.level = 0.975, labs, \dots)
 }
 
 \note{ \code{panel.elli.1} can be called by functions \code{grpplot},
-  \code{pcaplot}, \code{mdsplot}, \code{pca.plot.wrap},
-  \code{mds.plot.wrap}, \code{pls.plot.wrap} and \code{lda.plot.wrap} by
+  \code{pcaplot}, \code{mdsplot}, \code{pca_plot_wrap},
+  \code{mds_plot_wrap}, \code{pls_plot_wrap} and \code{lda_plot_wrap} by
   passing argument of \code{ep}. See examples of these function for
   details. }
 

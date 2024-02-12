@@ -57,7 +57,7 @@
 
 # mt 2.0-1.13: (10-06-2015)
 
-- two functions `mdsplot` and `mds.plot.wrap` for MDS plotting.
+- two functions `mdsplot` and `mds_plot_wrap` for MDS plotting.
 
 # mt 2.0-1.14: (16-07-2015)
 
@@ -96,3 +96,11 @@ lattice version and the later is the basic graphics version.
 # mt 2.0-1.19: (31-01-2022)
 
 - no changes but test against new version of randomForest 4.7.1 as requested.
+
+# mt 2.0-1.20: (12-02-2024)
+
+- No changes but new R version of R complains S3 method in RD file. So
+  change the dot as underscore for: pca_plot_wrap, mds_plot_wrap,
+  lda_plot_wrap, lda_plot_wrap_1 and pls_plot_wrap. (probably '.plot' is the
+  problem)
+

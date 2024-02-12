@@ -52,8 +52,8 @@
 }
 
 \seealso{
-  Applications of \code{dat.sel} in \code{\link{pca.plot.wrap}}, 
-  \code{\link{lda.plot.wrap}} and \code{\link{pls.plot.wrap}}.
+  Applications of \code{dat.sel} in \code{\link{pca_plot_wrap}}, 
+  \code{\link{lda_plot_wrap}} and \code{\link{pls_plot_wrap}}.
 
 }
 

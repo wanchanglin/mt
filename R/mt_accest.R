@@ -689,8 +689,8 @@ classifier <- function(dat.tr, cl.tr, dat.te = NULL, cl.te = NULL, method,
 
   #' 05-10-2007: re-write this wrapper to avoid multiple arguments
   if (method == "knn") {
-    method <- c("knn.wrap")
-    knn.wrap <- function(train, cl, ...) list(train = train, cl = cl, ...)
+    method <- c("knn_wrap")
+    knn_wrap <- function(train, cl, ...) list(train = train, cl = cl, ...)
     pred.func <- function(object, newdata, k = 1, ...) {
       #' knn(train=object$train, test=newdata,cl=object$cl, k=k,...)
       knn(train = object$train, test = newdata, cl = object$cl, k = k)

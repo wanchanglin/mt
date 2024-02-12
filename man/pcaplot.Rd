@@ -67,7 +67,7 @@ pca.comp(x, scale=FALSE, pcs=1:2,\dots)
 }
 
 \seealso{ \code{\link{grpplot}}, \code{\link{panel.elli.1}},
-  \code{\link{pca.plot.wrap}} }
+  \code{\link{pca_plot_wrap}} }
 
 
 % ----------------------------------------------------------------------------

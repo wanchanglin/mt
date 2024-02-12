@@ -30,8 +30,8 @@
 % ----------------------------------------------------------------------------
 \seealso{
   \code{\link{panel.elli.1}}, \code{\link{pcaplot}},
-  \code{\link{pca.plot.wrap}},  \code{\link{lda.plot.wrap}}, 
-  \code{\link{pls.plot.wrap}}.
+  \code{\link{pca_plot_wrap}},  \code{\link{lda_plot_wrap}}, 
+  \code{\link{pls_plot_wrap}}.
 }
 
 \author{Wanchang Lin }

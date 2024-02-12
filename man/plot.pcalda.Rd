@@ -43,7 +43,7 @@
 
 \seealso{
   \code{\link{pcalda}}, \code{\link{predict.pcalda}},
-  \code{\link{lda.plot.wrap}},\code{\link{panel.elli.1}}.
+  \code{\link{lda_plot_wrap}},\code{\link{panel.elli.1}}.
 }
 
 \examples{

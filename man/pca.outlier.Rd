@@ -63,7 +63,7 @@
   example, outliers in different groups or in conditional panel, you can
   write an wrapper function combining with \code{\link{pca.comp}},
   \code{\link{panel.elli}} and \code{\link{panel.outl}}. It is quite
-  similiar to the implementation of \code{\link{pca.plot.wrap}}.
+  similiar to the implementation of \code{\link{pca_plot_wrap}}.
 }
 
 % ----------------------------------------------------------------------------
@@ -74,7 +74,7 @@
 % ----------------------------------------------------------------------------
 \seealso{\code{\link{pcaplot}}, \code{\link{grpplot}},
   \code{\link{panel.outl}},\code{\link{panel.elli}},
-  \code{\link{pca.plot.wrap}} }
+  \code{\link{pca_plot_wrap}} }
 
 
 % ----------------------------------------------------------------------

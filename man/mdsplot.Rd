@@ -19,7 +19,7 @@ mdsplot(x, y, method = "euclidean", dimen = c(1,2), \dots)
   \item{method}{ 
   The distance measure to be used. This must be one of "euclidean", "maximum", 
   "manhattan", "canberra", "binary" or "minkowski". Any unambiguous substring
-   can be given. It is only for \code{mds.plot.wrap}.
+   can be given. It is only for \code{mds_plot_wrap}.
   }
 
   \item{dimen}{
@@ -45,7 +45,7 @@ mdsplot(x, y, method = "euclidean", dimen = c(1,2), \dots)
 }
 
 \seealso{
-  \code{\link{grpplot}}, \code{\link{panel.elli}}, \code{\link{mds.plot.wrap}},
+  \code{\link{grpplot}}, \code{\link{panel.elli}}, \code{\link{mds_plot_wrap}},
   \code{\link{pcaplot}}
 }
 

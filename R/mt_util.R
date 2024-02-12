@@ -6,7 +6,7 @@
 #' plot outliers based on PCA in a general way, for example outliers in
 #' different groups or in conditional panel, you can write an wrapper
 #' function combining with 'pca.comp', 'panel.elli' and 'panel.oult'. The
-#' example is 'pca.plot.wrap'.
+#' example is 'pca_plot_wrap'.
 pca.outlier <- function(x, center = TRUE, scale = TRUE,
                         conf.level = 0.975, ...) {
 
@@ -846,7 +846,7 @@ hm.cols <- function(low = "green", high = "red", n = 123) {
 #'               be noted the names of the first layer of data.list must be
 #'               given.
 #'   title     - A part of title string for plotting
-pca.plot.wrap <- function(data.list, title = "plotting", ...) {
+pca_plot_wrap <- function(data.list, title = "plotting", ...) {
   if (is.null(names(data.list))) {
     names(data.list) <-
       paste(deparse(substitute(data.list)), 1:length(data.list), sep = ":")
@@ -895,7 +895,7 @@ pca.plot.wrap <- function(data.list, title = "plotting", ...) {
 #' =========================================================================
 #' wll-01-06-2015: Wrapper function for plotting MDS. Only the first two
 #'   dimensions are  plotted.
-mds.plot.wrap <- function(data.list, method = "euclidean",
+mds_plot_wrap <- function(data.list, method = "euclidean",
                           title = "plotting", ...) {
   if (is.null(names(data.list))) {
     names(data.list) <- paste(deparse(substitute(data.list)),
@@ -949,7 +949,7 @@ mds.plot.wrap <- function(data.list, method = "euclidean",
 #'               be noted the names of the first layer of data.list must be
 #'               given.
 #'   title     - A part of title string for plotting
-lda.plot.wrap <- function(data.list, title = "plotting", ...) {
+lda_plot_wrap <- function(data.list, title = "plotting", ...) {
   if (is.null(names(data.list))) {
     names(data.list) <- paste(deparse(substitute(data.list)),
                               1:length(data.list), sep = ":")
@@ -1006,7 +1006,7 @@ lda.plot.wrap <- function(data.list, title = "plotting", ...) {
 #' =========================================================================
 #' wll-23-10-2008: Wrapper function for plotting PCALDA
 #' Note: Will plot 2-class problem differently with stripplot.
-lda.plot.wrap.1 <- function(data.list, title = "plotting", ...) {
+lda_plot_wrap.1 <- function(data.list, title = "plotting", ...) {
   if (is.null(names(data.list))) {
     names(data.list) <- paste(deparse(substitute(data.list)),
                               1:length(data.list), sep = ":")
@@ -1079,7 +1079,7 @@ lda.plot.wrap.1 <- function(data.list, title = "plotting", ...) {
 #'               be noted the names of the first layer of data.list must be
 #'               given.
 #'   title     - A part of title string for plotting
-pls.plot.wrap <- function(data.list, title = "plotting", ...) {
+pls_plot_wrap <- function(data.list, title = "plotting", ...) {
   if (is.null(names(data.list))) {
     names(data.list) <- paste(deparse(substitute(data.list)), 1:length(data.list),
       sep = ":"
@@ -1146,12 +1146,12 @@ pls.plot.wrap <- function(data.list, title = "plotting", ...) {
 #'  y <- iris$Species
 #'  #' generate data list by dat.sel
 #'  iris.pw <- dat.sel(x,y,choices=NULL)
-#'  res <- pls.plot.wrap(iris.pw)
-#'  ph  <- plot.wrap.split(res[[1]], res[[3]], perc=F)
+#'  res <- pls_plot_wrap(iris.pw)
+#'  ph  <- plot_wrap.split(res[[1]], res[[3]], perc=F)
 #'  win.metafile(filename = paste("pls_plot","%02d.emf",sep="_"))
 #'  for(i in 1:length(ph)) plot(ph[[i]])
 #'  dev.off()
-plot.wrap.split <- function(plot.handle, plot.lab, perc = T) {
+plot_wrap.split <- function(plot.handle, plot.lab, perc = T) {
   n <- dim(plot.handle)
   pca.ph <- lapply(1:n, function(x) {
     ph <- plot.handle[x]
@@ -2135,12 +2135,12 @@ class.ind <- function(cl) {
 #' 20) mv.stats
 #' 21) mv.pattern
 #' 22) hm.cols
-#' 23) pca.plot.wrap
-#' 24) mds.plot.wrap
-#' 25) lda.plot.wrap
-#' 26) lda.plot.wrap.1
-#' 27) pls.plot.wrap
-#' 28) plot.wrap.split
+#' 23) pca_plot_wrap
+#' 24) mds_plot_wrap
+#' 25) lda_plot_wrap
+#' 26) lda_plot_wrap.1
+#' 27) pls_plot_wrap
+#' 28) plot_wrap.split
 #' 29) mdsplot
 #' 30) pca.plot
 #' 31) pca.comp

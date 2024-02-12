@@ -51,7 +51,7 @@
 
 \seealso{
   \code{\link{plsc}}, \code{\link{predict.plsc}},\code{\link{plslda}}, 
-  \code{\link{predict.plslda}}, \code{\link{pls.plot.wrap}},
+  \code{\link{predict.plslda}}, \code{\link{pls_plot_wrap}},
   \code{\link{panel.elli.1}}.
 }
 
